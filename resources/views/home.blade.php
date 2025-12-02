@@ -22,7 +22,7 @@
 </section>
 
 <!-- Quick Booking Form -->
-<section class="py-5 bg-light">
+<!-- <section class="py-5 bg-light">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
@@ -65,7 +65,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <!-- Features Section -->
 <section id="features" class="py-5">
@@ -138,8 +138,8 @@
 <section class="py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-6 fw-bold">Kendaraan Populer</h2>
-            <p class="lead">Pilihan favorit pelanggan kami</p>
+            <h2 class="display-6 fw-bold">Daftar Kendaraan</h2>
+            <p class="lead">Pilih kendaraan yang sesuai dengan kebutuhan perjalanan Anda</p>
         </div>
         <div class="row g-4">
             @foreach($popularVehicles as $vehicle)

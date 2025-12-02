@@ -66,7 +66,7 @@
             </div>
             
             <!-- Demo Account Info -->
-            <div class="card mt-3">
+            <!-- <div class="card mt-3">
                 <div class="card-body">
                     <h6 class="card-title">Demo Account</h6>
                     <small class="text-muted">
@@ -74,7 +74,7 @@
                         <strong>Customer:</strong> customer@example.com / password
                     </small>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
