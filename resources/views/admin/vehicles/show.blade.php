@@ -122,8 +122,8 @@
             <div class="card-body">
                 <table class="table table-borderless">
                     <tr>
-                        <td><strong>Merk:</strong></td>
-                        <td>{{ $vehicle->brand }}</td>
+                        <td><strong>Merek:</strong></td>
+                        <td>{{ $vehicle->brand_name }}</td>
                     </tr>
                     <tr>
                         <td><strong>Model:</strong></td>
@@ -174,7 +174,7 @@
                             <input type="hidden" name="category_id" value="{{ $vehicle->category_id }}">
                             <input type="hidden" name="description" value="{{ $vehicle->description }}">
                             <input type="hidden" name="price_per_day" value="{{ $vehicle->price_per_day }}">
-                            <input type="hidden" name="brand" value="{{ $vehicle->brand }}">
+                            <input type="hidden" name="brand_id" value="{{ $vehicle->brand_id }}">
                             <input type="hidden" name="model" value="{{ $vehicle->model }}">
                             <input type="hidden" name="year" value="{{ $vehicle->year }}">
                             <input type="hidden" name="color" value="{{ $vehicle->color }}">
@@ -194,7 +194,7 @@
                             <input type="hidden" name="category_id" value="{{ $vehicle->category_id }}">
                             <input type="hidden" name="description" value="{{ $vehicle->description }}">
                             <input type="hidden" name="price_per_day" value="{{ $vehicle->price_per_day }}">
-                            <input type="hidden" name="brand" value="{{ $vehicle->brand }}">
+                            <input type="hidden" name="brand_id" value="{{ $vehicle->brand_id }}">
                             <input type="hidden" name="model" value="{{ $vehicle->model }}">
                             <input type="hidden" name="year" value="{{ $vehicle->year }}">
                             <input type="hidden" name="color" value="{{ $vehicle->color }}">

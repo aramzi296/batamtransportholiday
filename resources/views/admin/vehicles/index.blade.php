@@ -23,8 +23,9 @@
                             <th>Kategori</th>
                             <th>Merk/Model</th>
                             <th>Harga/Hari</th>
+                            <th>Nomor Antrian</th>
                             <th>Status</th>
-                            <th width="200">Aksi</th>
+                            <th width="250">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,7 +37,7 @@
                         <tr>
                             <td>
                                 @if($firstImage)
-                                    <img src="{{ $firstImage->image_url }}" alt="{{ $vehicle->name }}" 
+                                    <img src="{{ $firstImage->thumbnail_url }}" alt="{{ $vehicle->name }}" 
                                          class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;"
                                          onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjgiIGZpbGw9IiM5OTkiIGR5PSIuM2VtIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4=';">
                                 @else
@@ -53,11 +54,27 @@
                                 <span class="badge bg-primary">{{ $vehicle->category->name }}</span>
                             </td>
                             <td>
-                                {{ $vehicle->brand }} {{ $vehicle->model }}<br>
+                                {{ $vehicle->brand_name }} {{ $vehicle->model }}<br>
                                 <small class="text-muted">{{ $vehicle->year }} • {{ $vehicle->seats }} kursi</small>
                             </td>
                             <td>
-                                <strong>Rp {{ number_format($vehicle->price_per_day) }}</strong>
+                                @php
+                                    // Get price from category if vehicle price is 0 or null
+                                    $displayPrice = $vehicle->price_per_day > 0 
+                                        ? $vehicle->price_per_day 
+                                        : ($vehicle->category->price ?? 0);
+                                @endphp
+                                <strong>Rp {{ number_format($displayPrice, 0, ',', '.') }}</strong>
+                                @if($vehicle->price_per_day == 0 && $vehicle->category->price)
+                                    <br><small class="text-muted">(dari kategori)</small>
+                                @endif
+                            </td>
+                            <td>
+                                @if($vehicle->queue_number)
+                                    <span class="badge bg-info">{{ $vehicle->queue_number }}</span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
                             </td>
                             <td>
                                 @if($vehicle->is_available)
@@ -68,17 +85,24 @@
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.vehicles.show', $vehicle) }}" class="btn btn-info btn-sm">
+                                    <a href="{{ route('admin.vehicles.show', $vehicle) }}" class="btn btn-info btn-sm" title="Lihat Detail">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.vehicles.edit', $vehicle) }}" class="btn btn-warning btn-sm">
+                                    <a href="{{ route('admin.vehicles.edit', $vehicle) }}" class="btn btn-warning btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
+                                    <form action="{{ route('admin.vehicles.set-queue-number', $vehicle) }}" method="POST" class="d-inline" 
+                                          onsubmit="return confirm('Set nomor antrian kendaraan ini ke nomor setelah antrian terakhir?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-secondary btn-sm" title="Set Nomor Antrian">
+                                            <i class="fas fa-sort-numeric-up"></i>
+                                        </button>
+                                    </form>
                                     <form action="{{ route('admin.vehicles.destroy', $vehicle) }}" method="POST" class="d-inline" 
                                           onsubmit="return confirm('Yakin ingin menghapus kendaraan ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>

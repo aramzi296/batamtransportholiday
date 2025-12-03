@@ -148,33 +148,46 @@
                     <img src="{{ $vehicle->main_image }}" class="card-img-top" alt="{{ $vehicle->name }}" style="height: 250px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title">{{ $vehicle->name }}</h5>
-                        <p class="card-text text-muted">{{ $vehicle->brand }} {{ $vehicle->model }} ({{ $vehicle->year }})</p>
+                        <!-- <p class="card-text text-muted">{{ $vehicle->brand }} {{ $vehicle->model }} ({{ $vehicle->year }})</p> -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="badge bg-primary">{{ $vehicle->category->name }}</span>
-                            <h4 class="text-primary mb-0">Rp {{ number_format($vehicle->price_per_day) }}/hari</h4>
+                            <div>
+                                <span class="badge bg-primary">{{ $vehicle->category->name }}</span>
+                                @if(isset($vehicle->price_type) && $vehicle->price_type === 'with_driver')
+                                    <span class="badge bg-success ms-1">Dengan Sopir</span>
+                                @elseif(isset($vehicle->price_type) && $vehicle->price_type === 'without_driver')
+                                    <span class="badge bg-info ms-1">Tanpa Sopir</span>
+                                @endif
+                            </div>
+                            <h4 class="text-primary mb-0">Rp {{ number_format($vehicle->display_price ?? $vehicle->price_per_day) }}/hari</h4>
                         </div>
                         <div class="row text-center mb-3">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <small class="text-muted">
                                     <i class="fas fa-users"></i><br>
                                     {{ $vehicle->seats }} Kursi
                                 </small>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <small class="text-muted">
                                     <i class="fas fa-cog"></i><br>
                                     {{ $vehicle->transmission }}
                                 </small>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <small class="text-muted">
                                     <i class="fas fa-gas-pump"></i><br>
                                     {{ $vehicle->fuel_type }}
                                 </small>
                             </div>
+                            <div class="col-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-palette"></i><br>
+                                    {{ $vehicle->color }}
+                                </small>
+                            </div>
                         </div>
-                        <a href="{{ url('/vehicles/' . $vehicle->slug) }}" class="btn btn-primary w-100">
-                            <i class="fas fa-eye"></i> Lihat Detail
+                        <a href="{{ url('/booking?vehicle_id=' . $vehicle->id) }}" class="btn btn-primary w-100">
+                            <i class="fas fa-calendar-check"></i> Booking
                         </a>
                     </div>
                 </div>

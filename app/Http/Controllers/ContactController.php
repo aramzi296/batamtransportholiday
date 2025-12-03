@@ -70,29 +70,54 @@ class ContactController extends Controller
      */
     private function sendAdminNotification($data)
     {
-        $adminEmail = config('mail.admin_email', 'admin@rentcarpro.com');
+        $adminEmail = 'admin@dsarana.com';
         
-        $subject = 'Pesan Baru dari Website - ' . ucfirst($data['subject']);
+        $subject = 'Pesan Baru dari Website - ' . $this->getSubjectLabel($data['subject']);
         
-        $message = "
-        <h3>Pesan Baru dari Website</h3>
-        <p><strong>Nama:</strong> {$data['name']}</p>
-        <p><strong>Email:</strong> {$data['email']}</p>
-        <p><strong>Telepon:</strong> {$data['phone']}</p>
-        <p><strong>Subjek:</strong> " . $this->getSubjectLabel($data['subject']) . "</p>
-        <p><strong>Newsletter:</strong> " . ($data['newsletter'] ? 'Ya' : 'Tidak') . "</p>
-        <p><strong>Waktu:</strong> {$data['submitted_at']}</p>
-        <hr>
-        <p><strong>Pesan:</strong></p>
-        <p>{$data['message']}</p>
+        $htmlMessage = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background-color: #007bff; color: white; padding: 20px; text-align: center; }
+                .content { background-color: #f8f9fa; padding: 20px; }
+                .detail { margin: 10px 0; }
+                .detail strong { display: inline-block; width: 120px; }
+                .message-box { background-color: white; padding: 15px; border-left: 4px solid #007bff; margin-top: 15px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h2>Pesan Baru dari Website</h2>
+                </div>
+                <div class='content'>
+                    <div class='detail'><strong>Nama:</strong> {$data['name']}</div>
+                    <div class='detail'><strong>Email:</strong> <a href='mailto:{$data['email']}'>{$data['email']}</a></div>
+                    <div class='detail'><strong>Telepon:</strong> " . ($data['phone'] ? "<a href='tel:{$data['phone']}'>{$data['phone']}</a>" : '-') . "</div>
+                    <div class='detail'><strong>Subjek:</strong> " . $this->getSubjectLabel($data['subject']) . "</div>
+                    <div class='detail'><strong>Newsletter:</strong> " . ($data['newsletter'] ? 'Ya' : 'Tidak') . "</div>
+                    <div class='detail'><strong>Waktu:</strong> {$data['submitted_at']}</div>
+                    <div class='message-box'>
+                        <strong>Pesan:</strong>
+                        <p>" . nl2br(e($data['message'])) . "</p>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
         ";
 
-        // Send email (using Laravel Mail - configure your mail settings)
-        // Mail::html($message, function ($mail) use ($adminEmail, $subject, $data) {
-        //     $mail->to($adminEmail)
-        //          ->subject($subject)
-        //          ->replyTo($data['email'], $data['name']);
-        // });
+        try {
+            Mail::html($htmlMessage, function ($mail) use ($adminEmail, $subject, $data) {
+                $mail->to($adminEmail)
+                     ->subject($subject)
+                     ->replyTo($data['email'], $data['name']);
+            });
+        } catch (\Exception $e) {
+            \Log::error('Failed to send contact email to admin: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -100,27 +125,51 @@ class ContactController extends Controller
      */
     private function sendUserAutoReply($data)
     {
-        $message = "
-        <h3>Terima kasih telah menghubungi kami!</h3>
-        <p>Halo {$data['name']},</p>
-        <p>Pesan Anda telah kami terima dan akan segera kami proses. Tim customer service kami akan menghubungi Anda dalam waktu maksimal 24 jam.</p>
-        <p><strong>Detail pesan Anda:</strong></p>
-        <p>Subjek: " . $this->getSubjectLabel($data['subject']) . "</p>
-        <p>Pesan: {$data['message']}</p>
-        <hr>
-        <p>Jika Anda membutuhkan bantuan segera, silakan hubungi kami di:</p>
-        <p>📞 WhatsApp: +62 123 456 789</p>
-        <p>📧 Email: info@rentcarpro.com</p>
-        <p>🕐 Jam operasional: Senin-Jumat 08:00-20:00</p>
-        <br>
-        <p>Salam,<br>Tim Customer Service<br>D'Sarana</p>
+        $htmlMessage = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background-color: #007bff; color: white; padding: 20px; text-align: center; }
+                .content { background-color: #f8f9fa; padding: 20px; }
+                .contact-info { background-color: white; padding: 15px; margin-top: 15px; border-left: 4px solid #28a745; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h2>Terima Kasih Telah Menghubungi Kami!</h2>
+                </div>
+                <div class='content'>
+                    <p>Halo <strong>{$data['name']}</strong>,</p>
+                    <p>Pesan Anda telah kami terima dan akan segera kami proses. Tim customer service kami akan menghubungi Anda dalam waktu maksimal 24 jam.</p>
+                    <p><strong>Detail pesan Anda:</strong></p>
+                    <ul>
+                        <li><strong>Subjek:</strong> " . $this->getSubjectLabel($data['subject']) . "</li>
+                        <li><strong>Pesan:</strong> " . nl2br(e($data['message'])) . "</li>
+                    </ul>
+                    <div class='contact-info'>
+                        <p><strong>Jika Anda membutuhkan bantuan segera, silakan hubungi kami di:</strong></p>
+                        <p>📞 Telepon: +62 821 7086 0825</p>
+                        <p>📧 Email: admin@dsarana.com</p>
+                        <p>🕐 Jam operasional: Senin-Minggu 08:00-20:00</p>
+                    </div>
+                    <p>Salam,<br><strong>Tim Customer Service<br>D'Sarana</strong></p>
+                </div>
+            </div>
+        </body>
+        </html>
         ";
 
-        // Send email (using Laravel Mail - configure your mail settings)
-        // Mail::html($message, function ($mail) use ($data) {
-        //     $mail->to($data['email'])
-        //          ->subject('Terima kasih telah menghubungi D\'Sarana');
-        // });
+        try {
+            Mail::html($htmlMessage, function ($mail) use ($data) {
+                $mail->to($data['email'])
+                     ->subject('Terima kasih telah menghubungi D\'Sarana');
+            });
+        } catch (\Exception $e) {
+            \Log::error('Failed to send auto-reply email to user: ' . $e->getMessage());
+        }
     }
 
     /**

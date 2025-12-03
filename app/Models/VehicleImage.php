@@ -10,6 +10,7 @@ class VehicleImage extends Model
     protected $fillable = [
         'vehicle_id',
         'image_path',
+        'thumbnail_path',
         'is_featured',
         'order',
     ];
@@ -58,5 +59,38 @@ class VehicleImage extends Model
         }
         
         return asset('storage/' . $this->image_path);
+    }
+
+    public function getThumbnailUrlAttribute()
+    {
+        if (!$this->thumbnail_path) {
+            // Fallback ke image_url jika thumbnail belum ada
+            return $this->image_url;
+        }
+        
+        // Normalize path untuk cek di S3
+        $s3Path = $this->thumbnail_path;
+        
+        if (strpos($s3Path, 'images/vehicles/thumbnails/') === 0) {
+            $s3Path = str_replace('images/vehicles/thumbnails/', 'vehicles/thumbnails/', $s3Path);
+        }
+        
+        $isS3Path = preg_match('/^(vehicles|profiles|testimonials)\//', $s3Path);
+        
+        if ($isS3Path) {
+            try {
+                if (Storage::disk('s3')->exists($s3Path)) {
+                    return Storage::disk('s3')->url($s3Path);
+                }
+            } catch (\Exception $e) {
+                // Fallback ke local
+            }
+        }
+        
+        if (strpos($this->thumbnail_path, 'images/') === 0) {
+            return asset($this->thumbnail_path);
+        }
+        
+        return asset('storage/' . $this->thumbnail_path);
     }
 }

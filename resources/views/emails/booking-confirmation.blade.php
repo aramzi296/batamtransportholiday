@@ -210,7 +210,7 @@
                 
                 <div class="detail-row">
                     <span class="label">Durasi:</span>
-                    <span class="value">{{ $booking->start_date->diffInDays($booking->end_date) + 1 }} hari</span>
+                    <span class="value">{{ $booking->total_days }} hari</span>
                 </div>
             </div>
 
@@ -270,13 +270,13 @@
             <p>Terima kasih atas kepercayaan Anda!</p>
             
             <p>Salam,<br>
-            <strong>Tim Car Rental</strong></p>
+            <strong>Tim D'Sarana Rental Service</strong></p>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p><strong>Car Rental Service</strong></p>
-            <p>📧 Email: info@carrental.com | 📞 Telepon: (021) 1234-5678</p>
+            <p><strong>D'Sarana Rental Service</strong></p>
+            <p>📧 Email: info@dsarana.com | 📞 Telepon: +62 821 7086 0825</p>
             <p>🌐 Website: <a href="{{ url('/') }}">{{ url('/') }}</a></p>
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #dee2e6;">
             <p style="font-size: 12px; color: #adb5bd;">

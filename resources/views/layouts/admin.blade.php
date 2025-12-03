@@ -114,6 +114,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ url('/admin/users') }}" class="{{ request()->is('admin/users*') ? 'active' : '' }}">
+                    <i class="fas fa-users"></i> User Management
+                </a>
+            </li>
+            <li>
                 <a href="{{ url('/') }}">
                     <i class="fas fa-globe"></i> Lihat Website
                 </a>

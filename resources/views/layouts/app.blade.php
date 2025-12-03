@@ -85,6 +85,11 @@
                             <i class="fas fa-car"></i> Kendaraan
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/prices') }}">
+                            <i class="fas fa-tags"></i> Harga
+                        </a>
+                    </li>
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="{{ url('/articles') }}">
                             <i class="fas fa-newspaper"></i> Artikel
@@ -177,9 +182,9 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ url('/') }}" class="text-white text-decoration-none"><i class="fas fa-home"></i> Home</a></li>
                         <li><a href="{{ url('/vehicles') }}" class="text-white text-decoration-none"><i class="fas fa-car"></i> Kendaraan</a></li>
-                        <!-- <li><a href="{{ url('/articles') }}" class="text-white text-decoration-none"><i class="fas fa-newspaper"></i> Artikel</a></li> -->
+                        <li><a href="{{ url('/prices') }}" class="text-white text-decoration-none"><i class="fas fa-tags"></i> Daftar Harga</a></li>
                         <li><a href="{{ url('/contact') }}" class="text-white text-decoration-none"><i class="fas fa-phone"></i> Kontak</a></li>
-                        <li><a href="{{ route('member.login') }}" class="text-white text-decoration-none"><i class="fas fa-users"></i> Member</a></li>
+                        <!-- <li><a href="{{ route('member.login') }}" class="text-white text-decoration-none"><i class="fas fa-users"></i> Member</a></li> -->
                     </ul>
                 </div>
                 <div class="col-md-4">

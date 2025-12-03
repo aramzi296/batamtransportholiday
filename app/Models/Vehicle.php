@@ -18,7 +18,8 @@ class Vehicle extends Model
         'member_id',
         'description',
         'price_per_day',
-        'brand',
+        'brand_id',
+        'brand', // Keep for backward compatibility
         'model',
         'year',
         'color',
@@ -28,7 +29,8 @@ class Vehicle extends Model
         'plate_number',
         'features',
         'images',
-        'is_available'
+        'is_available',
+        'queue_number'
     ];
 
     protected $casts = [
@@ -41,6 +43,11 @@ class Vehicle extends Model
     public function category()
     {
         return $this->belongsTo(VehicleCategory::class, 'category_id');
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(VehicleBrand::class, 'brand_id');
     }
 
     public function member()
@@ -161,5 +168,27 @@ class Vehicle extends Model
         }
         
         return $unavailableDates;
+    }
+
+    /**
+     * Get brand name - prefer relation, fallback to column
+     */
+    public function getBrandNameAttribute()
+    {
+        // If brand relation is loaded and is a VehicleBrand instance
+        if ($this->relationLoaded('brand') && $this->brand instanceof VehicleBrand) {
+            return $this->brand->name;
+        }
+        
+        // If brand_id exists, try to get from relation
+        if ($this->brand_id) {
+            $brand = $this->brand;
+            if ($brand instanceof VehicleBrand) {
+                return $brand->name;
+            }
+        }
+        
+        // Fallback to brand column (string) for backward compatibility
+        return $this->getOriginal('brand') ?? 'N/A';
     }
 }

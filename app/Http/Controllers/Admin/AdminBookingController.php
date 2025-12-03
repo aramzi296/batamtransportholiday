@@ -43,17 +43,44 @@ class AdminBookingController extends Controller
             'admin_notes' => 'nullable|string',
         ]);
         
+        $oldStatus = $booking->status;
+        
         $booking->update([
             'status' => $request->status,
             'admin_notes' => $request->admin_notes,
+            'confirmed_at' => $request->status === 'confirmed' && !$booking->confirmed_at ? now() : $booking->confirmed_at,
         ]);
+        
+        // If status changed to confirmed, update vehicle queue_number
+        if ($oldStatus !== 'confirmed' && $request->status === 'confirmed') {
+            $vehicle = $booking->vehicle;
+            $lastQueueNumber = \App\Models\Vehicle::whereNotNull('queue_number')
+                ->max('queue_number') ?? 0;
+            
+            $vehicle->update([
+                'queue_number' => $lastQueueNumber + 1
+            ]);
+        }
         
         return redirect()->route('admin.bookings.show', $booking)->with('success', 'Status booking berhasil diperbarui!');
     }
     
     public function confirm(Booking $booking)
     {
-        $booking->update(['status' => 'confirmed']);
+        $booking->update([
+            'status' => 'confirmed',
+            'confirmed_at' => now()
+        ]);
+        
+        // Update vehicle queue_number: set to one number below the last queue number
+        $vehicle = $booking->vehicle;
+        $lastQueueNumber = \App\Models\Vehicle::whereNotNull('queue_number')
+            ->max('queue_number') ?? 0;
+        
+        $vehicle->update([
+            'queue_number' => $lastQueueNumber + 1
+        ]);
+        
         return redirect()->route('admin.bookings.show', $booking)->with('success', 'Booking berhasil dikonfirmasi!');
     }
     

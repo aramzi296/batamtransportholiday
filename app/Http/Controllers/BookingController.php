@@ -26,14 +26,43 @@ class BookingController extends Controller
 
     public function create(Request $request)
     {
-        $vehicle = Vehicle::with(['category', 'vehicleImages'])->findOrFail($request->vehicle_id);
+        // Get the selected vehicle
+        $selectedVehicle = Vehicle::with(['category', 'vehicleImages'])->findOrFail($request->vehicle_id);
+        
+        // Get alternative vehicle: same category but with lower queue number (default selection)
+        $alternativeVehicle = null;
+        if ($selectedVehicle->queue_number) {
+            $alternativeVehicle = Vehicle::with(['category', 'vehicleImages'])
+                ->where('category_id', $selectedVehicle->category_id)
+                ->where('id', '!=', $selectedVehicle->id)
+                ->where('is_available', true)
+                ->whereNotNull('queue_number')
+                ->where('queue_number', '<', $selectedVehicle->queue_number)
+                ->orderBy('queue_number', 'asc')
+                ->first();
+        }
+        
+        // If no alternative found, use the selected vehicle as default
+        $defaultVehicle = $alternativeVehicle ?? $selectedVehicle;
+        
+        // Check if category has both prices
+        $category = $defaultVehicle->category;
+        $hasPrice = $category->price && $category->price > 0;
+        $hasPriceWithDriver = $category->price_with_driver && $category->price_with_driver > 0;
+        $hasBothPrices = $hasPrice && $hasPriceWithDriver;
+        
+        // Determine default price and driver option
+        $defaultPrice = $hasPrice ? $category->price : ($hasPriceWithDriver ? $category->price_with_driver : $defaultVehicle->price_per_day);
+        $defaultWithDriver = $hasBothPrices ? false : ($hasPriceWithDriver ? true : false); // Default to without driver if both available
         
         $startDate = $request->start_date;
         $endDate = $request->end_date;
+        $withDriver = $request->has('with_driver') ? $request->with_driver == '1' : $defaultWithDriver;
         
         // Calculate total days and price
         $totalDays = 1;
-        $totalPrice = $vehicle->price_per_day;
+        $selectedPrice = $withDriver && $hasPriceWithDriver ? $category->price_with_driver : ($hasPrice ? $category->price : $defaultVehicle->price_per_day);
+        $totalPrice = $selectedPrice;
         $availabilityWarnings = [];
         
         if ($startDate && $endDate) {
@@ -41,13 +70,13 @@ class BookingController extends Controller
             $end = Carbon::parse($endDate);
             $totalDays = $start->diffInDays($end);
             if ($totalDays == 0) $totalDays = 1;
-            $totalPrice = $totalDays * $vehicle->price_per_day;
+            $totalPrice = $totalDays * $selectedPrice;
             
             // Check availability for selected dates and show warnings
             $currentDate = $start->copy();
             while ($currentDate <= $end) {
-                if (!$vehicle->isAvailableOnDate($currentDate->format('Y-m-d'))) {
-                    $availability = $vehicle->availability()->whereDate('date', $currentDate->format('Y-m-d'))->first();
+                if (!$defaultVehicle->isAvailableOnDate($currentDate->format('Y-m-d'))) {
+                    $availability = $defaultVehicle->availability()->whereDate('date', $currentDate->format('Y-m-d'))->first();
                     $reason = $availability && $availability->reason ? $availability->reason : 'Tidak tersedia';
                     
                     $availabilityWarnings[] = [
@@ -59,7 +88,7 @@ class BookingController extends Controller
             }
         }
 
-        return view('bookings.create', compact('vehicle', 'startDate', 'endDate', 'totalDays', 'totalPrice', 'availabilityWarnings'));
+        return view('bookings.create', compact('selectedVehicle', 'alternativeVehicle', 'defaultVehicle', 'startDate', 'endDate', 'totalDays', 'totalPrice', 'availabilityWarnings', 'hasBothPrices', 'hasPrice', 'hasPriceWithDriver', 'category', 'withDriver'));
     }
 
     public function store(Request $request)
@@ -132,6 +161,27 @@ class BookingController extends Controller
         $totalDays = $startDate->diffInDays($endDate);
         if ($totalDays == 0) $totalDays = 1;
 
+        // Determine price based on driver option
+        $category = $vehicle->category;
+        $withDriver = $request->has('with_driver') && $request->with_driver == '1';
+        $hasPrice = $category->price && $category->price > 0;
+        $hasPriceWithDriver = $category->price_with_driver && $category->price_with_driver > 0;
+        
+        // Calculate daily price
+        $dailyPrice = $vehicle->price_per_day; // Default to vehicle price
+        if ($hasPrice && $hasPriceWithDriver) {
+            // Both prices available, use selected option
+            $dailyPrice = $withDriver ? $category->price_with_driver : $category->price;
+        } elseif ($hasPriceWithDriver) {
+            // Only price with driver available
+            $dailyPrice = $category->price_with_driver;
+            $withDriver = true;
+        } elseif ($hasPrice) {
+            // Only price without driver available
+            $dailyPrice = $category->price;
+            $withDriver = false;
+        }
+
         $booking = Booking::create([
             'booking_code' => Booking::generateBookingCode(),
             'vehicle_id' => $vehicle->id,
@@ -143,8 +193,9 @@ class BookingController extends Controller
             'start_date' => $startDate,
             'end_date' => $endDate,
             'total_days' => $totalDays,
-            'daily_price' => $vehicle->price_per_day,
-            'total_price' => $totalDays * $vehicle->price_per_day,
+            'daily_price' => $dailyPrice,
+            'total_price' => $totalDays * $dailyPrice,
+            'with_driver' => $withDriver,
             'notes' => $request->notes,
             'status' => 'pending',
         ]);
@@ -163,22 +214,43 @@ class BookingController extends Controller
         }
 
         // Send email notifications
+        $emailSent = false;
         try {
             // Send confirmation email to customer
             Mail::to($booking->customer_email)->send(new BookingConfirmation($booking));
+            $emailSent = true;
             
             // Send notification email to customer service
-            Mail::to('customerservice@carrental.com')->send(new NewBookingNotification($booking));
+            Mail::to('customerservice@dsarana.com')->send(new NewBookingNotification($booking));
             
             // Also send to admin email if different
-            Mail::to('admin@carrental.com')->send(new NewBookingNotification($booking));
+            Mail::to('admin@dsarana.com')->send(new NewBookingNotification($booking));
         } catch (\Exception $e) {
             // Log the error but don't stop the booking process
             Log::error('Failed to send booking emails: ' . $e->getMessage());
         }
 
-        return redirect()->route('bookings.show', $booking->id)
-            ->with('success', 'Booking request submitted successfully! We will contact you within 24 hours.');
+        // Redirect to thank you page
+        return redirect()->route('booking.thank-you', $booking->id)
+            ->with('email_sent', $emailSent);
+    }
+
+    public function thankYou($id)
+    {
+        $booking = Booking::with(['vehicle.category'])->findOrFail($id);
+        
+        // Admin contact info (can be moved to config later)
+        $adminContact = [
+            'phone' => '+62 821 7086 0825',
+            'phone2' => '+62 813 6481 0770',
+            'phone3' => '+62 811 700 7201',
+            'email' => 'admin@dsarana.com',
+        ];
+        
+        // Check if user is logged in and owns this booking
+        $isOwner = Auth::check() && Auth::id() == $booking->user_id;
+        
+        return view('bookings.thank-you', compact('booking', 'adminContact', 'isOwner'));
     }
 
     public function show($id)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
 use App\Models\VehicleCategory;
+use App\Models\VehicleBrand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -12,7 +13,7 @@ class AdminVehicleController extends Controller
 {
     public function index()
     {
-        $vehicles = Vehicle::with(['category', 'vehicleImages'])
+        $vehicles = Vehicle::with(['category', 'brand', 'vehicleImages'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -22,17 +23,16 @@ class AdminVehicleController extends Controller
     public function create()
     {
         $categories = VehicleCategory::all();
-        return view('admin.vehicles.create', compact('categories'));
+        $brands = VehicleBrand::active()->orderBy('name')->get();
+        return view('admin.vehicles.create', compact('categories', 'brands'));
     }
 
     public function store(Request $request)
     {
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
             'category_id' => 'required|exists:vehicle_categories,id',
             'description' => 'required|string',
-            'price_per_day' => 'required|numeric|min:0',
-            'brand' => 'required|string|max:100',
+            'brand_id' => 'required|exists:vehicle_brands,id',
             'model' => 'required|string|max:100',
             'year' => 'required|integer|min:1990|max:' . (date('Y') + 1),
             'color' => 'required|string|max:50',
@@ -40,7 +40,7 @@ class AdminVehicleController extends Controller
             'transmission' => 'required|string',
             'seats' => 'required|integer|min:1|max:60',
             'plate_number' => 'required|string|unique:vehicles,plate_number',
-            'features' => 'nullable|array',
+            'queue_number' => 'nullable|integer|min:1',
             'images' => 'required|array|min:1',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'featured_image' => 'nullable|integer',
@@ -52,13 +52,27 @@ class AdminVehicleController extends Controller
                 ->withInput();
         }
 
+        // Get brand name for backward compatibility
+        $brand = VehicleBrand::find($request->brand_id);
+        
+        // Get category to get price
+        $category = VehicleCategory::find($request->category_id);
+        
+        // Generate name from brand + model
+        $vehicleName = ($brand ? $brand->name : '') . ' ' . $request->model;
+        $vehicleName = trim($vehicleName);
+        
+        // Get price from category, default to 0 if category price is null
+        $pricePerDay = $category && $category->price ? $category->price : 0;
+        
         $vehicle = Vehicle::create([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name . '-' . uniqid()),
+            'name' => $vehicleName,
+            'slug' => Str::slug($vehicleName . '-' . uniqid()),
             'category_id' => $request->category_id,
             'description' => $request->description,
-            'price_per_day' => $request->price_per_day,
-            'brand' => $request->brand,
+            'price_per_day' => $pricePerDay, // Get from category
+            'brand_id' => $request->brand_id,
+            'brand' => $brand ? $brand->name : null,
             'model' => $request->model,
             'year' => $request->year,
             'color' => $request->color,
@@ -66,8 +80,9 @@ class AdminVehicleController extends Controller
             'transmission' => $request->transmission,
             'seats' => $request->seats,
             'plate_number' => $request->plate_number,
-            'features' => $request->features ?? [],
+            'features' => [], // Default empty array
             'is_available' => $request->has('is_available'),
+            'queue_number' => $request->queue_number,
         ]);
 
         // Handle image uploads - Upload ke S3 dengan fallback ke local
@@ -101,9 +116,13 @@ class AdminVehicleController extends Controller
                 
                 // Hanya simpan jika path berhasil
                 if ($path) {
+                    // Buat thumbnail
+                    $thumbnailPath = \App\Helpers\ImageHelper::createThumbnail($path);
+                    
                     \App\Models\VehicleImage::create([
                         'vehicle_id' => $vehicle->id,
                         'image_path' => $path,
+                        'thumbnail_path' => $thumbnailPath,
                         'is_featured' => ($featuredIndex == $index),
                         'order' => $order++,
                     ]);
@@ -125,15 +144,16 @@ class AdminVehicleController extends Controller
 
     public function show(Vehicle $vehicle)
     {
-        $vehicle->load('category');
+        $vehicle->load(['category', 'brand']);
         return view('admin.vehicles.show', compact('vehicle'));
     }
 
     public function edit(Vehicle $vehicle)
     {
         $categories = VehicleCategory::all();
+        $brands = VehicleBrand::active()->orderBy('name')->get();
         $vehicle->load('vehicleImages'); // Load vehicleImages relationship
-        return view('admin.vehicles.edit', compact('vehicle', 'categories'));
+        return view('admin.vehicles.edit', compact('vehicle', 'categories', 'brands'));
     }
 
     public function update(Request $request, Vehicle $vehicle)
@@ -142,8 +162,8 @@ class AdminVehicleController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:vehicle_categories,id',
             'description' => 'required|string',
-            'price_per_day' => 'required|numeric|min:0',
-            'brand' => 'required|string|max:100',
+            'price_per_day' => 'nullable|numeric|min:0',
+            'brand_id' => 'required|exists:vehicle_brands,id',
             'model' => 'required|string|max:100',
             'year' => 'required|integer|min:1990|max:' . (date('Y') + 1),
             'color' => 'required|string|max:50',
@@ -151,6 +171,7 @@ class AdminVehicleController extends Controller
             'transmission' => 'required|string',
             'seats' => 'required|integer|min:1|max:60',
             'plate_number' => 'required|string|unique:vehicles,plate_number,' . $vehicle->id,
+            'queue_number' => 'nullable|integer|min:1',
             'features' => 'nullable|array',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -164,13 +185,29 @@ class AdminVehicleController extends Controller
                 ->withInput();
         }
 
+        // Get brand name for backward compatibility
+        $brand = VehicleBrand::find($request->brand_id);
+        
+        // Get category to get price
+        $category = VehicleCategory::find($request->category_id);
+        
+        // Generate name from brand + model if name is not provided
+        $vehicleName = $request->filled('name') ? $request->name : (($brand ? $brand->name : '') . ' ' . $request->model);
+        $vehicleName = trim($vehicleName);
+        
+        // Get price from category if not manually set, default to 0 if category price is null
+        $pricePerDay = $request->filled('price_per_day') 
+            ? $request->price_per_day 
+            : ($category && $category->price ? $category->price : ($vehicle->price_per_day ?? 0));
+        
         $vehicle->update([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name . '-' . $vehicle->id),
+            'name' => $vehicleName,
+            'slug' => Str::slug($vehicleName . '-' . $vehicle->id),
             'category_id' => $request->category_id,
             'description' => $request->description,
-            'price_per_day' => $request->price_per_day,
-            'brand' => $request->brand,
+            'price_per_day' => $pricePerDay, // Get from category if not manually set
+            'brand_id' => $request->brand_id,
+            'brand' => $brand ? $brand->name : null,
             'model' => $request->model,
             'year' => $request->year,
             'color' => $request->color,
@@ -180,6 +217,7 @@ class AdminVehicleController extends Controller
             'plate_number' => $request->plate_number,
             'features' => $request->features ?? [],
             'is_available' => $request->has('is_available'),
+            'queue_number' => $request->queue_number,
         ]);
 
         // Handle delete images
@@ -255,9 +293,13 @@ class AdminVehicleController extends Controller
                 
                 // Hanya simpan jika path berhasil
                 if ($path) {
+                    // Buat thumbnail
+                    $thumbnailPath = \App\Helpers\ImageHelper::createThumbnail($path);
+                    
                     $vehicleImage = \App\Models\VehicleImage::create([
                         'vehicle_id' => $vehicle->id,
                         'image_path' => $path,
+                        'thumbnail_path' => $thumbnailPath,
                         'is_featured' => ($featuredIndex !== null && $featuredIndex == $index),
                         'order' => $order++,
                     ]);
@@ -305,5 +347,20 @@ class AdminVehicleController extends Controller
 
         return redirect()->route('admin.vehicles.index')
             ->with('success', 'Kendaraan berhasil dihapus');
+    }
+
+    public function setQueueNumber(Vehicle $vehicle)
+    {
+        // Get the last queue number
+        $lastQueueNumber = Vehicle::whereNotNull('queue_number')
+            ->max('queue_number') ?? 0;
+        
+        // Set vehicle queue number to one after the last
+        $vehicle->update([
+            'queue_number' => $lastQueueNumber + 1
+        ]);
+
+        return redirect()->route('admin.vehicles.index')
+            ->with('success', 'Nomor antrian kendaraan berhasil diset ke ' . ($lastQueueNumber + 1));
     }
 }

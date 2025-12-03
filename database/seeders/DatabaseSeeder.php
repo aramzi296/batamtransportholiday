@@ -72,6 +72,8 @@ class DatabaseSeeder extends Seeder
             'description' => 'Informasi perawatan kendaraan'
         ]);
 
+        // Seed vehicle brands
+        $this->call(VehicleBrandSeeder::class);
         // Seed vehicles
         $this->call(VehicleSeeder::class);
         // Seed testimonials

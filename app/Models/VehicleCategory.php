@@ -13,11 +13,15 @@ class VehicleCategory extends Model
         'name',
         'slug',
         'description',
+        'price',
+        'price_with_driver',
         'is_active'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'price' => 'decimal:2',
+        'price_with_driver' => 'decimal:2',
     ];
 
     public function vehicles()

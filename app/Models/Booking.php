@@ -22,6 +22,7 @@ class Booking extends Model
         'total_days',
         'daily_price',
         'total_price',
+        'with_driver',
         'notes',
         'status',
         'confirmed_at'
@@ -32,6 +33,7 @@ class Booking extends Model
         'end_date' => 'date',
         'daily_price' => 'decimal:2',
         'total_price' => 'decimal:2',
+        'with_driver' => 'boolean',
         'confirmed_at' => 'datetime'
     ];
 
@@ -48,7 +50,7 @@ class Booking extends Model
     public static function generateBookingCode()
     {
         do {
-            $code = 'BK' . date('Ymd') . mt_rand(1000, 9999);
+            $code = 'DS' . date('Ymd') . mt_rand(1000, 9999);
         } while (self::where('booking_code', $code)->exists());
 
         return $code;

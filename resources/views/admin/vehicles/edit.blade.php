@@ -102,12 +102,13 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Harga Per Hari (Rp) *</label>
+                        <label class="form-label">Harga Per Hari (Rp)</label>
                         <input type="number" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror" 
-                               value="{{ old('price_per_day', $vehicle->price_per_day) }}" min="0" step="1000" required>
+                               value="{{ old('price_per_day', $vehicle->price_per_day) }}" min="0" step="1000" placeholder="Opsional">
                         @error('price_per_day')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <div class="form-text">Kosongkan jika harga belum ditentukan</div>
                     </div>
                 </div>
 
@@ -117,12 +118,23 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Merk *</label>
-                            <input type="text" name="brand" class="form-control @error('brand') is-invalid @enderror" 
-                                   value="{{ old('brand', $vehicle->brand) }}" required>
-                            @error('brand')
+                            <label class="form-label">Merek *</label>
+                            <select name="brand_id" class="form-select @error('brand_id') is-invalid @enderror" required>
+                                <option value="">Pilih Merek</option>
+                                @foreach($brands as $brand)
+                                    <option value="{{ $brand->id }}" {{ old('brand_id', $vehicle->brand_id) == $brand->id ? 'selected' : '' }}>
+                                        {{ $brand->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('brand_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <div class="form-text">
+                                <a href="{{ route('admin.brands.create') }}" target="_blank">
+                                    <i class="fas fa-plus"></i> Tambah Merek Baru
+                                </a>
+                            </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Model *</label>
@@ -197,6 +209,16 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nomor Antrian</label>
+                        <input type="number" name="queue_number" class="form-control @error('queue_number') is-invalid @enderror" 
+                               value="{{ old('queue_number', $vehicle->queue_number) }}" min="1" placeholder="Nomor antrian untuk urutan tampil">
+                        @error('queue_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">Nomor antrian menentukan urutan tampil kendaraan di halaman depan. Kosongkan jika belum ditentukan.</div>
                     </div>
                 </div>
             </div>

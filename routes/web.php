@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminVehicleController;
 use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminArticleCategoryController;
 use App\Http\Controllers\Admin\AdminAvailabilityController;
 use App\Http\Controllers\Admin\AdminTestimonialController;
@@ -24,6 +25,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
 Route::get('/vehicles/{slug}', [VehicleController::class, 'show'])->name('vehicles.show');
 Route::post('/vehicles/{id}/check-availability', [VehicleController::class, 'checkAvailability'])->name('vehicles.check-availability');
+Route::get('/prices', [\App\Http\Controllers\PriceController::class, 'index'])->name('prices.index');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
 
@@ -86,10 +88,12 @@ Route::prefix('member')->name('member.')->group(function () {
 // Booking Routes (Public & Authenticated)
 Route::get('/booking', [BookingController::class, 'create'])->name('booking.create');
 Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+Route::get('/booking/thank-you/{id}', [BookingController::class, 'thankYou'])->name('booking.thank-you');
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
+    Route::put('/profile', [HomeController::class, 'updateProfile'])->name('profile.update');
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
         Route::get('/password/change', [\App\Http\Controllers\ChangePasswordController::class, 'showChangeForm'])->name('password.change.form');
@@ -102,6 +106,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Vehicle Management
     Route::resource('vehicles', AdminVehicleController::class);
+    Route::post('vehicles/{vehicle}/set-queue-number', [AdminVehicleController::class, 'setQueueNumber'])->name('vehicles.set-queue-number');
     Route::resource('vehicle-categories', AdminCategoryController::class, [
         'names' => [
             'index' => 'vehicle-categories.index',
@@ -113,6 +118,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             'destroy' => 'vehicle-categories.destroy',
         ]
     ]);
+    Route::resource('brands', AdminBrandController::class);
+    Route::patch('brands/{brand}/toggle-active', [AdminBrandController::class, 'toggleActive'])->name('brands.toggle-active');
     
     // Booking Management
     Route::resource('bookings', AdminBookingController::class)->only(['index', 'show', 'update']);
@@ -142,6 +149,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('testimonials', AdminTestimonialController::class);
     Route::patch('testimonials/{testimonial}/toggle-active', [AdminTestimonialController::class, 'toggleActive'])->name('testimonials.toggle-active');
     Route::patch('testimonials/{testimonial}/toggle-featured', [AdminTestimonialController::class, 'toggleFeatured'])->name('testimonials.toggle-featured');
+    
+    // User Management
+    Route::resource('users', \App\Http\Controllers\Admin\AdminUserController::class);
+    Route::get('users/{user}/profile', [\App\Http\Controllers\Admin\AdminUserController::class, 'profile'])->name('users.profile');
+    Route::put('users/{user}/profile', [\App\Http\Controllers\Admin\AdminUserController::class, 'updateProfile'])->name('users.profile.update');
     
     // Vehicle Calendar (Block Dates)
     Route::get('vehicles/{vehicle}/calendar', [\App\Http\Controllers\Admin\AdminVehicleCalendarController::class, 'index'])->name('vehicles.calendar');

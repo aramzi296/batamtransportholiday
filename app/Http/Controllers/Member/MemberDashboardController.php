@@ -225,9 +225,13 @@ class MemberDashboardController extends Controller
                 
                 // Hanya simpan jika path berhasil
                 if ($path) {
+                    // Buat thumbnail
+                    $thumbnailPath = \App\Helpers\ImageHelper::createThumbnail($path);
+                    
                     \App\Models\VehicleImage::create([
                         'vehicle_id' => $vehicle->id,
                         'image_path' => $path,
+                        'thumbnail_path' => $thumbnailPath,
                         'is_featured' => ($featuredIndex == $index),
                         'order' => $order++,
                     ]);
@@ -377,9 +381,13 @@ class MemberDashboardController extends Controller
                 
                 // Hanya simpan jika path berhasil
                 if ($path) {
+                    // Buat thumbnail
+                    $thumbnailPath = \App\Helpers\ImageHelper::createThumbnail($path);
+                    
                     \App\Models\VehicleImage::create([
                         'vehicle_id' => $vehicle->id,
                         'image_path' => $path,
+                        'thumbnail_path' => $thumbnailPath,
                         'is_featured' => false,
                         'order' => $order++,
                     ]);

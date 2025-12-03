@@ -28,20 +28,13 @@
                     <h6 class="fw-bold mb-3">Informasi Dasar</h6>
                     
                     <div class="mb-3">
-                        <label class="form-label">Nama Kendaraan *</label>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
-                               value="{{ old('name') }}" required>
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Kategori *</label>
-                        <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
+                        <select name="category_id" id="category_id" class="form-select @error('category_id') is-invalid @enderror" required onchange="updateCategoryPrice()">
                             <option value="">Pilih Kategori</option>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                <option value="{{ $category->id }}" 
+                                        data-price="{{ $category->price ?? 0 }}"
+                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
@@ -49,6 +42,10 @@
                         @error('category_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <div id="category-price-info" class="form-text mt-2" style="display: none;">
+                            <i class="fas fa-info-circle text-primary"></i> 
+                            Harga rental per hari: <strong class="text-success" id="category-price-value">Rp 0</strong>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -56,15 +53,6 @@
                         <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror" 
                                   placeholder="Deskripsi lengkap kendaraan..." required>{{ old('description') }}</textarea>
                         @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Harga Per Hari (Rp) *</label>
-                        <input type="number" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror" 
-                               value="{{ old('price_per_day') }}" min="0" step="1000" required>
-                        @error('price_per_day')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -76,12 +64,23 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Merk *</label>
-                            <input type="text" name="brand" class="form-control @error('brand') is-invalid @enderror" 
-                                   value="{{ old('brand') }}" required>
-                            @error('brand')
+                            <label class="form-label">Merek *</label>
+                            <select name="brand_id" class="form-select @error('brand_id') is-invalid @enderror" required>
+                                <option value="">Pilih Merek</option>
+                                @foreach($brands as $brand)
+                                    <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
+                                        {{ $brand->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('brand_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <div class="form-text">
+                                <a href="{{ route('admin.brands.create') }}" target="_blank">
+                                    <i class="fas fa-plus"></i> Tambah Merek Baru
+                                </a>
+                            </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Model *</label>
@@ -157,36 +156,16 @@
                             @enderror
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <hr>
-
-            <!-- Features -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <h6 class="fw-bold mb-3"><i class="fas fa-list"></i> Fitur & Fasilitas</h6>
-                    <div class="row">
-                        @php
-                            $commonFeatures = ['AC', 'GPS', 'Audio System', 'USB Port', 'Bluetooth', 'Kamera Mundur', 'Parkir Sensor', 'Sunroof', 'Leather Seats', 'Cruise Control'];
-                            $oldFeatures = old('features', []);
-                        @endphp
-                        @foreach($commonFeatures as $feature)
-                            <div class="col-md-3 mb-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="features[]" 
-                                           value="{{ $feature }}" id="feature_{{ str_replace(' ', '_', $feature) }}"
-                                           {{ in_array($feature, $oldFeatures) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="feature_{{ str_replace(' ', '_', $feature) }}">
-                                        {{ $feature }}
-                                    </label>
-                                </div>
-                            </div>
-                        @endforeach
+                    <div class="mb-3">
+                        <label class="form-label">Nomor Antrian</label>
+                        <input type="number" name="queue_number" class="form-control @error('queue_number') is-invalid @enderror" 
+                               value="{{ old('queue_number') }}" min="1" placeholder="Nomor antrian untuk urutan tampil">
+                        @error('queue_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">Nomor antrian menentukan urutan tampil kendaraan di halaman depan. Kosongkan jika belum ditentukan.</div>
                     </div>
-                    @error('features')
-                        <div class="text-danger small mt-1">{{ $message }}</div>
-                    @enderror
                 </div>
             </div>
 
@@ -305,6 +284,31 @@
         const selectedBadge = document.getElementById(`badge-${index}`);
         if (selectedBadge) selectedBadge.style.display = 'block';
     }
+
+    function updateCategoryPrice() {
+        const categorySelect = document.getElementById('category_id');
+        const priceInfo = document.getElementById('category-price-info');
+        const priceValue = document.getElementById('category-price-value');
+        
+        if (categorySelect.value) {
+            const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+            const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+            
+            if (price > 0) {
+                priceValue.textContent = 'Rp ' + price.toLocaleString('id-ID');
+                priceInfo.style.display = 'block';
+            } else {
+                priceInfo.style.display = 'none';
+            }
+        } else {
+            priceInfo.style.display = 'none';
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCategoryPrice();
+    });
 </script>
 @endpush
 @endsection
