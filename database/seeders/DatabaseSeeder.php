@@ -28,55 +28,55 @@ class DatabaseSeeder extends Seeder
             'role' => 'customer'
         ]);
 
-        // Create Vehicle Categories
-        VehicleCategory::create([
-            'name' => 'Mobil Sedan',
-            'slug' => 'mobil-sedan',
-            'description' => 'Kendaraan sedan dengan kenyamanan tinggi'
-        ]);
+        // // Create Vehicle Categories
+        // VehicleCategory::create([
+        //     'name' => 'Mobil Sedan',
+        //     'slug' => 'mobil-sedan',
+        //     'description' => 'Kendaraan sedan dengan kenyamanan tinggi'
+        // ]);
 
-        VehicleCategory::create([
-            'name' => 'SUV',
-            'slug' => 'suv',
-            'description' => 'Sport Utility Vehicle untuk perjalanan keluarga'
-        ]);
+        // VehicleCategory::create([
+        //     'name' => 'SUV',
+        //     'slug' => 'suv',
+        //     'description' => 'Sport Utility Vehicle untuk perjalanan keluarga'
+        // ]);
 
-        VehicleCategory::create([
-            'name' => 'Bus',
-            'slug' => 'bus',
-            'description' => 'Bus untuk perjalanan grup atau rombongan'
-        ]);
+        // VehicleCategory::create([
+        //     'name' => 'Bus',
+        //     'slug' => 'bus',
+        //     'description' => 'Bus untuk perjalanan grup atau rombongan'
+        // ]);
 
-        VehicleCategory::create([
-            'name' => 'Mini Bus',
-            'slug' => 'mini-bus',
-            'description' => 'Mini bus untuk grup kecil'
-        ]);
+        // VehicleCategory::create([
+        //     'name' => 'Mini Bus',
+        //     'slug' => 'mini-bus',
+        //     'description' => 'Mini bus untuk grup kecil'
+        // ]);
 
-        // Create Article Categories
-        ArticleCategory::create([
-            'name' => 'Umum',
-            'slug' => 'umum',
-            'description' => 'Artikel kategori umum'
-        ]);
+        // // Create Article Categories
+        // ArticleCategory::create([
+        //     'name' => 'Umum',
+        //     'slug' => 'umum',
+        //     'description' => 'Artikel kategori umum'
+        // ]);
 
-        ArticleCategory::create([
-            'name' => 'Tips Perjalanan',
-            'slug' => 'tips-perjalanan',
-            'description' => 'Tips dan trik untuk perjalanan yang nyaman'
-        ]);
+        // ArticleCategory::create([
+        //     'name' => 'Tips Perjalanan',
+        //     'slug' => 'tips-perjalanan',
+        //     'description' => 'Tips dan trik untuk perjalanan yang nyaman'
+        // ]);
 
-        ArticleCategory::create([
-            'name' => 'Perawatan Kendaraan',
-            'slug' => 'perawatan-kendaraan',
-            'description' => 'Informasi perawatan kendaraan'
-        ]);
+        // ArticleCategory::create([
+        //     'name' => 'Perawatan Kendaraan',
+        //     'slug' => 'perawatan-kendaraan',
+        //     'description' => 'Informasi perawatan kendaraan'
+        // ]);
 
-        // Seed vehicle brands
-        $this->call(VehicleBrandSeeder::class);
-        // Seed vehicles
-        $this->call(VehicleSeeder::class);
-        // Seed testimonials
-        $this->call(TestimonialSeeder::class);
+        // // Seed vehicle brands
+        // $this->call(VehicleBrandSeeder::class);
+        // // Seed vehicles
+        // $this->call(VehicleSeeder::class);
+        // // Seed testimonials
+        // $this->call(TestimonialSeeder::class);
     }
 }
