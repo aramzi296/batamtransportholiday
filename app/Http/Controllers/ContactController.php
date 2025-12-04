@@ -111,7 +111,7 @@ class ContactController extends Controller
 
         try {
             Mail::html($htmlMessage, function ($mail) use ($adminEmail, $subject, $data) {
-                $mail->from('no-reply@dsarana.com', 'D\'Sarana')
+                $mail->from('admin@dsarana.com', 'D\'Sarana')
                      ->to($adminEmail)
                      ->subject($subject)
                      ->replyTo($data['email'], $data['name']);
