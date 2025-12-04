@@ -76,14 +76,9 @@ class Testimonial extends Model
     public function getPhotoUrlAttribute()
     {
         if ($this->photo) {
-            // Cek di S3 terlebih dahulu
-            if (\Illuminate\Support\Facades\Storage::disk('s3')->exists($this->photo)) {
-                return \Illuminate\Support\Facades\Storage::disk('s3')->url($this->photo);
-            }
-            
-            // Fallback ke local storage (untuk data lama)
-            if (file_exists(public_path('storage/testimonials/' . $this->photo))) {
-                return asset('storage/testimonials/' . $this->photo);
+            // Cek di public storage
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($this->photo)) {
+                return \Illuminate\Support\Facades\Storage::disk('public')->url($this->photo);
             }
         }
         

@@ -91,8 +91,8 @@ class AdminTestimonialController extends Controller
                 $photo = $request->file('photo');
                 $filename = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
                 
-                // Upload ke S3
-                $path = $photo->storeAs('testimonials', $filename, 's3');
+                // Upload ke public storage
+                $path = $photo->storeAs('testimonials', $filename, 'public');
                 $data['photo'] = $path;
             }
 
@@ -158,20 +158,16 @@ class AdminTestimonialController extends Controller
             if ($request->hasFile('photo')) {
                 // Delete old photo if exists
                 if ($testimonial->photo) {
-                    if (Storage::disk('s3')->exists($testimonial->photo)) {
-                        Storage::disk('s3')->delete($testimonial->photo);
-                    }
-                    // Fallback: hapus dari local jika masih ada
-                    if (Storage::disk('public')->exists('testimonials/' . $testimonial->photo)) {
-                        Storage::disk('public')->delete('testimonials/' . $testimonial->photo);
+                    if (Storage::disk('public')->exists($testimonial->photo)) {
+                        Storage::disk('public')->delete($testimonial->photo);
                     }
                 }
 
                 $photo = $request->file('photo');
                 $filename = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
                 
-                // Upload ke S3
-                $path = $photo->storeAs('testimonials', $filename, 's3');
+                // Upload ke public storage
+                $path = $photo->storeAs('testimonials', $filename, 'public');
                 $data['photo'] = $path;
             }
 
@@ -195,12 +191,8 @@ class AdminTestimonialController extends Controller
         try {
             // Delete photo if exists
             if ($testimonial->photo) {
-                if (Storage::disk('s3')->exists($testimonial->photo)) {
-                    Storage::disk('s3')->delete($testimonial->photo);
-                }
-                // Fallback: hapus dari local jika masih ada
-                if (Storage::disk('public')->exists('testimonials/' . $testimonial->photo)) {
-                    Storage::disk('public')->delete('testimonials/' . $testimonial->photo);
+                if (Storage::disk('public')->exists($testimonial->photo)) {
+                    Storage::disk('public')->delete($testimonial->photo);
                 }
             }
 

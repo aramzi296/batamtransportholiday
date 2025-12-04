@@ -88,12 +88,14 @@ class MemberDashboardController extends Controller
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             
             // Hapus foto lama jika ada
-            if ($user->foto_profil && \Illuminate\Support\Facades\Storage::disk('s3')->exists($user->foto_profil)) {
-                \Illuminate\Support\Facades\Storage::disk('s3')->delete($user->foto_profil);
+            if ($user->foto_profil) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($user->foto_profil)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profil);
+                }
             }
             
-            // Upload ke S3
-            $path = $file->storeAs('profiles', $filename, 's3');
+            // Upload ke public storage
+            $path = $file->storeAs('profiles', $filename, 'public');
             $user->foto_profil = $path;
         }
 
@@ -194,48 +196,27 @@ class MemberDashboardController extends Controller
             'is_available' => $request->has('is_available'),
         ]);
 
-        // Handle image uploads - Upload ke S3 dengan fallback ke local
+        // Handle image uploads - Upload ke public storage
         if ($request->hasFile('images')) {
             $order = 0;
             $featuredIndex = (int)($request->featured_image ?? 0);
             
             foreach ($request->file('images') as $index => $image) {
                 $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $path = null;
                 
-                // Coba upload ke S3 terlebih dahulu
-                try {
-                    $path = $image->storeAs('vehicles', $filename, 's3');
-                } catch (\Exception $e) {
-                    // Jika S3 gagal, fallback ke local storage
-                    try {
-                        // Pastikan direktori ada
-                        $dir = public_path('images/vehicles');
-                        if (!file_exists($dir)) {
-                            mkdir($dir, 0755, true);
-                        }
-                        $image->move($dir, $filename);
-                        $path = 'images/vehicles/' . $filename;
-                    } catch (\Exception $e2) {
-                        // Jika local juga gagal, skip gambar ini
-                        \Log::error('Failed to upload vehicle image: ' . $e2->getMessage());
-                        continue;
-                    }
-                }
+                // Upload ke public storage
+                $path = $image->storeAs('vehicles', $filename, 'public');
                 
-                // Hanya simpan jika path berhasil
-                if ($path) {
-                    // Buat thumbnail
-                    $thumbnailPath = \App\Helpers\ImageHelper::createThumbnail($path);
-                    
-                    \App\Models\VehicleImage::create([
-                        'vehicle_id' => $vehicle->id,
-                        'image_path' => $path,
-                        'thumbnail_path' => $thumbnailPath,
-                        'is_featured' => ($featuredIndex == $index),
-                        'order' => $order++,
-                    ]);
-                }
+                // Buat thumbnail
+                $thumbnailPath = \App\Helpers\ImageHelper::createThumbnail($path);
+                
+                \App\Models\VehicleImage::create([
+                    'vehicle_id' => $vehicle->id,
+                    'image_path' => $path,
+                    'thumbnail_path' => $thumbnailPath,
+                    'is_featured' => ($featuredIndex == $index),
+                    'order' => $order++,
+                ]);
             }
             
             // Jika tidak ada yang dipilih sebagai featured, set foto pertama
@@ -323,75 +304,42 @@ class MemberDashboardController extends Controller
             foreach ($request->delete_images as $imageId) {
                 $image = \App\Models\VehicleImage::find($imageId);
                 if ($image && $image->vehicle_id == $vehicle->id) {
-                    // Normalize path untuk S3
-                    $s3Path = $image->image_path;
-                    if (strpos($s3Path, 'images/vehicles/') === 0) {
-                        $s3Path = str_replace('images/vehicles/', 'vehicles/', $s3Path);
+                    // Hapus file dari public storage
+                    if ($image->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($image->image_path)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($image->image_path);
                     }
                     
-                    // Hapus file dari S3 (jika path adalah S3 path)
-                    if (preg_match('/^(vehicles|profiles|testimonials)\//', $s3Path)) {
-                        try {
-                            if (\Illuminate\Support\Facades\Storage::disk('s3')->exists($s3Path)) {
-                                \Illuminate\Support\Facades\Storage::disk('s3')->delete($s3Path);
-                            }
-                        } catch (\Exception $e) {
-                            // Ignore error jika S3 belum dikonfigurasi
-                        }
+                    // Hapus thumbnail jika ada
+                    if ($image->thumbnail_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($image->thumbnail_path)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($image->thumbnail_path);
                     }
                     
-                    // Fallback: hapus dari local jika masih ada
-                    $filePath = public_path($image->image_path);
-                    if (file_exists($filePath)) {
-                        unlink($filePath);
-                    }
                     $image->delete();
                 }
             }
         }
 
-        // Handle new image uploads - Upload ke S3 dengan fallback ke local
+        // Handle new image uploads - Upload ke public storage
         if ($request->hasFile('images')) {
             $maxOrder = $vehicle->vehicleImages()->max('order') ?? -1;
             $order = $maxOrder + 1;
             
             foreach ($request->file('images') as $image) {
                 $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $path = null;
                 
-                // Coba upload ke S3 terlebih dahulu
-                try {
-                    $path = $image->storeAs('vehicles', $filename, 's3');
-                } catch (\Exception $e) {
-                    // Jika S3 gagal, fallback ke local storage
-                    try {
-                        // Pastikan direktori ada
-                        $dir = public_path('images/vehicles');
-                        if (!file_exists($dir)) {
-                            mkdir($dir, 0755, true);
-                        }
-                        $image->move($dir, $filename);
-                        $path = 'images/vehicles/' . $filename;
-                    } catch (\Exception $e2) {
-                        // Jika local juga gagal, skip gambar ini
-                        \Log::error('Failed to upload vehicle image: ' . $e2->getMessage());
-                        continue;
-                    }
-                }
+                // Upload ke public storage
+                $path = $image->storeAs('vehicles', $filename, 'public');
                 
-                // Hanya simpan jika path berhasil
-                if ($path) {
-                    // Buat thumbnail
-                    $thumbnailPath = \App\Helpers\ImageHelper::createThumbnail($path);
-                    
-                    \App\Models\VehicleImage::create([
-                        'vehicle_id' => $vehicle->id,
-                        'image_path' => $path,
-                        'thumbnail_path' => $thumbnailPath,
-                        'is_featured' => false,
-                        'order' => $order++,
-                    ]);
-                }
+                // Buat thumbnail
+                $thumbnailPath = \App\Helpers\ImageHelper::createThumbnail($path);
+                
+                \App\Models\VehicleImage::create([
+                    'vehicle_id' => $vehicle->id,
+                    'image_path' => $path,
+                    'thumbnail_path' => $thumbnailPath,
+                    'is_featured' => false,
+                    'order' => $order++,
+                ]);
             }
         }
 
@@ -427,28 +375,16 @@ class MemberDashboardController extends Controller
 
         // Delete images
         foreach ($vehicle->vehicleImages as $image) {
-            // Normalize path untuk S3
-            $s3Path = $image->image_path;
-            if (strpos($s3Path, 'images/vehicles/') === 0) {
-                $s3Path = str_replace('images/vehicles/', 'vehicles/', $s3Path);
+            // Hapus file dari public storage
+            if ($image->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($image->image_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($image->image_path);
             }
             
-            // Hapus file dari S3 (jika path adalah S3 path)
-            if (preg_match('/^(vehicles|profiles|testimonials)\//', $s3Path)) {
-                try {
-                    if (\Illuminate\Support\Facades\Storage::disk('s3')->exists($s3Path)) {
-                        \Illuminate\Support\Facades\Storage::disk('s3')->delete($s3Path);
-                    }
-                } catch (\Exception $e) {
-                    // Ignore error jika S3 belum dikonfigurasi
-                }
+            // Hapus thumbnail jika ada
+            if ($image->thumbnail_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($image->thumbnail_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($image->thumbnail_path);
             }
             
-            // Fallback: hapus dari local jika masih ada
-            $filePath = public_path($image->image_path);
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
             $image->delete();
         }
 

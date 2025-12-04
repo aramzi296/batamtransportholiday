@@ -31,33 +31,28 @@ class VehicleImage extends Model
             return null;
         }
         
-        // Normalize path untuk cek di S3
-        $s3Path = $this->image_path;
-        
-        // Jika path dimulai dengan 'images/vehicles/', hapus prefix 'images/' untuk S3
-        if (strpos($s3Path, 'images/vehicles/') === 0) {
-            $s3Path = str_replace('images/vehicles/', 'vehicles/', $s3Path);
-        }
-        
-        // Cek apakah ini path S3 (dimulai dengan 'vehicles/', 'profiles/', atau 'testimonials/')
-        $isS3Path = preg_match('/^(vehicles|profiles|testimonials)\//', $s3Path);
-        
-        if ($isS3Path) {
-            try {
-                // Cek existence di S3 dengan path yang sudah dinormalisasi
-                if (Storage::disk('s3')->exists($s3Path)) {
-                    return Storage::disk('s3')->url($s3Path);
-                }
-            } catch (\Exception $e) {
-                // Jika error (misalnya S3 belum dikonfigurasi), fallback ke local
+        // Handle path lama dari S3 (vehicles/xxx.png, profiles/xxx.png, testimonials/xxx.png)
+        // Path ini sekarang harus di storage/app/public
+        if (preg_match('/^(vehicles|profiles|testimonials)\//', $this->image_path)) {
+            // Cek apakah file ada di public storage
+            if (Storage::disk('public')->exists($this->image_path)) {
+                return Storage::disk('public')->url($this->image_path);
             }
+            // Jika tidak ada, tetap return URL (mungkin file belum di-migrate)
+            return asset('storage/' . $this->image_path);
         }
         
-        // Fallback untuk path lama (local storage)
+        // Jika path sudah dimulai dengan 'storage/', langsung gunakan asset
+        if (strpos($this->image_path, 'storage/') === 0) {
+            return asset($this->image_path);
+        }
+        
+        // Fallback untuk path lama (local storage di public/images)
         if (strpos($this->image_path, 'images/') === 0) {
             return asset($this->image_path);
         }
         
+        // Default: gunakan asset dengan prefix storage (untuk file di storage/app/public)
         return asset('storage/' . $this->image_path);
     }
 
@@ -68,29 +63,41 @@ class VehicleImage extends Model
             return $this->image_url;
         }
         
-        // Normalize path untuk cek di S3
-        $s3Path = $this->thumbnail_path;
-        
-        if (strpos($s3Path, 'images/vehicles/thumbnails/') === 0) {
-            $s3Path = str_replace('images/vehicles/thumbnails/', 'vehicles/thumbnails/', $s3Path);
-        }
-        
-        $isS3Path = preg_match('/^(vehicles|profiles|testimonials)\//', $s3Path);
-        
-        if ($isS3Path) {
-            try {
-                if (Storage::disk('s3')->exists($s3Path)) {
-                    return Storage::disk('s3')->url($s3Path);
-                }
-            } catch (\Exception $e) {
-                // Fallback ke local
+        // Handle path lama dari S3 (vehicles/thumbnails/xxx.png)
+        if (preg_match('/^(vehicles|profiles|testimonials)\//', $this->thumbnail_path)) {
+            // Cek apakah file ada di public storage
+            if (Storage::disk('public')->exists($this->thumbnail_path)) {
+                return Storage::disk('public')->url($this->thumbnail_path);
             }
+            // Jika file tidak ada, fallback ke image_url
+            return $this->image_url;
         }
         
+        // Jika path sudah dimulai dengan 'storage/', cek apakah file ada
+        if (strpos($this->thumbnail_path, 'storage/') === 0) {
+            $relativePath = str_replace('storage/', '', $this->thumbnail_path);
+            if (Storage::disk('public')->exists($relativePath)) {
+                return asset($this->thumbnail_path);
+            }
+            // Jika file tidak ada, fallback ke image_url
+            return $this->image_url;
+        }
+        
+        // Fallback untuk path lama (local storage di public/images)
         if (strpos($this->thumbnail_path, 'images/') === 0) {
-            return asset($this->thumbnail_path);
+            if (file_exists(public_path($this->thumbnail_path))) {
+                return asset($this->thumbnail_path);
+            }
+            // Jika file tidak ada, fallback ke image_url
+            return $this->image_url;
         }
         
-        return asset('storage/' . $this->thumbnail_path);
+        // Default: cek apakah file ada di public storage
+        if (Storage::disk('public')->exists($this->thumbnail_path)) {
+            return asset('storage/' . $this->thumbnail_path);
+        }
+        
+        // Jika file tidak ada, fallback ke image_url
+        return $this->image_url;
     }
 }

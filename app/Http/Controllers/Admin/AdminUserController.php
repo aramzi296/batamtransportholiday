@@ -155,22 +155,14 @@ class AdminUserController extends Controller
             
             // Hapus foto lama jika ada
             if ($user->foto_profil) {
-                if (Storage::disk('s3')->exists($user->foto_profil)) {
-                    Storage::disk('s3')->delete($user->foto_profil);
-                } elseif (Storage::disk('public')->exists($user->foto_profil)) {
+                if (Storage::disk('public')->exists($user->foto_profil)) {
                     Storage::disk('public')->delete($user->foto_profil);
                 }
             }
             
-            // Upload ke S3 jika tersedia, jika tidak ke public
-            try {
-                $path = $file->storeAs('profiles', $filename, 's3');
-                $user->foto_profil = $path;
-            } catch (\Exception $e) {
-                // Fallback ke public storage
-                $path = $file->storeAs('profiles', $filename, 'public');
-                $user->foto_profil = $path;
-            }
+            // Upload ke public storage
+            $path = $file->storeAs('profiles', $filename, 'public');
+            $user->foto_profil = $path;
         }
 
         // Update nomor whatsapp (tetap disimpan di kolom nomor_whatsapp untuk backward compatibility)

@@ -36,30 +36,11 @@ class ImageHelper
                 // It's a path string
                 $imagePath = $imagePathOrFile;
                 
-                // Determine if it's local or S3 path
-                $isLocalPath = strpos($imagePath, 'images/vehicles/') === 0;
-                $isS3Path = preg_match('/^vehicles\//', $imagePath);
-                
-                if ($isLocalPath) {
-                    // Local file
-                    $fullPath = public_path($imagePath);
-                    if (!file_exists($fullPath)) {
-                        Log::warning("Image not found: {$fullPath}");
-                        return null;
-                    }
-                } elseif ($isS3Path) {
-                    // S3 path - download to temp first
-                    try {
-                        $tempImagePath = sys_get_temp_dir() . '/' . uniqid() . '_' . basename($imagePath);
-                        $content = Storage::disk('s3')->get($imagePath);
-                        file_put_contents($tempImagePath, $content);
-                        $fullPath = $tempImagePath;
-                    } catch (\Exception $e) {
-                        Log::error("Failed to download from S3: " . $e->getMessage());
-                        return null;
-                    }
+                // Get full path from public storage
+                if (Storage::disk('public')->exists($imagePath)) {
+                    $fullPath = Storage::disk('public')->path($imagePath);
                 } else {
-                    Log::warning("Unknown image path format: {$imagePath}");
+                    Log::warning("Image not found in public storage: {$imagePath}");
                     return null;
                 }
             }
@@ -101,24 +82,9 @@ class ImageHelper
             $nameWithoutExt = pathinfo($originalName, PATHINFO_FILENAME);
             $thumbnailName = $nameWithoutExt . '_thumb.jpg';
             
-            $thumbnailPath = null;
-            
-            // Try upload to S3 first
-            try {
-                $thumbnailS3Path = 'vehicles/thumbnails/' . $thumbnailName;
-                Storage::disk('s3')->put($thumbnailS3Path, file_get_contents($tempThumbnail));
-                $thumbnailPath = $thumbnailS3Path;
-            } catch (\Exception $e) {
-                // Fallback to local
-                $thumbnailDir = public_path('images/vehicles/thumbnails');
-                if (!file_exists($thumbnailDir)) {
-                    mkdir($thumbnailDir, 0755, true);
-                }
-                
-                $thumbnailLocalPath = $thumbnailDir . '/' . $thumbnailName;
-                copy($tempThumbnail, $thumbnailLocalPath);
-                $thumbnailPath = 'images/vehicles/thumbnails/' . $thumbnailName;
-            }
+            // Upload thumbnail to public storage
+            $thumbnailPath = 'vehicles/thumbnails/' . $thumbnailName;
+            Storage::disk('public')->put($thumbnailPath, file_get_contents($tempThumbnail));
             
             // Cleanup temp files
             if (file_exists($tempThumbnail)) {

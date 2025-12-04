@@ -82,12 +82,7 @@ class User extends Authenticatable
     public function getFotoProfilUrlAttribute()
     {
         if ($this->foto_profil) {
-            // Cek di S3 terlebih dahulu
-            if (\Illuminate\Support\Facades\Storage::disk('s3')->exists($this->foto_profil)) {
-                return \Illuminate\Support\Facades\Storage::disk('s3')->url($this->foto_profil);
-            }
-            
-            // Fallback ke public storage (untuk data lama)
+            // Cek di public storage
             if (\Illuminate\Support\Facades\Storage::disk('public')->exists($this->foto_profil)) {
                 return \Illuminate\Support\Facades\Storage::disk('public')->url($this->foto_profil);
             }
