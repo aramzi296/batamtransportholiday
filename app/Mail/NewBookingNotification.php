@@ -30,6 +30,7 @@ class NewBookingNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: new \Illuminate\Mail\Mailables\Address('no-reply@dsarana.com', 'D\'Sarana'),
             subject: 'Booking Baru - ' . $this->booking->booking_code . ' dari ' . $this->booking->customer_name,
         );
     }

@@ -30,6 +30,7 @@ class BookingConfirmation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: new \Illuminate\Mail\Mailables\Address('no-reply@dsarana.com', 'D\'Sarana'),
             subject: 'Konfirmasi Booking Kendaraan - ' . $this->booking->booking_code,
         );
     }
