@@ -59,6 +59,7 @@
         }
     </style>
     
+    @livewireStyles
     @stack('styles')
 </head>
 <body>
@@ -82,7 +83,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/vehicles') }}">
-                            <i class="fas fa-car"></i> Kendaraan
+                            <i class="fas fa-car"></i> Armada
                         </a>
                     </li>
                     <li class="nav-item">
@@ -95,6 +96,11 @@
                             <i class="fas fa-newspaper"></i> Artikel
                         </a>
                     </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('faq.index') }}">
+                            <i class="fas fa-question-circle"></i> FAQ
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/contact') }}">
                             <i class="fas fa-phone"></i> Kontak
@@ -181,7 +187,7 @@
                     <h5>Menu</h5>
                     <ul class="list-unstyled">
                         <li><a href="{{ url('/') }}" class="text-white text-decoration-none"><i class="fas fa-home"></i> Home</a></li>
-                        <li><a href="{{ url('/vehicles') }}" class="text-white text-decoration-none"><i class="fas fa-car"></i> Kendaraan</a></li>
+                        <li><a href="{{ url('/vehicles') }}" class="text-white text-decoration-none"><i class="fas fa-car"></i> Armada</a></li>
                         <li><a href="{{ url('/prices') }}" class="text-white text-decoration-none"><i class="fas fa-tags"></i> Daftar Harga</a></li>
                         <li><a href="{{ url('/contact') }}" class="text-white text-decoration-none"><i class="fas fa-phone"></i> Kontak</a></li>
                         <!-- <li><a href="{{ route('member.login') }}" class="text-white text-decoration-none"><i class="fas fa-users"></i> Member</a></li> -->
@@ -241,6 +247,7 @@
         });
     </script>
     
+    @livewireScripts
     @stack('scripts')
 </body>
 </html>

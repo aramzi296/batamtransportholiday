@@ -104,6 +104,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ url('/admin/rental-categories') }}" class="{{ request()->is('admin/rental-categories*') ? 'active' : '' }}">
+                    <i class="fas fa-clock"></i> Kategori Sewa
+                </a>
+            </li>
+            <li>
                 <a href="{{ url('/admin/availability') }}" class="{{ request()->is('admin/availability*') ? 'active' : '' }}">
                     <i class="fas fa-calendar-check"></i> Ketersediaan
                 </a>
@@ -111,6 +116,11 @@
             <li>
                 <a href="{{ url('/admin/testimonials') }}" class="{{ request()->is('admin/testimonials*') ? 'active' : '' }}">
                     <i class="fas fa-comments"></i> Testimoni
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/admin/faqs') }}" class="{{ request()->is('admin/faqs*') ? 'active' : '' }}">
+                    <i class="fas fa-question-circle"></i> FAQ
                 </a>
             </li>
             <li>

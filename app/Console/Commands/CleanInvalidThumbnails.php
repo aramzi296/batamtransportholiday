@@ -32,3 +32,8 @@ class CleanInvalidThumbnails extends Command
     }
 }
 
+
+
+
+
+

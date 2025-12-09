@@ -78,5 +78,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(VehicleSeeder::class);
         // // Seed testimonials
         // $this->call(TestimonialSeeder::class);
+        // // Seed FAQs
+        // $this->call(FaqSeeder::class);
     }
 }

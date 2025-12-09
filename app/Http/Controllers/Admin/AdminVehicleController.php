@@ -22,9 +22,7 @@ class AdminVehicleController extends Controller
 
     public function create()
     {
-        $categories = VehicleCategory::all();
-        $brands = VehicleBrand::active()->orderBy('name')->get();
-        return view('admin.vehicles.create', compact('categories', 'brands'));
+        return view('admin.vehicles.create-livewire');
     }
 
     public function store(Request $request)
@@ -123,16 +121,14 @@ class AdminVehicleController extends Controller
 
     public function show(Vehicle $vehicle)
     {
-        $vehicle->load(['category', 'brand']);
+        $vehicle->load(['category', 'brand', 'vehicleImages']);
         return view('admin.vehicles.show', compact('vehicle'));
     }
 
     public function edit(Vehicle $vehicle)
     {
-        $categories = VehicleCategory::all();
-        $brands = VehicleBrand::active()->orderBy('name')->get();
-        $vehicle->load('vehicleImages'); // Load vehicleImages relationship
-        return view('admin.vehicles.edit', compact('vehicle', 'categories', 'brands'));
+        $vehicle->load('vehicleImages');
+        return view('admin.vehicles.edit-livewire', compact('vehicle'));
     }
 
     public function update(Request $request, Vehicle $vehicle)

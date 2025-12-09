@@ -16,18 +16,23 @@ use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminArticleCategoryController;
 use App\Http\Controllers\Admin\AdminAvailabilityController;
 use App\Http\Controllers\Admin\AdminTestimonialController;
+use App\Http\Controllers\Admin\AdminFaqController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
+Route::get('/vehicles', function () {
+    return view('vehicles.index-livewire');
+})->name('vehicles.index');
 Route::get('/vehicles/{slug}', [VehicleController::class, 'show'])->name('vehicles.show');
 Route::post('/vehicles/{id}/check-availability', [VehicleController::class, 'checkAvailability'])->name('vehicles.check-availability');
 Route::get('/prices', [\App\Http\Controllers\PriceController::class, 'index'])->name('prices.index');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -86,7 +91,9 @@ Route::prefix('member')->name('member.')->group(function () {
 });
 
 // Booking Routes (Public & Authenticated)
-Route::get('/booking', [BookingController::class, 'create'])->name('booking.create');
+Route::get('/booking', function () {
+    return view('bookings.create-livewire');
+})->name('booking.create');
 Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
 Route::get('/booking/thank-you/{id}', [BookingController::class, 'thankYou'])->name('booking.thank-you');
 
@@ -121,6 +128,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('brands', AdminBrandController::class);
     Route::patch('brands/{brand}/toggle-active', [AdminBrandController::class, 'toggleActive'])->name('brands.toggle-active');
     
+    // Rental Categories Management
+    Route::resource('rental-categories', \App\Http\Controllers\Admin\AdminRentalCategoryController::class);
+    
     // Booking Management
     Route::resource('bookings', AdminBookingController::class)->only(['index', 'show', 'update']);
     Route::post('bookings/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('bookings.confirm');
@@ -150,6 +160,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('testimonials/{testimonial}/toggle-active', [AdminTestimonialController::class, 'toggleActive'])->name('testimonials.toggle-active');
     Route::patch('testimonials/{testimonial}/toggle-featured', [AdminTestimonialController::class, 'toggleFeatured'])->name('testimonials.toggle-featured');
     
+    // FAQ Management
+    Route::resource('faqs', AdminFaqController::class);
+    
     // User Management
     Route::resource('users', \App\Http\Controllers\Admin\AdminUserController::class);
     Route::get('users/{user}/profile', [\App\Http\Controllers\Admin\AdminUserController::class, 'profile'])->name('users.profile');
@@ -161,6 +174,60 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('vehicles/{vehicle}/calendar/block', [\App\Http\Controllers\Admin\AdminVehicleCalendarController::class, 'store'])->name('vehicles.calendar.block.store');
     Route::delete('vehicles/{vehicle}/calendar/{calendar}', [\App\Http\Controllers\Admin\AdminVehicleCalendarController::class, 'destroy'])->name('vehicles.calendar.block.delete');
 });
+
+// Debug: Check rental categories satuan
+Route::get('/debug/rental-categories', function () {
+    try {
+        // Check columns using PRAGMA for SQLite
+        $columns = \Illuminate\Support\Facades\DB::select("PRAGMA table_info(rental_categories)");
+        $columnNames = array_map(fn($col) => $col->name, $columns);
+        $hasSatuan = in_array('satuan', $columnNames);
+        
+        // If column doesn't exist, add it
+        if (!$hasSatuan) {
+            \Illuminate\Support\Facades\DB::statement('ALTER TABLE rental_categories ADD COLUMN satuan VARCHAR(255) NULL');
+            $hasSatuan = true;
+        }
+        
+        // Update data
+        $updates = [
+            'Per Jam' => 'jam',
+            'Setengah Hari' => 'setengah hari',
+            'Per Hari' => 'hari',
+            'Per Bulan' => 'bulan',
+        ];
+        
+        foreach ($updates as $name => $satuan) {
+            \Illuminate\Support\Facades\DB::table('rental_categories')
+                ->where('name', $name)
+                ->update(['satuan' => $satuan]);
+        }
+        
+        // Get all categories
+        $categories = \App\Models\RentalCategory::orderBy('id')->get();
+        
+        return response()->json([
+            'status' => 'success',
+            'column_exists' => $hasSatuan,
+            'columns' => $columnNames,
+            'data' => $categories->map(function($cat) {
+                return [
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                    'satuan' => $cat->satuan ?? 'NULL',
+                    'has_satuan' => isset($cat->satuan) && !empty($cat->satuan),
+                ];
+            }),
+        ], 200, [], JSON_PRETTY_PRINT);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500, [], JSON_PRETTY_PRINT);
+    }
+})->name('debug.rental-categories');
 
 // Contact & Static Pages
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
@@ -180,3 +247,29 @@ Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestF
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+Route::get('testwa',function(){
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+    CURLOPT_URL => 'https://app.saungwa.com/api/create-message',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => '',
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => 'POST',
+    CURLOPT_POSTFIELDS => array(
+    'appkey' => '7d389aad-ba64-4330-bde9-79aac1c52b48',
+    'authkey' => 'lX0GKhWw3rCJBcErpWRpQZTfz5IszhomAMm5o8dxRZ6qMfcMh6',
+    'to' => '628117007201',
+    'message' => 'Halo, saya ingin bertanya tentang kendaraan. test wa berjalan dengan sukses',
+    'sandbox' => 'false'
+    ),
+    ));
+
+    $response = curl_exec($curl);
+
+    curl_close($curl);
+    echo $response;
+})->name('testwa');

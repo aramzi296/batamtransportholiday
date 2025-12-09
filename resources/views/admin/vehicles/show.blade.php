@@ -24,17 +24,21 @@
                 <h5 class="mb-0"><i class="fas fa-images"></i> Galeri Foto</h5>
             </div>
             <div class="card-body p-0">
-                @if($vehicle->images && count($vehicle->images) > 0)
+                @php
+                    $vehicleImages = $vehicle->vehicleImages;
+                @endphp
+                @if($vehicleImages && $vehicleImages->count() > 0)
                     <div id="vehicleCarousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
-                            @foreach($vehicle->images as $index => $image)
+                            @foreach($vehicleImages as $index => $image)
                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                <img src="{{ $image }}" class="d-block w-100" alt="{{ $vehicle->name }}" 
-                                     style="height: 400px; object-fit: cover;">
+                                <img src="{{ $image->image_url }}" class="d-block w-100" alt="{{ $vehicle->name }}" 
+                                     style="height: 400px; object-fit: cover;"
+                                     onerror="this.onerror=null; this.src='{{ asset('/images/vehicles/default.jpg') }}';">
                             </div>
                             @endforeach
                         </div>
-                        @if(count($vehicle->images) > 1)
+                        @if($vehicleImages->count() > 1)
                         <button class="carousel-control-prev" type="button" data-bs-target="#vehicleCarousel" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon"></span>
                         </button>

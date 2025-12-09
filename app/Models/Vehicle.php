@@ -80,6 +80,11 @@ class Vehicle extends Model
         return $this->hasMany(VehicleOffDay::class);
     }
 
+    public function rentalCategories()
+    {
+        return $this->hasMany(VehicleRentalCategory::class);
+    }
+
     public function isAvailableOnDate($date)
     {
         // Check if vehicle is generally available

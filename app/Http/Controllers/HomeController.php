@@ -14,55 +14,82 @@ class HomeController extends Controller
     {
         // Get popular vehicles
         // Only show vehicles with queue_number, ordered by queue_number (ascending)
-        $vehicles = Vehicle::with(['category', 'vehicleImages'])
+        $vehicles = Vehicle::with(['category', 'vehicleImages', 'brand', 'rentalCategories.rentalCategory'])
             ->where('is_available', true)
             ->whereNotNull('queue_number')
             ->orderBy('queue_number', 'asc')
             ->get();
         
-        // Expand vehicles: if category has both prices, duplicate the vehicle
+        // Expand vehicles: prioritize vehicle_rental_categories price, fallback to category price
+        // Only show vehicles that have at least one price set
         $expandedVehicles = collect();
         foreach ($vehicles as $vehicle) {
             $category = $vehicle->category;
+            $rentalCategories = $vehicle->rentalCategories;
             
-            // Check if category has both prices
-            $hasPrice = $category->price && $category->price > 0;
-            $hasPriceWithDriver = $category->price_with_driver && $category->price_with_driver > 0;
+            // Check if vehicle has rental categories with prices
+            $hasRentalCategoryPrices = $rentalCategories->where('price', '>', 0)->count() > 0;
             
-            if ($hasPrice && $hasPriceWithDriver) {
-                // Add vehicle twice: once for price, once for price_with_driver
-                // First: without driver (should appear first)
-                $vehicleWithoutDriver = clone $vehicle;
-                $vehicleWithoutDriver->display_price = $category->price;
-                $vehicleWithoutDriver->price_type = 'without_driver';
-                $vehicleWithoutDriver->sort_order = $vehicle->queue_number * 10; // Multiply by 10 to allow insertion
-                $expandedVehicles->push($vehicleWithoutDriver);
-                
-                // Second: with driver
-                $vehicleWithDriver = clone $vehicle;
-                $vehicleWithDriver->display_price = $category->price_with_driver;
-                $vehicleWithDriver->price_type = 'with_driver';
-                $vehicleWithDriver->sort_order = $vehicle->queue_number * 10 + 1; // +1 to appear after without_driver
-                $expandedVehicles->push($vehicleWithDriver);
-            } elseif ($hasPrice) {
-                // Only price without driver
-                $vehicle->display_price = $category->price;
-                $vehicle->price_type = 'without_driver';
-                $vehicle->sort_order = $vehicle->queue_number * 10;
-                $expandedVehicles->push($vehicle);
-            } elseif ($hasPriceWithDriver) {
-                // Only price with driver
-                $vehicle->display_price = $category->price_with_driver;
-                $vehicle->price_type = 'with_driver';
-                $vehicle->sort_order = $vehicle->queue_number * 10;
-                $expandedVehicles->push($vehicle);
+            if ($hasRentalCategoryPrices) {
+                // Use prices from vehicle_rental_categories
+                foreach ($rentalCategories as $index => $vehicleRentalCategory) {
+                    if ($vehicleRentalCategory->price && $vehicleRentalCategory->price > 0) {
+                        $rentalCategory = $vehicleRentalCategory->rentalCategory;
+                        if ($rentalCategory) {
+                            $vehicleClone = clone $vehicle;
+                            $vehicleClone->display_price = $vehicleRentalCategory->price;
+                            $vehicleClone->rental_category_name = $rentalCategory->name;
+                            $vehicleClone->rental_category_id = $rentalCategory->id;
+                            $vehicleClone->price_type = $vehicleRentalCategory->with_driver ? 'with_driver' : 'without_driver';
+                            $vehicleClone->price_label = $vehicleRentalCategory->with_driver ? 'Dengan Sopir' : 'Tanpa Sopir';
+                            $vehicleClone->sort_order = $vehicle->queue_number * 10 + $index;
+                            $expandedVehicles->push($vehicleClone);
+                        }
+                    }
+                }
             } else {
-                // Use vehicle's own price_per_day if category has no price
-                $vehicle->display_price = $vehicle->price_per_day;
-                $vehicle->price_type = 'default';
-                $vehicle->sort_order = $vehicle->queue_number * 10;
-                $expandedVehicles->push($vehicle);
+                // Fallback to category prices if no rental category prices
+                $hasPrice = $category->price && $category->price > 0;
+                $hasPriceWithDriver = $category->price_with_driver && $category->price_with_driver > 0;
+                
+                if ($hasPrice && $hasPriceWithDriver) {
+                    // Add vehicle twice: once for price, once for price_with_driver
+                    // First: without driver (should appear first)
+                    $vehicleWithoutDriver = clone $vehicle;
+                    $vehicleWithoutDriver->display_price = $category->price;
+                    $vehicleWithoutDriver->price_type = 'without_driver';
+                    $vehicleWithoutDriver->price_label = 'Tanpa Sopir';
+                    $vehicleWithoutDriver->rental_category_name = null;
+                    $vehicleWithoutDriver->sort_order = $vehicle->queue_number * 10;
+                    $expandedVehicles->push($vehicleWithoutDriver);
+                    
+                    // Second: with driver
+                    $vehicleWithDriver = clone $vehicle;
+                    $vehicleWithDriver->display_price = $category->price_with_driver;
+                    $vehicleWithDriver->price_type = 'with_driver';
+                    $vehicleWithDriver->price_label = 'Dengan Sopir';
+                    $vehicleWithDriver->rental_category_name = null;
+                    $vehicleWithDriver->sort_order = $vehicle->queue_number * 10 + 1;
+                    $expandedVehicles->push($vehicleWithDriver);
+                } elseif ($hasPrice) {
+                    // Only price without driver
+                    $vehicle->display_price = $category->price;
+                    $vehicle->price_type = 'without_driver';
+                    $vehicle->price_label = 'Tanpa Sopir';
+                    $vehicle->rental_category_name = null;
+                    $vehicle->sort_order = $vehicle->queue_number * 10;
+                    $expandedVehicles->push($vehicle);
+                } elseif ($hasPriceWithDriver) {
+                    // Only price with driver
+                    $vehicle->display_price = $category->price_with_driver;
+                    $vehicle->price_type = 'with_driver';
+                    $vehicle->price_label = 'Dengan Sopir';
+                    $vehicle->rental_category_name = null;
+                    $vehicle->sort_order = $vehicle->queue_number * 10;
+                    $expandedVehicles->push($vehicle);
+                }
             }
+            // Skip vehicles that don't have any price set
         }
         
         // Sort expanded vehicles by sort_order (queue_number * 10 + offset)
