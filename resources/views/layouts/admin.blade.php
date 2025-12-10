@@ -84,6 +84,21 @@
                 </a>
             </li>
             <li>
+                <a href="{{ url('/admin/availability') }}" class="{{ request()->is('admin/availability*') ? 'active' : '' }}">
+                    <i class="fas fa-calendar-check"></i> Ketersediaan
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/admin/vehicle-categories') }}" class="{{ request()->is('admin/vehicle-categories*') ? 'active' : '' }}">
+                    <i class="fas fa-list"></i> Kategori Kendaraan
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/admin/rental-categories') }}" class="{{ request()->is('admin/rental-categories*') ? 'active' : '' }}">
+                    <i class="fas fa-clock"></i> Kategori Sewa
+                </a>
+            </li>
+            <li>
                 <a href="{{ url('/admin/bookings') }}" class="{{ request()->is('admin/bookings*') ? 'active' : '' }}">
                     <i class="fas fa-calendar"></i> Booking
                 </a>
@@ -98,21 +113,8 @@
                     <i class="fas fa-tags"></i> Kategori Artikel
                 </a>
             </li>
-            <li>
-                <a href="{{ url('/admin/vehicle-categories') }}" class="{{ request()->is('admin/vehicle-categories*') ? 'active' : '' }}">
-                    <i class="fas fa-list"></i> Kategori Kendaraan
-                </a>
-            </li>
-            <li>
-                <a href="{{ url('/admin/rental-categories') }}" class="{{ request()->is('admin/rental-categories*') ? 'active' : '' }}">
-                    <i class="fas fa-clock"></i> Kategori Sewa
-                </a>
-            </li>
-            <li>
-                <a href="{{ url('/admin/availability') }}" class="{{ request()->is('admin/availability*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-check"></i> Ketersediaan
-                </a>
-            </li>
+            
+            
             <li>
                 <a href="{{ url('/admin/testimonials') }}" class="{{ request()->is('admin/testimonials*') ? 'active' : '' }}">
                     <i class="fas fa-comments"></i> Testimoni

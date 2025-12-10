@@ -21,6 +21,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\WhatsAppController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -248,6 +249,16 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+// WhatsApp API Routes
+Route::post('/api/whatsapp/send-booking', [WhatsAppController::class, 'sendBookingMessage'])->name('api.whatsapp.send-booking');
+Route::post('/api/whatsapp/test', [WhatsAppController::class, 'test'])->name('api.whatsapp.test');
+Route::get('/test-whatsapp', function () {
+    return view('test-whatsapp');
+})->name('test.whatsapp');
+
+
+
+// Test WhatsApp (legacy route - can be removed if not needed)
 Route::get('testwa',function(){
     $curl = curl_init();
     curl_setopt_array($curl, array(

@@ -28,3 +28,9 @@ class UpdateRentalCategoryUnit extends Seeder
     }
 }
 
+
+
+
+
+
+

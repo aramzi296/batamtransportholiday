@@ -41,7 +41,7 @@
                                     1
                                 @endif
                             </div>
-                            <div class="step-label">Pilih Tanggal</div>
+                            <div class="step-label">Pilih Kendaraan</div>
                         </div>
                         <div class="step-connector {{ $currentStep >= 2 ? 'active' : '' }}"></div>
                         <div class="step-item {{ $currentStep >= 2 ? 'active' : '' }} {{ $currentStep > 2 ? 'completed' : '' }}">
@@ -52,12 +52,23 @@
                                 2
                             @endif
                         </div>
-                            <div class="step-label">Data Penyewa</div>
+                            <div class="step-label">Pilih Tanggal</div>
                         </div>
                         <div class="step-connector {{ $currentStep >= 3 ? 'active' : '' }}"></div>
-                        <div class="step-item {{ $currentStep >= 3 ? 'active' : '' }}">
-                            <div class="step-number">3</div>
-                            <div class="step-label">Kirim</div>
+                        <div class="step-item {{ $currentStep >= 3 ? 'active' : '' }} {{ $currentStep > 3 ? 'completed' : '' }}">
+                            <div class="step-number">
+                            @if($currentStep > 3)
+                                <i class="fas fa-check"></i>
+                            @else
+                                3
+                            @endif
+                        </div>
+                            <div class="step-label">Data Penyewa</div>
+                        </div>
+                        <div class="step-connector {{ $currentStep >= 4 ? 'active' : '' }}"></div>
+                        <div class="step-item {{ $currentStep >= 4 ? 'active' : '' }}">
+                            <div class="step-number">4</div>
+                            <div class="step-label">Detil Booking</div>
                         </div>
                     </div>
                 </div>
@@ -116,8 +127,136 @@
         }
     </style>
 
-    <!-- Step 1: Date Selection -->
+    <!-- Step 1: Pilih Kendaraan -->
     @if($currentStep == 1)
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-car"></i> Pilih Kendaraan</h5>
+        </div>
+        <div class="card-body">
+            @php
+                // Get all vehicles to display (alternatives + selected if applicable)
+                $vehiclesToDisplay = [];
+                
+                // Always include selected vehicle
+                if ($vehicle) {
+                    $selectedVehicleData = [
+                        'id' => $vehicle->id,
+                        'name' => $vehicle->name ?? '',
+                        'brand' => is_string($vehicle->brand) ? $vehicle->brand : ($vehicle->brand->name ?? $vehicle->brand_name ?? ''),
+                        'model' => $vehicle->model ?? '',
+                        'seats' => $vehicle->seats ?? null,
+                        'price_per_day' => $vehicle->price_per_day ?? 0,
+                        'price_per_day_no_driver' => $vehicle->price_per_day_no_driver ?? null,
+                        'queue_number' => $vehicle->queue_number ?? null,
+                    ];
+                    
+                    // If there are alternatives, add them
+                    if ($showVehicleSelection && count($alternativeVehicles) > 0) {
+                        // Check if selected vehicle is already in alternatives
+                        $selectedInAlternatives = false;
+                        foreach ($alternativeVehicles as $altVehicle) {
+                            if ($altVehicle['id'] == $vehicle->id) {
+                                $selectedInAlternatives = true;
+                            }
+                            $vehiclesToDisplay[] = $altVehicle;
+                        }
+                        
+                        // If selected vehicle not in alternatives, add it
+                        if (!$selectedInAlternatives) {
+                            $vehiclesToDisplay[] = $selectedVehicleData;
+                        }
+                    } else {
+                        // Only selected vehicle
+                        $vehiclesToDisplay[] = $selectedVehicleData;
+                    }
+                }
+            @endphp
+            
+            @if(count($vehiclesToDisplay) > 0)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px;">Pilih</th>
+                            <th style="width: 120px;">Thumbnail</th>
+                            <th>Brand</th>
+                            <th>Model</th>
+                            <th>Seats</th>
+                            <th class="text-end">Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($vehiclesToDisplay as $veh)
+                        @php
+                            $vehModel = \App\Models\Vehicle::find($veh['id']);
+                            $vehImage = $vehModel ? $vehModel->vehicleImages->where('is_featured', true)->first() : null;
+                            if (!$vehImage && $vehModel) {
+                                $vehImage = $vehModel->vehicleImages->first();
+                            }
+                            $vehPrice = $with_driver ? ($veh['price_per_day'] ?? 0) : ($veh['price_per_day_no_driver'] ?? $veh['price_per_day'] ?? 0);
+                            $isSelected = $selectedVehicleForBooking == $veh['id'];
+                        @endphp
+                        <tr class="{{ $isSelected ? 'table-primary' : '' }}" 
+                            style="cursor: pointer;"
+                            onclick="$wire.set('selectedVehicleForBooking', {{ $veh['id'] }})">
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="radio" 
+                                           wire:model="selectedVehicleForBooking" 
+                                           value="{{ $veh['id'] }}" 
+                                           id="vehicle_{{ $veh['id'] }}">
+                                </div>
+                            </td>
+                            <td>
+                                @if($vehImage)
+                                    <img src="{{ $vehImage->image_url }}" 
+                                         alt="{{ $veh['name'] }}" 
+                                         class="img-thumbnail"
+                                         style="width: 100px; height: 75px; object-fit: cover;">
+                                @else
+                                    <div class="bg-secondary d-flex align-items-center justify-content-center img-thumbnail"
+                                         style="width: 100px; height: 75px;">
+                                        <i class="fas fa-car text-white"></i>
+                                    </div>
+                                @endif
+                            </td>
+                            <td><strong>{{ $veh['brand'] ?? '' }}</strong></td>
+                            <td>{{ $veh['model'] ?? '' }}</td>
+                            <td>{{ $veh['seats'] ?? '-' }} kursi</td>
+                            <td class="text-end">
+                                <strong class="text-primary">Rp {{ number_format($vehPrice) }}</strong>
+                                <small class="text-muted d-block">/hari</small>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @else
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> Tidak ada kendaraan yang tersedia.
+            </div>
+            @endif
+            
+            @error('selectedVehicleForBooking')
+                <div class="alert alert-danger mt-3">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" wire:click="nextStep">
+            Lanjutkan <i class="fas fa-arrow-right ms-2"></i>
+        </button>
+    </div>
+    
+    @endif
+
+    <!-- Step 2: Pilih Tanggal -->
+    @if($currentStep == 2)
     <div class="row">
         <!-- Vehicle Info & Features -->
         <div class="col-lg-5 mb-4">
@@ -190,47 +329,10 @@
 
         <!-- Date Input & Price -->
         <div class="col-lg-7">
-            <!-- Rental Category Display (if available) - BEFORE Date Input -->
-            @php
-                $rentalCategories = $vehicle->rentalCategories->where('price', '>', 0)->groupBy('rental_category_id');
-                $selectedRentalCategory = null;
-                $selectedVehicleRentalCategory = null;
-                if ($rental_category_id && $rentalCategories->has($rental_category_id)) {
-                    $selectedGroup = $rentalCategories->get($rental_category_id);
-                    $selectedVehicleRentalCategory = $selectedGroup->where('with_driver', $with_driver)->first();
-                    if ($selectedVehicleRentalCategory) {
-                        $selectedRentalCategory = $selectedVehicleRentalCategory->rentalCategory;
-                        // Update unitDisplay if rental category found
-                        $unitDisplay = $selectedRentalCategory->satuan ?? 'hari';
-                    }
-                }
-            @endphp
-            @if($selectedRentalCategory)
+            <!-- Price Display -->
             <div class="card mb-4 border-primary">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-tag"></i> Kategori Sewa</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-1">{{ $selectedRentalCategory->name }}</h6>
-                            <p class="text-muted mb-0">
-                                <i class="fas fa-{{ $with_driver ? 'user-tie' : 'car' }}"></i> 
-                                {{ $with_driver ? 'Dengan Sopir' : 'Tanpa Sopir' }}
-                            </p>
-                        </div>
-                        <div class="text-end">
-                            <h5 class="text-primary mb-0">Rp {{ number_format($daily_price) }}</h5>
-                            <small class="text-muted">/{{ $unitDisplay }}</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @elseif($vehicle->category && ($vehicle->category->price > 0 || $vehicle->category->price_with_driver > 0))
-            <!-- Fallback to category price -->
-            <div class="card mb-4 border-primary">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-tag"></i> Layanan</h5>
+                    <h5 class="mb-0"><i class="fas fa-tag"></i> Harga Sewa</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -240,12 +342,11 @@
                         </div>
                         <div class="text-end">
                             <h5 class="text-primary mb-0">Rp {{ number_format($daily_price) }}</h5>
-                            <small class="text-muted">/{{ $unitDisplay }}</small>
+                            <small class="text-muted">/hari</small>
                         </div>
                     </div>
                 </div>
             </div>
-            @endif
             
             <div class="card mb-4">
                 <div class="card-header bg-light">
@@ -319,26 +420,8 @@
                     </div>
                     <div class="mb-2">
                         <div class="d-flex justify-content-between">
-                            <span>Harga per 
-                                @php
-                                    $selectedRentalCategory = null;
-                                    if ($rental_category_id && $vehicle->rentalCategories) {
-                                        $selectedVrc = $vehicle->rentalCategories->where('rental_category_id', $rental_category_id)->where('with_driver', $with_driver)->first();
-                                        if ($selectedVrc) {
-                                            $selectedRentalCategory = $selectedVrc->rentalCategory;
-                                        }
-                                    }
-                                @endphp
-                                @if($selectedRentalCategory && $selectedRentalCategory->satuan)
-                                    {{ $selectedRentalCategory->satuan }}:
-                                @else
-                                    Hari:
-                                @endif
-                            </span>
+                            <span>Harga per Hari:</span>
                             <strong>Rp {{ number_format($daily_price) }}</strong>
-                            @if($rental_category_name)
-                                <span class="text-success ms-2">{{ $rental_category_name }}</span>
-                            @endif
                         </div>
                     </div>
                     <hr>
@@ -353,7 +436,10 @@
             </div>
             
             <!-- Navigation -->
-            <div class="mt-4 d-flex justify-content-end">
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="button" wire:click="previousStep" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
                 <button type="button" wire:click="nextStep" class="btn btn-primary btn-lg" 
                         {{ !$start_date || !$rental_duration || $rental_duration < 1 ? 'disabled' : '' }}>
                     Lanjut <i class="fas fa-arrow-right"></i>
@@ -363,8 +449,8 @@
     </div>
     @endif
 
-    <!-- Step 2: Customer Information -->
-    @if($currentStep == 2)
+    <!-- Step 3: Informasi Penyewa -->
+    @if($currentStep == 3)
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card">
@@ -426,8 +512,8 @@
     </div>
     @endif
 
-    <!-- Step 3: Confirmation -->
-    @if($currentStep == 3)
+    <!-- Step 4: Detil Booking -->
+    @if($currentStep == 4)
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="card">

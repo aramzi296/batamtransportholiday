@@ -1,17 +1,19 @@
 <div>
-    @if (session()->has('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle"></i> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     <form wire:submit.prevent="save">
         <div class="row">
             <!-- Basic Information -->
             <div class="col-lg-6">
                 <h6 class="fw-bold mb-3">Informasi Dasar</h6>
                 
+                <div class="mb-3">
+                    <label class="form-label">Nama Kendaraan *</label>
+                    <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror" 
+                           placeholder="Contoh: Toyota Avanza 2023" required>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label">Kategori *</label>
                     <select wire:model="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
@@ -35,13 +37,61 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Pemilik</label>
+                    <div class="input-group">
+                        <select wire:model="member_id" class="form-select @error('member_id') is-invalid @enderror">
+                            <option value="">Pilih Pemilik</option>
+                            @foreach($members as $member)
+                                <option value="{{ $member->id }}">
+                                    {{ $member->name }} ({{ $member->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                        <a href="{{ route('admin.users.create') }}?role=member" target="_blank" class="btn btn-outline-primary" type="button">
+                            <i class="fas fa-plus"></i> Tambah User
+                        </a>
+                    </div>
+                    @error('member_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <div class="form-text">Pilih pemilik kendaraan (opsional)</div>
+                </div>
             </div>
 
-            <!-- Specifications -->
+            <!-- Specifications & Pricing -->
             <div class="col-lg-6">
-                <h6 class="fw-bold mb-3">Spesifikasi</h6>
+                <h6 class="fw-bold mb-3">Spesifikasi & Harga</h6>
                 
                 <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Harga Per Hari (Rp) *</label>
+                        <input type="number" wire:model="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror" 
+                               placeholder="0" min="0" step="1000" required>
+                        @error('price_per_day')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Harga Per Hari Tanpa Sopir (Rp)</label>
+                        <input type="number" wire:model="price_per_day_no_driver" class="form-control @error('price_per_day_no_driver') is-invalid @enderror" 
+                               placeholder="0" min="0" step="1000">
+                        @error('price_per_day_no_driver')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Kapasitas Mesin (CC)</label>
+                        <input type="number" wire:model="machine_cc" class="form-control @error('machine_cc') is-invalid @enderror" 
+                               placeholder="1500" min="1">
+                        @error('machine_cc')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Merek *</label>
                         <select wire:model="brand_id" class="form-select @error('brand_id') is-invalid @enderror" required>
@@ -56,6 +106,9 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Model *</label>
                         <input type="text" wire:model="model" class="form-control @error('model') is-invalid @enderror" required>
@@ -63,9 +116,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tahun *</label>
                         <input type="number" wire:model="year" class="form-control @error('year') is-invalid @enderror" 
@@ -74,6 +124,9 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Warna *</label>
                         <input type="text" wire:model="color" class="form-control @error('color') is-invalid @enderror" required>
@@ -81,9 +134,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Bahan Bakar *</label>
                         <select wire:model="fuel_type" class="form-select @error('fuel_type') is-invalid @enderror" required>
@@ -96,6 +146,9 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Transmisi *</label>
                         <select wire:model="transmission" class="form-select @error('transmission') is-invalid @enderror" required>
@@ -108,9 +161,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Jumlah Kursi *</label>
                         <input type="number" wire:model="seats" class="form-control @error('seats') is-invalid @enderror" 
@@ -119,6 +169,9 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Plat Nomor *</label>
                         <input type="text" wire:model="plate_number" class="form-control @error('plate_number') is-invalid @enderror" 
@@ -127,78 +180,84 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Nomor Antrian</label>
-                    <input type="number" wire:model="queue_number" class="form-control @error('queue_number') is-invalid @enderror" 
-                           min="1" placeholder="Nomor antrian untuk urutan tampil">
-                    @error('queue_number')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                    <div class="form-text">Nomor antrian menentukan urutan tampil kendaraan di halaman depan.</div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nomor Antrian</label>
+                        <input type="number" wire:model="queue_number" class="form-control @error('queue_number') is-invalid @enderror" 
+                               min="1" placeholder="Nomor antrian untuk urutan tampil">
+                        @error('queue_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </div>
         </div>
 
         <hr>
 
-        <!-- Rental Categories with Driver Options -->
+        <!-- Features -->
         <div class="row">
             <div class="col-lg-12">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="fw-bold mb-0"><i class="fas fa-tags"></i> Kategori Harga Sewa</h6>
-                    <button type="button" wire:click="addRentalCategory" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-plus"></i> Tambah Kategori
-                    </button>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Kategori Sewa</th>
-                                <th>Dengan Sopir</th>
-                                <th>Harga (Rp)</th>
-                                <th width="100">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($rentalCategories as $index => $rc)
-                            <tr>
-                                <td>
-                                    <select wire:model="rentalCategories.{{ $index }}.rental_category_id" 
-                                            class="form-select form-select-sm">
-                                        <option value="">Pilih Kategori</option>
-                                        @foreach($rentalCats as $rentalCat)
-                                            <option value="{{ $rentalCat->id }}">
-                                                {{ $rentalCat->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td class="text-center">
+                <h6 class="fw-bold mb-3"><i class="fas fa-star"></i> Fitur & Fasilitas</h6>
+                <div class="mb-3">
+                    <label class="form-label">Fitur Kendaraan</label>
+                    <div class="row">
+                        @php
+                            $commonFeatures = ['AC', 'GPS', 'Audio System', 'USB Port', 'Bluetooth', 'Kamera Mundur', 'Parkir Otomatis', 'Sunroof', 'Leather Seats', 'Third Row Seats', 'Keyless Entry', 'Push Start', 'Cruise Control', 'ABS', 'Airbag'];
+                            // Get custom features (features that are not in commonFeatures)
+                            $customFeaturesList = [];
+                            if (!empty($features)) {
+                                $customFeaturesList = array_diff($features, $commonFeatures);
+                            }
+                        @endphp
+                        @foreach($commonFeatures as $feature)
+                            <div class="col-md-3 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           wire:model="features" 
+                                           value="{{ $feature }}" 
+                                           id="feature_{{ $loop->index }}">
+                                    <label class="form-check-label" for="feature_{{ $loop->index }}">
+                                        {{ $feature }}
+                                    </label>
+                                </div>
+                            </div>
+                        @endforeach
+                        
+                        @if(!empty($customFeaturesList))
+                            @foreach($customFeaturesList as $customFeature)
+                                <div class="col-md-3 mb-2">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" 
-                                               wire:model="rentalCategories.{{ $index }}.with_driver">
+                                               wire:model="features" 
+                                               value="{{ $customFeature }}" 
+                                               id="custom_feature_{{ $loop->index }}">
+                                        <label class="form-check-label" for="custom_feature_{{ $loop->index }}">
+                                            {{ $customFeature }}
+                                        </label>
                                     </div>
-                                </td>
-                                <td>
-                                    <input type="number" 
-                                           wire:model="rentalCategories.{{ $index }}.price" 
-                                           class="form-control form-control-sm" 
-                                           placeholder="0" min="0" step="1000">
-                                </td>
-                                <td>
-                                    <button type="button" wire:click="removeRentalCategory({{ $index }})" 
-                                            class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                                </div>
                             @endforeach
-                        </tbody>
-                    </table>
+                        @endif
+                    </div>
+                    <div class="mt-3">
+                        <label class="form-label">Fitur Lainnya (opsional)</label>
+                        <div class="input-group">
+                            <input type="text" 
+                                   class="form-control" 
+                                   placeholder="Masukkan fitur lain, pisahkan dengan koma (contoh: WiFi, Charger Wireless)"
+                                   wire:model="customFeatures"
+                                   wire:keydown.enter.prevent="addCustomFeatures">
+                            <button class="btn btn-outline-primary" type="button" wire:click="addCustomFeatures">
+                                <i class="fas fa-plus"></i> Tambah
+                            </button>
+                        </div>
+                        <div class="form-text">Masukkan fitur dan klik Tambah atau tekan Enter</div>
+                    </div>
+                    @if(!empty($features))
+                        <div class="mt-2">
+                            <small class="text-muted">Fitur yang dipilih: {{ implode(', ', $features) }}</small>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -323,3 +382,25 @@
         </div>
     </form>
 </div>
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('swal', (data) => {
+            const { type, title, message } = data[0];
+            Swal.fire({
+                icon: type,
+                title: title,
+                text: message,
+                confirmButtonText: 'OK',
+                confirmButtonColor: type === 'success' ? '#28a745' : '#dc3545'
+            });
+        });
+    });
+</script>
+@endpush

@@ -81,3 +81,9 @@ class AddUnitToRentalCategories extends Command
     }
 }
 
+
+
+
+
+
+

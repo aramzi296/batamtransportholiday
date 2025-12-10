@@ -200,7 +200,12 @@
                 <div class="card vehicle-card h-100 shadow-sm">
                     <img src="{{ $vehicle->main_image }}" class="card-img-top" alt="{{ $vehicle->name }}" style="height: 250px; object-fit: cover;">
                     <div class="card-body">
-                        <h5 class="card-title">{{ $vehicle->name }}</h5>
+                        <h5 class="card-title">
+                            {{ $vehicle->brand_name ?? $vehicle->brand }}
+                            @if($vehicle->model)
+                                {{ $vehicle->model }}
+                            @endif
+                        </h5>
                         
                         <!-- Baris 1: Kategori dan Tipe Harga -->
                         <div class="mb-2">
@@ -216,17 +221,7 @@
                             @endif
                         </div>
                         
-                        <!-- Baris 2: Brand dan Model -->
-                        <div class="mb-2">
-                            <small class="text-muted">
-                                <i class="fas fa-tag"></i> {{ $vehicle->brand_name ?? $vehicle->brand }}
-                                @if($vehicle->model)
-                                    - {{ $vehicle->model }}
-                                @endif
-                            </small>
-                        </div>
-                        
-                        <!-- Baris 3: Harga -->
+                        <!-- Baris 2: Harga -->
                         <div class="mb-3">
                             <h5 class="text-primary mb-0">
                                 Rp. {{ number_format($vehicle->display_price) }}
@@ -238,7 +233,7 @@
                             </h5>
                         </div>
                         
-                        <!-- Baris 4: Kursi, Transmisi, Bahan Bakar -->
+                        <!-- Baris 3: Kursi, Transmisi, Bahan Bakar -->
                         <div class="row text-center mb-3">
                             <div class="col-4">
                                 <small class="text-muted d-block">
@@ -260,7 +255,7 @@
                             </div>
                         </div>
                         
-                        <!-- Baris 5: Button Booking -->
+                        <!-- Baris 4: Button Booking -->
                         @php
                             $bookingUrl = '/booking?vehicle_id=' . $vehicle->id;
                             if (isset($vehicle->rental_category_id) && $vehicle->rental_category_id) {

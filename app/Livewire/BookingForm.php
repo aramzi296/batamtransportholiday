@@ -21,6 +21,9 @@ class BookingForm extends Component
     // Vehicle
     public $vehicle_id;
     public $vehicle;
+    public $alternativeVehicles = [];
+    public $showVehicleSelection = false;
+    public $selectedVehicleForBooking = null;
     
     // Step 1: Date Selection
     public $start_date = null;
@@ -66,6 +69,7 @@ class BookingForm extends Component
         
         if ($this->vehicle_id) {
             $this->loadVehicle();
+            $this->loadAlternativeVehicles();
         }
         
         // Pre-fill customer info if user is logged in
@@ -81,92 +85,202 @@ class BookingForm extends Component
     
     public function loadVehicle()
     {
-        $this->vehicle = Vehicle::with(['category', 'vehicleImages', 'brand', 'rentalCategories.rentalCategory'])
+        $this->vehicle = Vehicle::with(['category', 'vehicleImages', 'brand'])
             ->findOrFail($this->vehicle_id);
+        
+        // Set selected vehicle for booking only if not already set
+        if (!$this->selectedVehicleForBooking) {
+            $this->selectedVehicleForBooking = $this->vehicle_id;
+        }
         
         // Load unavailable dates
         $this->loadUnavailableDates();
         
-        // Set rental category - use provided one or default to first available
-        $rentalCategories = $this->vehicle->rentalCategories->where('price', '>', 0);
-        if ($rentalCategories->count() > 0) {
-            // If rental_category_id is already set (from query parameter), use it
-            if ($this->rental_category_id) {
-                $grouped = $rentalCategories->groupBy('rental_category_id');
-                $selectedGroup = $grouped->get($this->rental_category_id);
-                
-                if ($selectedGroup && $selectedGroup->count() > 0) {
-                    $firstRentalCategory = $selectedGroup->first();
-                    
-                    // Check if has both with_driver and without_driver
-                    $hasWithDriver = $selectedGroup->where('with_driver', true)->count() > 0;
-                    $hasWithoutDriver = $selectedGroup->where('with_driver', false)->count() > 0;
-                    
-                    if ($hasWithDriver && $hasWithoutDriver) {
-                        // Default to without driver
-                        $this->with_driver = false;
-                        $selectedRentalCategory = $selectedGroup->where('with_driver', false)->first();
-                    } elseif ($hasWithDriver) {
-                        $this->with_driver = true;
-                        $selectedRentalCategory = $selectedGroup->where('with_driver', true)->first();
-                    } else {
-                        $this->with_driver = false;
-                        $selectedRentalCategory = $selectedGroup->where('with_driver', false)->first();
-                    }
-                    
-                    $this->daily_price = $selectedRentalCategory->price;
-                    $this->rental_category_name = $selectedRentalCategory->rentalCategory->name ?? null;
-                } else {
-                    // If provided rental_category_id not found, fallback to first
-                    $this->setDefaultRentalCategory($rentalCategories);
-                }
-            } else {
-                // No rental_category_id provided, use first available
-                $this->setDefaultRentalCategory($rentalCategories);
+        // Use price directly from vehicle based on with_driver
+        if ($this->with_driver) {
+            $this->daily_price = $this->vehicle->price_per_day ?? 0;
+        } else {
+            $this->daily_price = $this->vehicle->price_per_day_no_driver ?? $this->vehicle->price_per_day ?? 0;
+        }
+    }
+    
+    public function loadAlternativeVehicles()
+    {
+        if (!$this->vehicle) {
+            return;
+        }
+        
+        $selectedVehicle = $this->vehicle;
+        
+        // Build query for alternative vehicles
+        $query = Vehicle::with(['category', 'vehicleImages', 'brand'])
+            ->where('category_id', $selectedVehicle->category_id)
+            ->where('seats', $selectedVehicle->seats)
+            ->where('id', '!=', $selectedVehicle->id)
+            ->where('is_available', true)
+            ->whereNotNull('queue_number');
+        
+        // Filter by price based on with_driver
+        if ($this->with_driver) {
+            // If user selected with_driver, match price_per_day
+            if ($selectedVehicle->price_per_day) {
+                $query->where('price_per_day', $selectedVehicle->price_per_day);
             }
         } else {
-            // Fallback to category price
-            $category = $this->vehicle->category;
-            if ($category->price && $category->price > 0) {
-                $this->daily_price = $category->price;
-                $this->with_driver = false;
-            } elseif ($category->price_with_driver && $category->price_with_driver > 0) {
-                $this->daily_price = $category->price_with_driver;
-                $this->with_driver = true;
+            // If user selected without_driver, match price_per_day_no_driver
+            if ($selectedVehicle->price_per_day_no_driver) {
+                $query->where('price_per_day_no_driver', $selectedVehicle->price_per_day_no_driver);
+            } elseif ($selectedVehicle->price_per_day) {
+                // If no price_per_day_no_driver, match price_per_day
+                $query->where('price_per_day', $selectedVehicle->price_per_day);
+            }
+        }
+        
+        // Order by queue_number and limit to 3
+        $alternatives = $query->orderBy('queue_number', 'asc')
+            ->limit(3)
+            ->get();
+        
+        // Build all vehicles list: include selected vehicle if it matches criteria
+        $allVehicles = collect();
+        
+        // Add alternatives
+        foreach ($alternatives as $alt) {
+            $allVehicles->push($alt);
+        }
+        
+        // Check if selected vehicle should be included (matches same criteria as alternatives)
+        // Selected vehicle matches if it has same category, seats, and price
+        $selectedMatches = false;
+        if ($alternatives->count() > 0) {
+            // Get price from first alternative for comparison
+            $firstAlt = $alternatives->first();
+            $altPrice = null;
+            if ($this->with_driver) {
+                $altPrice = $firstAlt->price_per_day;
             } else {
-                $this->daily_price = $this->vehicle->price_per_day ?? 0;
+                $altPrice = $firstAlt->price_per_day_no_driver ?? $firstAlt->price_per_day;
+            }
+            
+            // Compare selected vehicle price with alternative price
+            if ($this->with_driver) {
+                $selectedMatches = $selectedVehicle->price_per_day == $altPrice;
+            } else {
+                $selectedPrice = $selectedVehicle->price_per_day_no_driver ?? $selectedVehicle->price_per_day;
+                $selectedMatches = $selectedPrice == $altPrice;
+            }
+        }
+        
+        // Add selected vehicle if it matches criteria and not already in alternatives
+        if ($selectedMatches && !$alternatives->contains('id', $selectedVehicle->id)) {
+            $allVehicles->push($selectedVehicle);
+        }
+        
+        // Sort by queue_number
+        $allVehicles = $allVehicles->sortBy('queue_number')->values();
+        
+        // Store alternatives (max 4: 3 alternatives + selected if applicable)
+        // Convert to array but ensure all fields are properly formatted
+        $this->alternativeVehicles = $allVehicles->take(4)->map(function($vehicle) {
+            // Get brand name safely
+            $brandName = '';
+            if (is_string($vehicle->brand)) {
+                $brandName = $vehicle->brand;
+            } elseif ($vehicle->brand && is_object($vehicle->brand)) {
+                $brandName = $vehicle->brand->name ?? '';
+            } elseif ($vehicle->brand_name) {
+                $brandName = $vehicle->brand_name;
+            }
+            
+            return [
+                'id' => $vehicle->id,
+                'name' => $vehicle->name ?? '',
+                'brand' => $brandName,
+                'model' => $vehicle->model ?? '',
+                'year' => $vehicle->year ?? null,
+                'price_per_day' => $vehicle->price_per_day ?? 0,
+                'price_per_day_no_driver' => $vehicle->price_per_day_no_driver ?? null,
+                'queue_number' => $vehicle->queue_number ?? null,
+                'seats' => $vehicle->seats ?? null,
+            ];
+        })->toArray();
+        
+        // Determine if we should show vehicle selection
+        // Only set selectedVehicleForBooking if not already set by user (in step 1)
+        // If we're past step 1, don't change user's selection
+        $userHasSelected = $this->currentStep > 1 || ($this->selectedVehicleForBooking && $this->selectedVehicleForBooking != $selectedVehicle->id);
+        
+        if ($alternatives->count() == 0) {
+            // No alternatives, show only selected vehicle
+            $this->showVehicleSelection = false;
+            if (!$userHasSelected) {
+                $this->selectedVehicleForBooking = $selectedVehicle->id;
+            }
+        } else {
+            // Get minimum queue_number from all vehicles (alternatives + selected if included)
+            $allQueueNumbers = $allVehicles->pluck('queue_number')->filter();
+            $minQueueNumber = $allQueueNumbers->min();
+            
+            if ($selectedVehicle->queue_number && $selectedVehicle->queue_number <= $minQueueNumber) {
+                // Selected vehicle has smallest queue_number, show only selected vehicle
+                $this->showVehicleSelection = false;
+                if (!$userHasSelected) {
+                    $this->selectedVehicleForBooking = $selectedVehicle->id;
+                }
+            } else {
+                // Show vehicle selection with alternatives
+                $this->showVehicleSelection = true;
+                
+                // Only set default if user hasn't selected yet
+                if (!$userHasSelected) {
+                    // Default selection: vehicle with smallest queue_number
+                    $defaultVehicle = $allVehicles->firstWhere('queue_number', $minQueueNumber);
+                    $this->selectedVehicleForBooking = $defaultVehicle ? $defaultVehicle->id : $selectedVehicle->id;
+                    
+                    // If default is different from selected, update vehicle_id but don't reload to avoid loop
+                    if ($this->selectedVehicleForBooking != $this->vehicle_id) {
+                        // Update vehicle_id and reload vehicle data without calling loadAlternativeVehicles
+                        $this->vehicle_id = $this->selectedVehicleForBooking;
+                        
+                        // Reload vehicle data
+                        $this->vehicle = Vehicle::with(['category', 'vehicleImages', 'brand'])
+                            ->findOrFail($this->vehicle_id);
+                        $this->loadUnavailableDates();
+                        
+                        // Update price
+                        if ($this->with_driver) {
+                            $this->daily_price = $this->vehicle->price_per_day ?? 0;
+                        } else {
+                            $this->daily_price = $this->vehicle->price_per_day_no_driver ?? $this->vehicle->price_per_day ?? 0;
+                        }
+                    }
+                }
             }
         }
     }
     
-    private function setDefaultRentalCategory($rentalCategories)
+    public function updatedSelectedVehicleForBooking()
     {
-        // Group by rental_category_id
-        $grouped = $rentalCategories->groupBy('rental_category_id');
-        $firstGroup = $grouped->first();
-        $firstRentalCategory = $firstGroup->first();
-        
-        $this->rental_category_id = $firstRentalCategory->rental_category_id;
-        
-        // Check if has both with_driver and without_driver
-        $hasWithDriver = $firstGroup->where('with_driver', true)->count() > 0;
-        $hasWithoutDriver = $firstGroup->where('with_driver', false)->count() > 0;
-        
-        if ($hasWithDriver && $hasWithoutDriver) {
-            // Default to without driver
-            $this->with_driver = false;
-            $selectedRentalCategory = $firstGroup->where('with_driver', false)->first();
-        } elseif ($hasWithDriver) {
-            $this->with_driver = true;
-            $selectedRentalCategory = $firstGroup->where('with_driver', true)->first();
-        } else {
-            $this->with_driver = false;
-            $selectedRentalCategory = $firstGroup->where('with_driver', false)->first();
+        if ($this->selectedVehicleForBooking) {
+            // Update vehicle_id to match selection
+            $oldVehicleId = $this->vehicle_id;
+            $this->vehicle_id = $this->selectedVehicleForBooking;
+            
+            // Only reload if vehicle changed
+            if ($oldVehicleId != $this->vehicle_id) {
+                $this->loadVehicle();
+                // Preserve selectedVehicleForBooking (loadVehicle won't reset it now)
+                $this->selectedVehicleForBooking = $this->vehicle_id;
+                
+                $this->calculatePrice();
+                // Reset dates if needed
+                if ($this->start_date) {
+                    $this->calculateEndDate();
+                }
+            }
         }
-        
-        $this->daily_price = $selectedRentalCategory->price;
-        $this->rental_category_name = $selectedRentalCategory->rentalCategory->name ?? null;
     }
+    
     
     public function loadUnavailableDates()
     {
@@ -225,23 +339,8 @@ class BookingForm extends Component
         
         $this->total_days = $this->rental_duration;
         
-        // Get daily price
-        if ($this->rental_category_id && $this->vehicle) {
-            $vehicleRentalCategory = $this->vehicle->rentalCategories
-                ->where('rental_category_id', $this->rental_category_id)
-                ->where('with_driver', $this->with_driver)
-                ->first();
-            
-            if ($vehicleRentalCategory && $vehicleRentalCategory->price > 0) {
-                $this->daily_price = $vehicleRentalCategory->price;
-                $this->rental_category_name = $vehicleRentalCategory->rentalCategory->name ?? null;
-            } else {
-                // Fallback to category price
-                $this->getCategoryPrice();
-            }
-        } else {
-            $this->getCategoryPrice();
-        }
+        // Get daily price directly from vehicle
+        $this->getCategoryPrice();
         
         $this->total_price = $this->total_days * $this->daily_price;
     }
@@ -250,16 +349,11 @@ class BookingForm extends Component
     {
         if (!$this->vehicle) return;
         
-        $category = $this->vehicle->category;
-        $hasPrice = $category->price && $category->price > 0;
-        $hasPriceWithDriver = $category->price_with_driver && $category->price_with_driver > 0;
-        
-        if ($this->with_driver && $hasPriceWithDriver) {
-            $this->daily_price = $category->price_with_driver;
-        } elseif ($hasPrice) {
-            $this->daily_price = $category->price;
-        } else {
+        // Use price directly from vehicle
+        if ($this->with_driver) {
             $this->daily_price = $this->vehicle->price_per_day ?? 0;
+        } else {
+            $this->daily_price = $this->vehicle->price_per_day_no_driver ?? $this->vehicle->price_per_day ?? 0;
         }
         
         $this->rental_category_name = null;
@@ -273,7 +367,28 @@ class BookingForm extends Component
     public function nextStep()
     {
         if ($this->currentStep == 1) {
-            // Validate step 1
+            // Validate step 1: Pilih Kendaraan
+            if (!$this->selectedVehicleForBooking) {
+                $this->addError('selectedVehicleForBooking', 'Silakan pilih kendaraan');
+                return;
+            }
+            
+            // Ensure vehicle_id matches selected vehicle
+            if ($this->vehicle_id != $this->selectedVehicleForBooking) {
+                $this->vehicle_id = $this->selectedVehicleForBooking;
+            }
+            
+            // Reload vehicle data based on selection
+            $this->loadVehicle();
+            // Don't reload alternatives here - they're only needed in step 1
+            // The selected vehicle is already set by user
+            
+            // Ensure selectedVehicleForBooking is preserved
+            $this->selectedVehicleForBooking = $this->vehicle_id;
+            
+            $this->currentStep = 2;
+        } elseif ($this->currentStep == 2) {
+            // Validate step 2: Pilih Tanggal
             if (!$this->start_date || !$this->end_date) {
                 $this->addError('dates', 'Silakan pilih tanggal pemakaian');
                 return;
@@ -292,9 +407,9 @@ class BookingForm extends Component
                 $currentDate->addDay();
             }
             
-            $this->currentStep = 2;
-        } elseif ($this->currentStep == 2) {
-            // Validate step 2
+            $this->currentStep = 3;
+        } elseif ($this->currentStep == 3) {
+            // Validate step 3: Informasi Penyewa
             $this->validate([
                 'customer_name' => 'required|string|max:255',
                 'customer_email' => 'required|email',
@@ -303,7 +418,7 @@ class BookingForm extends Component
                 'notes' => 'nullable|string',
             ]);
             
-            $this->currentStep = 3;
+            $this->currentStep = 4;
         }
     }
     
@@ -340,7 +455,8 @@ class BookingForm extends Component
             $startDate = Carbon::parse($this->start_date);
             $endDate = Carbon::parse($this->end_date);
             
-            $conflictingBooking = Booking::where('vehicle_id', $this->vehicle_id)
+            $finalVehicleId = $this->selectedVehicleForBooking ?? $this->vehicle_id;
+            $conflictingBooking = Booking::where('vehicle_id', $finalVehicleId)
                 ->where('status', '!=', 'cancelled')
                 ->where(function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('start_date', [$startDate, $endDate])
@@ -357,7 +473,13 @@ class BookingForm extends Component
                 return;
             }
             
-            // Check unavailable dates
+            // Check unavailable dates - reload vehicle if needed
+            $finalVehicleId = $this->selectedVehicleForBooking ?? $this->vehicle_id;
+            if ($finalVehicleId != $this->vehicle_id) {
+                $this->vehicle_id = $finalVehicleId;
+                $this->loadVehicle();
+            }
+            
             $currentDate = $startDate->copy();
             $unavailableDates = [];
             while ($currentDate <= $endDate) {
@@ -376,10 +498,11 @@ class BookingForm extends Component
             $this->calculateEndDate();
             $this->calculatePrice();
             
-            // Create booking
+            // Create booking - use selected vehicle for booking
+            $finalVehicleId = $this->selectedVehicleForBooking ?? $this->vehicle_id;
             $booking = Booking::create([
                 'booking_code' => Booking::generateBookingCode(),
-                'vehicle_id' => $this->vehicle_id,
+                'vehicle_id' => $finalVehicleId,
                 'user_id' => Auth::id(),
                 'customer_name' => $this->customer_name,
                 'customer_email' => $this->customer_email,
@@ -399,7 +522,7 @@ class BookingForm extends Component
             $currentDate = $startDate->copy();
             while ($currentDate <= $endDate) {
                 VehicleCalendar::updateOrCreate([
-                    'vehicle_id' => $this->vehicle_id,
+                    'vehicle_id' => $finalVehicleId,
                     'date' => $currentDate->format('Y-m-d'),
                 ], [
                     'blocked_by' => 'booking',

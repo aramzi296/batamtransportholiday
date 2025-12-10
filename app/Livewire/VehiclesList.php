@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\Vehicle;
 use App\Models\VehicleCategory;
 use App\Models\VehicleBrand;
-use App\Models\RentalCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,9 +15,9 @@ class VehiclesList extends Component
     // Filter properties
     public $driver_type = '';
     public $category = '';
-    public $rental_category_id = '';
     public $brand_id = '';
     public $model = '';
+    public $seats = '';
     public $price_max = null;
     public $search = '';
     public $sort = 'price_low';
@@ -35,9 +34,9 @@ class VehiclesList extends Component
     protected $queryString = [
         'driver_type' => ['except' => ''],
         'category' => ['except' => ''],
-        'rental_category_id' => ['except' => ''],
         'brand_id' => ['except' => ''],
         'model' => ['except' => ''],
+        'seats' => ['except' => ''],
         'price_max' => ['except' => null],
         'search' => ['except' => ''],
         'sort' => ['except' => 'price_low'],
@@ -53,17 +52,17 @@ class VehiclesList extends Component
         $this->resetPage();
     }
 
-    public function updatingRentalCategoryId()
-    {
-        $this->resetPage();
-    }
-
     public function updatingBrandId()
     {
         $this->resetPage();
     }
 
     public function updatingModel()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingSeats()
     {
         $this->resetPage();
     }
@@ -87,9 +86,9 @@ class VehiclesList extends Component
     {
         $this->driver_type = '';
         $this->category = '';
-        $this->rental_category_id = '';
         $this->brand_id = '';
         $this->model = '';
+        $this->seats = '';
         $this->price_max = null;
         $this->search = '';
         $this->sort = 'price_low';
@@ -137,7 +136,7 @@ class VehiclesList extends Component
 
     public function render()
     {
-        $query = Vehicle::with(['category', 'vehicleImages', 'brand', 'rentalCategories.rentalCategory'])
+        $query = Vehicle::with(['category', 'vehicleImages', 'brand'])
             ->where('is_available', true)
             ->whereNotNull('queue_number');
 
@@ -145,13 +144,6 @@ class VehiclesList extends Component
         if ($this->category) {
             $query->whereHas('category', function ($q) {
                 $q->where('slug', $this->category);
-            });
-        }
-
-        // Filter by rental category
-        if ($this->rental_category_id) {
-            $query->whereHas('rentalCategories', function ($q) {
-                $q->where('rental_category_id', $this->rental_category_id);
             });
         }
 
@@ -177,99 +169,55 @@ class VehiclesList extends Component
             $query->where('model', 'like', '%' . $this->model . '%');
         }
 
-        // Note: Sorting will be done after expanding vehicles based on display_price from category
-        // For now, just order by queue_number to maintain order
+        // Filter by seats (max penumpang - filter where seats <= selected value)
+        if ($this->seats) {
+            $query->where('seats', '<=', (int) $this->seats);
+        }
+
+        // Order by queue_number
         $query->orderBy('queue_number', 'asc');
 
         // Get vehicles
         $vehicles = $query->get();
         
-        // Expand vehicles: prioritize vehicle_rental_categories price, fallback to category price
+        // Expand vehicles: create entries for with_driver and without_driver prices
         // Only show vehicles that have at least one price set
         $expandedVehicles = collect();
         foreach ($vehicles as $vehicle) {
-            $category = $vehicle->category;
-            $rentalCategories = $vehicle->rentalCategories;
+            $hasPriceWithDriver = $vehicle->price_per_day && $vehicle->price_per_day > 0;
+            $hasPriceWithoutDriver = $vehicle->price_per_day_no_driver && $vehicle->price_per_day_no_driver > 0;
             
-            // Check if vehicle has rental categories with prices
-            $hasRentalCategoryPrices = $rentalCategories->where('price', '>', 0)->count() > 0;
-            
-            if ($hasRentalCategoryPrices) {
-                // Use prices from vehicle_rental_categories
-                $vehicleAdded = false;
-                foreach ($rentalCategories as $index => $vehicleRentalCategory) {
-                    // If rental_category_id filter is set, only show matching rental categories
-                    if ($this->rental_category_id) {
-                        if ($vehicleRentalCategory->rental_category_id != $this->rental_category_id) {
-                            continue; // Skip if doesn't match filter
-                        }
-                    }
-                    
-                    if ($vehicleRentalCategory->price && $vehicleRentalCategory->price > 0) {
-                        $rentalCategory = $vehicleRentalCategory->rentalCategory;
-                        if ($rentalCategory) {
-                            $vehicleClone = clone $vehicle;
-                            $vehicleClone->display_price = $vehicleRentalCategory->price;
-                            $vehicleClone->rental_category_name = $rentalCategory->name;
-                            $vehicleClone->rental_category_id = $rentalCategory->id;
-                            $vehicleClone->price_type = $vehicleRentalCategory->with_driver ? 'with_driver' : 'without_driver';
-                            $vehicleClone->price_label = $vehicleRentalCategory->with_driver ? 'Dengan Sopir' : 'Tanpa Sopir';
-                            $vehicleClone->sort_order = $vehicle->queue_number * 10 + $index;
-                            $expandedVehicles->push($vehicleClone);
-                            $vehicleAdded = true;
-                        }
-                    }
-                }
+            if ($hasPriceWithDriver && $hasPriceWithoutDriver) {
+                // Add vehicle twice: once for with driver, once for without driver
+                // First: without driver
+                $vehicleWithoutDriver = clone $vehicle;
+                $vehicleWithoutDriver->display_price = $vehicle->price_per_day_no_driver;
+                $vehicleWithoutDriver->price_type = 'without_driver';
+                $vehicleWithoutDriver->price_label = 'Tanpa Sopir';
+                $vehicleWithoutDriver->sort_order = $vehicle->queue_number * 10;
+                $expandedVehicles->push($vehicleWithoutDriver);
                 
-                // If rental_category_id filter is set but no matching rental category found, skip this vehicle
-                if ($this->rental_category_id && !$vehicleAdded) {
-                    continue; // Skip vehicle if filter is set but no matching rental category
-                }
-            } else {
-                // Fallback to category prices if no rental category prices
-                // But only if rental_category_id filter is NOT set
-                if ($this->rental_category_id) {
-                    continue; // Skip vehicle if filter is set but vehicle has no rental category prices
-                }
-                $hasPrice = $category->price && $category->price > 0;
-                $hasPriceWithDriver = $category->price_with_driver && $category->price_with_driver > 0;
-                
-                if ($hasPrice && $hasPriceWithDriver) {
-                    // Add vehicle twice: once for price, once for price_with_driver
-                    // First: without driver (should appear first)
-                    $vehicleWithoutDriver = clone $vehicle;
-                    $vehicleWithoutDriver->display_price = $category->price;
-                    $vehicleWithoutDriver->price_type = 'without_driver';
-                    $vehicleWithoutDriver->price_label = 'Tanpa Sopir';
-                    $vehicleWithoutDriver->rental_category_name = null;
-                    $vehicleWithoutDriver->sort_order = $vehicle->queue_number * 10;
-                    $expandedVehicles->push($vehicleWithoutDriver);
-                    
-                    // Second: with driver
-                    $vehicleWithDriver = clone $vehicle;
-                    $vehicleWithDriver->display_price = $category->price_with_driver;
-                    $vehicleWithDriver->price_type = 'with_driver';
-                    $vehicleWithDriver->price_label = 'Dengan Sopir';
-                    $vehicleWithDriver->rental_category_name = null;
-                    $vehicleWithDriver->sort_order = $vehicle->queue_number * 10 + 1;
-                    $expandedVehicles->push($vehicleWithDriver);
-                } elseif ($hasPrice) {
-                    // Only price without driver
-                    $vehicle->display_price = $category->price;
-                    $vehicle->price_type = 'without_driver';
-                    $vehicle->price_label = 'Tanpa Sopir';
-                    $vehicle->rental_category_name = null;
-                    $vehicle->sort_order = $vehicle->queue_number * 10;
-                    $expandedVehicles->push($vehicle);
-                } elseif ($hasPriceWithDriver) {
-                    // Only price with driver
-                    $vehicle->display_price = $category->price_with_driver;
-                    $vehicle->price_type = 'with_driver';
-                    $vehicle->price_label = 'Dengan Sopir';
-                    $vehicle->rental_category_name = null;
-                    $vehicle->sort_order = $vehicle->queue_number * 10;
-                    $expandedVehicles->push($vehicle);
-                }
+                // Second: with driver
+                $vehicleWithDriver = clone $vehicle;
+                $vehicleWithDriver->display_price = $vehicle->price_per_day;
+                $vehicleWithDriver->price_type = 'with_driver';
+                $vehicleWithDriver->price_label = 'Dengan Sopir';
+                $vehicleWithDriver->sort_order = $vehicle->queue_number * 10 + 1;
+                $expandedVehicles->push($vehicleWithDriver);
+            } elseif ($hasPriceWithoutDriver) {
+                // Only price without driver
+                $vehicle->display_price = $vehicle->price_per_day_no_driver;
+                $vehicle->price_type = 'without_driver';
+                $vehicle->price_label = 'Tanpa Sopir';
+                $vehicle->sort_order = $vehicle->queue_number * 10;
+                $expandedVehicles->push($vehicle);
+            } elseif ($hasPriceWithDriver) {
+                // Only price with driver
+                $vehicle->display_price = $vehicle->price_per_day;
+                $vehicle->price_type = 'with_driver';
+                $vehicle->price_label = 'Dengan Sopir';
+                $vehicle->sort_order = $vehicle->queue_number * 10;
+                $expandedVehicles->push($vehicle);
             }
             // Skip vehicles that don't have any price set
         }
@@ -282,21 +230,19 @@ class VehiclesList extends Component
                 });
             } elseif ($this->driver_type === 'without_driver') {
                 $expandedVehicles = $expandedVehicles->filter(function($v) {
-                    return isset($v->price_type) && ($v->price_type === 'without_driver' || $v->price_type === 'default');
+                    return isset($v->price_type) && $v->price_type === 'without_driver';
                 });
             }
         }
         
-        // Filter by price max (only use display_price from category set by admin)
+        // Filter by price max
         if ($this->price_max !== null && $this->price_max !== '') {
             $expandedVehicles = $expandedVehicles->filter(function($v) {
-                // Only filter vehicles that have display_price set from category
                 return isset($v->display_price) && $v->display_price > 0 && $v->display_price <= $this->price_max;
             });
         }
         
-        // Sort expanded vehicles by display_price (from category set by admin), then by sort_order
-        // Only sort by display_price which comes from category (price or price_with_driver)
+        // Sort expanded vehicles
         if ($this->sort === 'price_low') {
             $expandedVehicles = $expandedVehicles->sortBy(function($v) {
                 return [$v->display_price ?? 999999999, $v->sort_order];
@@ -310,7 +256,7 @@ class VehiclesList extends Component
                 return [$v->name, $v->sort_order];
             })->values();
         } else {
-            // Default: sort by display_price (from category), then by sort_order
+            // Default: sort by display_price, then by sort_order
             $expandedVehicles = $expandedVehicles->sortBy(function($v) {
                 return [$v->display_price ?? 999999999, $v->sort_order];
             })->values();
@@ -318,14 +264,12 @@ class VehiclesList extends Component
         
         // Paginate collection using Livewire's WithPagination trait
         $perPage = 12;
-        // Get current page from request - Livewire's WithPagination handles this automatically
         $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage('page');
         
         // Get items for current page
         $items = $expandedVehicles->slice(($currentPage - 1) * $perPage, $perPage)->values();
         
         // Create paginator instance
-        // Livewire's WithPagination trait will handle page updates via wire:click
         $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $items,
             $expandedVehicles->count(),
@@ -341,7 +285,6 @@ class VehiclesList extends Component
         $paginated->setPath(request()->url());
         
         $categories = VehicleCategory::all();
-        $rentalCategories = RentalCategory::active()->orderBy('sort_order')->orderBy('name')->get();
         $brands = VehicleBrand::active()->orderBy('name')->get();
         
         // Get unique models for filter
@@ -353,12 +296,22 @@ class VehiclesList extends Component
             ->filter()
             ->values();
 
+        // Get unique seats for filter (grouped and sorted)
+        $seatsOptions = Vehicle::where('is_available', true)
+            ->whereNotNull('queue_number')
+            ->whereNotNull('seats')
+            ->distinct()
+            ->orderBy('seats', 'asc')
+            ->pluck('seats')
+            ->filter()
+            ->values();
+
         return view('livewire.vehicles-list', [
             'vehicles' => $paginated,
             'categories' => $categories,
-            'rentalCategories' => $rentalCategories,
             'brands' => $brands,
-            'models' => $models
+            'models' => $models,
+            'seatsOptions' => $seatsOptions
         ]);
     }
 }

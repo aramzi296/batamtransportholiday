@@ -18,6 +18,8 @@ class Vehicle extends Model
         'member_id',
         'description',
         'price_per_day',
+        'price_per_day_no_driver',
+        'machine_cc',
         'brand_id',
         'brand', // Keep for backward compatibility
         'model',
@@ -37,6 +39,7 @@ class Vehicle extends Model
         'features' => 'array',
         'images' => 'array',
         'price_per_day' => 'decimal:2',
+        'price_per_day_no_driver' => 'decimal:2',
         'is_available' => 'boolean'
     ];
 

@@ -164,7 +164,29 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-column gap-3">
-                    <div>
+                        <!-- 1. Dengan Sopir -->
+                        <div>
+                            <label class="form-label">Dengan Sopir</label>
+                            <select wire:model.live="driver_type" class="form-select">
+                                <option value="">Semua</option>
+                                <option value="with_driver">Dengan Sopir</option>
+                                <option value="without_driver">Tanpa Sopir</option>
+                            </select>
+                        </div>
+
+                        <!-- 2. Max Penumpang -->
+                        <div>
+                            <label class="form-label">Max Penumpang</label>
+                            <select wire:model.live="seats" class="form-select">
+                                <option value="">Semua</option>
+                                @foreach($seatsOptions as $seatsValue)
+                                    <option value="{{ $seatsValue }}">{{ $seatsValue }} Penumpang</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- 3. Kategori -->
+                        <div>
                             <label class="form-label">Kategori</label>
                             <select wire:model.live="category" class="form-select">
                                 <option value="">Semua Kategori</option>
@@ -176,18 +198,7 @@
                             </select>
                         </div>
 
-                        <div>
-                            <label class="form-label">Kategori Sewa</label>
-                            <select wire:model.live="rental_category_id" class="form-select">
-                                <option value="">Semua Kategori Sewa</option>
-                                @foreach($rentalCategories as $rentalCategory)
-                                    <option value="{{ $rentalCategory->id }}">
-                                        {{ $rentalCategory->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
+                        <!-- 4. Merek -->
                         <div>
                             <label class="form-label">Merek</label>
                             <select wire:model.live="brand_id" class="form-select">
@@ -200,16 +211,7 @@
                             </select>
                         </div>
 
-                        <div>
-                            <label class="form-label">Dengan Sopir</label>
-                            <select wire:model.live="driver_type" class="form-select">
-                                <option value="">Semua</option>
-                                <option value="with_driver">Dengan Sopir</option>
-                                <option value="without_driver">Tanpa Sopir</option>
-                            </select>
-                        </div>
-                        
-                        
+                        <!-- 5. Urutkan -->
                         <div>
                             <label class="form-label">Urutkan</label>
                             <select wire:model.live="sort" class="form-select">
@@ -266,12 +268,7 @@
                             <!-- Baris 3: Harga -->
                             <div class="mb-3">
                                 <h5 class="text-primary mb-0">
-                                    Rp. {{ number_format($vehicle->display_price) }}
-                                    @if(isset($vehicle->rental_category_name) && $vehicle->rental_category_name)
-                                        <span class="rental-category-name">{{ $vehicle->rental_category_name }}</span>
-                                    @else
-                                        /hari
-                                    @endif
+                                    Rp. {{ number_format($vehicle->display_price) }} /hari
                                 </h5>
                             </div>
                             
@@ -300,11 +297,8 @@
                             <!-- Baris 5: Button Booking -->
                             @php
                                 $bookingUrl = '/booking?vehicle_id=' . $vehicle->id;
-                                if (isset($vehicle->rental_category_id) && $vehicle->rental_category_id) {
-                                    $bookingUrl .= '&rental_category_id=' . $vehicle->rental_category_id;
-                                    if (isset($vehicle->price_type)) {
-                                        $bookingUrl .= '&with_driver=' . ($vehicle->price_type == 'with_driver' ? '1' : '0');
-                                    }
+                                if (isset($vehicle->price_type)) {
+                                    $bookingUrl .= '&with_driver=' . ($vehicle->price_type == 'with_driver' ? '1' : '0');
                                 }
                             @endphp
                             <a href="{{ url($bookingUrl) }}" class="btn btn-primary w-100">

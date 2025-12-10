@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'whatsapp' => [
+        'appkey' => env('WHATSAPP_APPKEY', '7d389aad-ba64-4330-bde9-79aac1c52b48'),
+        'authkey' => env('WHATSAPP_AUTHKEY', 'lX0GKhWw3rCJBcErpWRpQZTfz5IszhomAMm5o8dxRZ6qMfcMh6'),
+        'api_url' => env('WHATSAPP_API_URL', 'https://app.saungwa.com/api/create-message'),
+        'sandbox' => env('WHATSAPP_SANDBOX', 'false'),
+    ],
+
 ];
