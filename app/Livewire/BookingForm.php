@@ -7,6 +7,8 @@ use App\Models\Booking;
 use App\Models\VehicleCalendar;
 use App\Mail\BookingConfirmation;
 use App\Mail\NewBookingNotification;
+use App\Services\WhatsAppService;
+use App\Http\Controllers\WhatsAppController;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -541,6 +543,15 @@ class BookingForm extends Component
                 Mail::to('customerservice@dsarana.com')->send(new NewBookingNotification($booking));
             } catch (\Exception $e) {
                 Log::error('Failed to send booking emails: ' . $e->getMessage());
+            }
+            
+            // Send WhatsApp notification to admin
+            try {
+                $whatsappController = new WhatsAppController(new WhatsAppService());
+                $whatsappController->sendAdminNotification($booking);
+            } catch (\Exception $e) {
+                Log::error('Failed to send WhatsApp admin notification: ' . $e->getMessage());
+                // Don't fail the booking if WhatsApp fails
             }
             
             // Redirect to thank you page

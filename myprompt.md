@@ -85,8 +85,24 @@ Step #10:
 
 buatkan saya fungsi atau api yang mengirimkan pesan whatsapp sesuai kode yang diberikan ini. fungsi/api ini jika dipanggil dengan kode booking. fungsi tersebut akan mengambil informasi dari database, membuat pesan dan mengirimkan pesan tersebut ke nomor yang diberikan.
 
+
+
+step #11:
+ketika saya deploy ke server, saya dapat pesan error pada console:
+GET https://bootstrap.sebatam.com/livewire/livewire.js?id=646f9d24 net::ERR_ABORTED 404 (Not Found)
+
+
+step #12:
+https://bootstrap.sebatam.com/booking?vehicle_id=13&with_driver=1
+saya ingin ketika booking dikirim, informasi booking juga dikirim ke beberapa nomor admin.
+
+
+
 Step #xx:
 hapus tabel dan model rental_categories dan vehicle_rental_categories karena tidak diperlukan lagi. 
+
+
+
 
 
 

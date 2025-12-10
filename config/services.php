@@ -40,6 +40,8 @@ return [
         'authkey' => env('WHATSAPP_AUTHKEY', 'lX0GKhWw3rCJBcErpWRpQZTfz5IszhomAMm5o8dxRZ6qMfcMh6'),
         'api_url' => env('WHATSAPP_API_URL', 'https://app.saungwa.com/api/create-message'),
         'sandbox' => env('WHATSAPP_SANDBOX', 'false'),
+        'admin_phone' => env('WHATSAPP_ADMIN_PHONE', '628117007201'),
+        'admin_phones' => array_filter(explode(',', env('WHATSAPP_ADMIN_PHONES', ''))), // Multiple admin phones separated by comma
     ],
 
 ];
