@@ -44,4 +44,9 @@ return [
         'admin_phones' => array_filter(explode(',', env('WHATSAPP_ADMIN_PHONES', ''))), // Multiple admin phones separated by comma
     ],
 
+    'admin' => [
+        'email' => env('ADMIN_EMAIL', 'admin@dsarana.com'),
+        'emails' => array_filter(array_map('trim', explode(',', env('ADMIN_EMAILS', '')))), // Multiple admin emails separated by comma
+    ],
+
 ];

@@ -59,39 +59,14 @@
                             </td>
                             <td>
                                 @php
-                                    $rentalCategories = $vehicle->rentalCategories->where('price', '>', 0);
+                                    // Get price from category if vehicle price is 0 or null
+                                    $displayPrice = $vehicle->price_per_day > 0 
+                                        ? $vehicle->price_per_day 
+                                        : ($vehicle->category->price ?? 0);
                                 @endphp
-                                
-                                @if($rentalCategories->count() > 0)
-                                    @foreach($rentalCategories as $rentalCat)
-                                        <div class="mb-1">
-                                            <strong>Rp {{ number_format($rentalCat->price, 0, ',', '.') }}</strong>
-                                            <br>
-                                            <small class="text-muted">
-                                                {{ $rentalCat->rentalCategory->name ?? 'N/A' }}
-                                                @if($rentalCat->with_driver)
-                                                    <span class="badge bg-info">+ Sopir</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Tanpa Sopir</span>
-                                                @endif
-                                            </small>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    @php
-                                        // Fallback ke price_per_day atau category price
-                                        $displayPrice = $vehicle->price_per_day > 0 
-                                            ? $vehicle->price_per_day 
-                                            : ($vehicle->category->price ?? 0);
-                                    @endphp
-                                    @if($displayPrice > 0)
-                                        <strong>Rp {{ number_format($displayPrice, 0, ',', '.') }}</strong>
-                                        @if($vehicle->price_per_day == 0 && $vehicle->category->price)
-                                            <br><small class="text-muted">(dari kategori)</small>
-                                        @endif
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
+                                <strong>Rp {{ number_format($displayPrice, 0, ',', '.') }}</strong>
+                                @if($vehicle->price_per_day == 0 && $vehicle->category->price)
+                                    <br><small class="text-muted">(dari kategori)</small>
                                 @endif
                             </td>
                             <td>

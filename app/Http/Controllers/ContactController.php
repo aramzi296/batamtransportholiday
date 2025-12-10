@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use App\Services\WhatsAppService;
+use App\Http\Controllers\WhatsAppController;
 
 class ContactController extends Controller
 {
@@ -52,6 +55,9 @@ class ContactController extends Controller
             // Send email notification to admin
             $this->sendAdminNotification($contactData);
 
+            // Send WhatsApp notification to admin
+            $this->sendAdminWhatsAppNotification($contactData);
+
             // Send auto-reply to user
             $this->sendUserAutoReply($contactData);
 
@@ -66,11 +72,29 @@ class ContactController extends Controller
     }
 
     /**
-     * Send notification to admin
+     * Send notification to admin via email
      */
     private function sendAdminNotification($data)
     {
-        $adminEmail = 'admin@dsarana.com';
+        // Get admin emails from config
+        $adminEmails = config('services.admin.emails', []);
+        $adminEmail = config('services.admin.email');
+        
+        // Combine both: use admin_emails if available, fallback to admin_email
+        $emailList = [];
+        if (!empty($adminEmails) && is_array($adminEmails)) {
+            $emailList = $adminEmails;
+        }
+        
+        // Add single admin_email if set and not already in array
+        if (!empty($adminEmail) && !in_array($adminEmail, $emailList)) {
+            $emailList[] = $adminEmail;
+        }
+        
+        // Fallback to default if no emails configured
+        if (empty($emailList)) {
+            $emailList = ['admin@dsarana.com'];
+        }
         
         $subject = 'Pesan Baru dari Website - ' . $this->getSubjectLabel($data['subject']);
         
@@ -109,15 +133,21 @@ class ContactController extends Controller
         </html>
         ";
 
-        try {
-            Mail::html($htmlMessage, function ($mail) use ($adminEmail, $subject, $data) {
-                $mail->from('admin@dsarana.com', 'D\'Sarana')
-                     ->to($adminEmail)
-                     ->subject($subject)
-                     ->replyTo($data['email'], $data['name']);
-            });
-        } catch (\Exception $e) {
-            \Log::error('Failed to send contact email to admin: ' . $e->getMessage());
+        // Send to all admin emails
+        foreach ($emailList as $email) {
+            try {
+                Mail::html($htmlMessage, function ($mail) use ($email, $subject, $data) {
+                    $mail->from('admin@dsarana.com', 'D\'Sarana')
+                         ->to($email)
+                         ->subject($subject)
+                         ->replyTo($data['email'], $data['name']);
+                });
+            } catch (\Exception $e) {
+                Log::error('Failed to send contact email to admin: ' . $e->getMessage(), [
+                    'email' => $email,
+                    'error' => $e->getMessage()
+                ]);
+            }
         }
     }
 
@@ -172,6 +202,95 @@ class ContactController extends Controller
         } catch (\Exception $e) {
             \Log::error('Failed to send auto-reply email to user: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Send WhatsApp notification to admin
+     */
+    private function sendAdminWhatsAppNotification($data)
+    {
+        try {
+            // Get admin phone numbers
+            $adminPhones = config('services.whatsapp.admin_phones', []);
+            $adminPhone = config('services.whatsapp.admin_phone');
+            
+            // Combine both: use admin_phones if available, fallback to admin_phone
+            $phoneNumbers = [];
+            if (!empty($adminPhones) && is_array($adminPhones)) {
+                $phoneNumbers = $adminPhones;
+            }
+            
+            // Add single admin_phone if set and not already in array
+            if (!empty($adminPhone) && !in_array($adminPhone, $phoneNumbers)) {
+                $phoneNumbers[] = $adminPhone;
+            }
+            
+            if (empty($phoneNumbers)) {
+                Log::warning('WhatsApp admin phone not configured for contact form');
+                return;
+            }
+
+            // Generate WhatsApp message
+            $message = $this->generateContactWhatsAppMessage($data);
+
+            // Send to all admin numbers
+            $whatsappService = new WhatsAppService();
+            foreach ($phoneNumbers as $phone) {
+                try {
+                    $formattedPhone = $whatsappService->formatPhoneNumber(trim($phone));
+                    $result = $whatsappService->sendMessage($formattedPhone, $message);
+
+                    if ($result['success']) {
+                        Log::info('WhatsApp contact notification sent successfully', [
+                            'phone' => $formattedPhone,
+                            'contact_name' => $data['name']
+                        ]);
+                    } else {
+                        Log::error('Failed to send WhatsApp contact notification', [
+                            'phone' => $formattedPhone,
+                            'error' => $result['error'] ?? 'Unknown error'
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('WhatsApp contact notification exception', [
+                        'phone' => $phone,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('WhatsApp contact notification exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * Generate WhatsApp message for contact form
+     */
+    private function generateContactWhatsAppMessage($data): string
+    {
+        $subjectLabel = $this->getSubjectLabel($data['subject']);
+        
+        $message = "📧 *PESAN BARU DARI WEBSITE*\n\n";
+        $message .= "Subjek: *{$subjectLabel}*\n";
+        $message .= "Waktu: " . $data['submitted_at']->format('d F Y H:i:s') . "\n\n";
+        
+        $message .= "👤 *Data Pengirim:*\n";
+        $message .= "Nama: {$data['name']}\n";
+        $message .= "Email: {$data['email']}\n";
+        if ($data['phone']) {
+            $message .= "Telepon: {$data['phone']}\n";
+        }
+        $message .= "Newsletter: " . ($data['newsletter'] ? 'Ya' : 'Tidak') . "\n\n";
+        
+        $message .= "💬 *Pesan:*\n";
+        $message .= $data['message'] . "\n\n";
+        
+        $message .= "Silakan segera tanggapi pesan ini! ⚡";
+        
+        return $message;
     }
 
     /**

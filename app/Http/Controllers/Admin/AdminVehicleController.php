@@ -13,7 +13,7 @@ class AdminVehicleController extends Controller
 {
     public function index()
     {
-        $vehicles = Vehicle::with(['category', 'brand', 'vehicleImages', 'rentalCategories.rentalCategory'])
+        $vehicles = Vehicle::with(['category', 'brand', 'vehicleImages'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -29,7 +29,7 @@ class AdminVehicleController extends Controller
     {
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'category_id' => 'required|exists:vehicle_categories,id',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'brand_id' => 'required|exists:vehicle_brands,id',
             'model' => 'required|string|max:100',
             'year' => 'required|integer|min:1990|max:' . (date('Y') + 1),
@@ -136,7 +136,7 @@ class AdminVehicleController extends Controller
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:vehicle_categories,id',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'price_per_day' => 'nullable|numeric|min:0',
             'brand_id' => 'required|exists:vehicle_brands,id',
             'model' => 'required|string|max:100',

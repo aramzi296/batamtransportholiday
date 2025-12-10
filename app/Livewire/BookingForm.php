@@ -538,9 +538,36 @@ class BookingForm extends Component
                 // Send confirmation email to customer
                 Mail::to($this->customer_email)->send(new BookingConfirmation($booking));
                 
-                // Send notification email to admin
-                Mail::to('admin@dsarana.com')->send(new NewBookingNotification($booking));
-                Mail::to('customerservice@dsarana.com')->send(new NewBookingNotification($booking));
+                // Get admin emails from config
+                $adminEmails = config('services.admin.emails', []);
+                $adminEmail = config('services.admin.email');
+                
+                // Combine both: use admin_emails if available, fallback to admin_email
+                $emailList = [];
+                if (!empty($adminEmails) && is_array($adminEmails)) {
+                    $emailList = $adminEmails;
+                }
+                
+                // Add single admin_email if set and not already in array
+                if (!empty($adminEmail) && !in_array($adminEmail, $emailList)) {
+                    $emailList[] = $adminEmail;
+                }
+                
+                // Fallback to default if no emails configured
+                if (empty($emailList)) {
+                    $emailList = ['admin@dsarana.com'];
+                }
+                
+                // Send notification email to all admin emails
+                foreach ($emailList as $email) {
+                    try {
+                        Mail::to($email)->send(new NewBookingNotification($booking));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send booking email to admin: ' . $e->getMessage(), [
+                            'email' => $email
+                        ]);
+                    }
+                }
             } catch (\Exception $e) {
                 Log::error('Failed to send booking emails: ' . $e->getMessage());
             }
