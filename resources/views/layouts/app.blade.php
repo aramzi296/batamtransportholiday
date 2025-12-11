@@ -86,11 +86,11 @@
                             <i class="fas fa-car"></i> Armada
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="{{ url('/prices') }}">
                             <i class="fas fa-tags"></i> Harga
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/articles') }}">
                             <i class="fas fa-newspaper"></i> Artikel
