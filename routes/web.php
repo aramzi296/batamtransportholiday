@@ -142,7 +142,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('bookings/{booking}/send-confirmation-whatsapp', [AdminBookingController::class, 'sendConfirmationWhatsApp'])->name('bookings.send-confirmation-whatsapp');
     
     // Article Management
-    Route::resource('articles', AdminArticleController::class);
+    Route::resource('articles', AdminArticleController::class)->parameters([
+        'articles' => 'article:slug'
+    ]);
     Route::resource('article-categories', AdminArticleCategoryController::class, [
         'names' => [
             'index' => 'article-categories.index',

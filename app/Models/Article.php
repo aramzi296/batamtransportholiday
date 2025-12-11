@@ -44,4 +44,12 @@ class Article extends Model
     {
         return $query->where('status', 'published');
     }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }
