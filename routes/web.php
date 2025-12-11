@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdminAvailabilityController;
 use App\Http\Controllers\Admin\AdminTestimonialController;
 use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminEmailTestController;
+use App\Http\Controllers\Admin\AdminMediaController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -181,6 +182,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Email Test
     Route::get('email-test', [AdminEmailTestController::class, 'index'])->name('email-test.index');
     Route::post('email-test/send', [AdminEmailTestController::class, 'sendTest'])->name('email-test.send');
+    
+    // Media Management
+    Route::resource('media', AdminMediaController::class)->only(['index', 'store', 'update', 'destroy']);
 });
 
 // Debug: Check rental categories satuan
