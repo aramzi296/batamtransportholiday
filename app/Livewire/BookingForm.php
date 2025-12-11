@@ -520,6 +520,17 @@ class BookingForm extends Component
                 'status' => 'pending',
             ]);
             
+            // Log customer submit event
+            $booking->logEvent(
+                \App\Models\BookingEvent::TYPE_CUSTOMER_SUBMIT,
+                'Customer mengirim booking',
+                [
+                    'customer_name' => $this->customer_name,
+                    'customer_email' => $this->customer_email,
+                    'vehicle_id' => $finalVehicleId,
+                ]
+            );
+            
             // Block dates in VehicleCalendar
             $currentDate = $startDate->copy();
             while ($currentDate <= $endDate) {
@@ -537,6 +548,13 @@ class BookingForm extends Component
             try {
                 // Send confirmation email to customer
                 Mail::to($this->customer_email)->send(new BookingConfirmation($booking));
+                
+                // Log email sent to customer
+                $booking->logEvent(
+                    \App\Models\BookingEvent::TYPE_EMAIL_SENT_CUSTOMER,
+                    'Email konfirmasi dikirim ke customer',
+                    ['email' => $this->customer_email]
+                );
                 
                 // Get admin emails from config
                 $adminEmails = config('services.admin.emails', []);
@@ -562,6 +580,13 @@ class BookingForm extends Component
                 foreach ($emailList as $email) {
                     try {
                         Mail::to($email)->send(new NewBookingNotification($booking));
+                        
+                        // Log email sent to admin
+                        $booking->logEvent(
+                            \App\Models\BookingEvent::TYPE_EMAIL_SENT_ADMIN,
+                            'Email notifikasi dikirim ke admin',
+                            ['email' => $email]
+                        );
                     } catch (\Exception $e) {
                         Log::error('Failed to send booking email to admin: ' . $e->getMessage(), [
                             'email' => $email
@@ -575,7 +600,19 @@ class BookingForm extends Component
             // Send WhatsApp notification to admin
             try {
                 $whatsappController = new WhatsAppController(new WhatsAppService());
-                $whatsappController->sendAdminNotification($booking);
+                $result = $whatsappController->sendAdminNotification($booking);
+                
+                // Log WhatsApp sent to admin
+                if ($result['success'] ?? false) {
+                    $booking->logEvent(
+                        \App\Models\BookingEvent::TYPE_WHATSAPP_SENT_ADMIN,
+                        'WhatsApp notifikasi dikirim ke admin',
+                        [
+                            'total_phones' => $result['total'] ?? 0,
+                            'success_count' => $result['success_count'] ?? 0,
+                        ]
+                    );
+                }
             } catch (\Exception $e) {
                 Log::error('Failed to send WhatsApp admin notification: ' . $e->getMessage());
                 // Don't fail the booking if WhatsApp fails

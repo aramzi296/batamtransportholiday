@@ -341,6 +341,17 @@ class WhatsAppController extends Controller
             $message .= "📝 *Catatan Customer:*\n{$booking->notes}\n\n";
         }
         
+        // Add clickable link to booking detail page
+        // Generate absolute URL so WhatsApp can automatically detect and make it clickable
+        $bookingUrl = route('admin.bookings.show', $booking);
+        // Ensure URL is absolute (starts with http:// or https://)
+        if (!preg_match('/^https?:\/\//', $bookingUrl)) {
+            $bookingUrl = url($bookingUrl);
+        }
+        
+        $message .= "🔗 *Link Detail Booking:*\n";
+        $message .= $bookingUrl . "\n\n";
+        
         $message .= "Silakan segera proses booking ini! ⚡";
 
         return $message;

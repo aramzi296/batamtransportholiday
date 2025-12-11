@@ -47,6 +47,24 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function events()
+    {
+        return $this->hasMany(BookingEvent::class)->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Log an event for this booking
+     */
+    public function logEvent(string $eventType, ?string $description = null, ?array $metadata = null, ?int $userId = null): BookingEvent
+    {
+        return $this->events()->create([
+            'event_type' => $eventType,
+            'description' => $description,
+            'metadata' => $metadata,
+            'user_id' => $userId ?? auth()->id(),
+        ]);
+    }
+
     public static function generateBookingCode()
     {
         do {

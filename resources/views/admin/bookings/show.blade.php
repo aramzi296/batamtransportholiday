@@ -177,13 +177,30 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-edit"></i> Update Status & Catatan</h5>
+                <h5 class="mb-0"><i class="fas fa-edit"></i> Update Harga, Status & Catatan</h5>
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.bookings.update', $booking) }}" method="POST">
                     @csrf
                     @method('PUT')
-                    
+
+                    <div class="mb-3">
+                        <label class="form-label">Harga per Hari</label>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input type="number" name="daily_price" step="0.01" min="0" class="form-control"
+                                   value="{{ old('daily_price', $booking->daily_price) }}" id="dailyPriceInput">
+                        </div>
+                        <small class="text-muted">Total hari: {{ $booking->total_days }} hari</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Total Harga</label>
+                        <div class="form-control bg-light">
+                            <strong id="totalPriceDisplay">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</strong>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Status Booking</label>
                         <select name="status" class="form-select" required>
@@ -204,6 +221,29 @@
                         <i class="fas fa-save"></i> Update
                     </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- Manual Actions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-paper-plane"></i> Kirim Notifikasi</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <form action="{{ route('admin.bookings.send-confirmation-email', $booking) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-primary btn-sm w-100" onclick="return confirm('Kirim email konfirmasi ke customer?')">
+                            <i class="fas fa-envelope"></i> Kirim Email Konfirmasi
+                        </button>
+                    </form>
+                    <form action="{{ route('admin.bookings.send-confirmation-whatsapp', $booking) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-success btn-sm w-100" onclick="return confirm('Kirim WhatsApp konfirmasi ke customer?')">
+                            <i class="fab fa-whatsapp"></i> Kirim WhatsApp Konfirmasi
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -231,30 +271,69 @@
             </div>
         </div>
 
-        <!-- Timeline -->
+        <!-- Booking History -->
         <div class="card mt-4">
             <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-history"></i> Timeline</h5>
+                <h5 class="mb-0"><i class="fas fa-history"></i> History Booking</h5>
             </div>
             <div class="card-body">
+                @if($booking->events && $booking->events->count() > 0)
                 <div class="timeline">
+                    @foreach($booking->events as $event)
                     <div class="timeline-item">
-                        <div class="timeline-marker bg-primary"></div>
+                        <div class="timeline-marker 
+                            @if($event->event_type === 'customer_submit') bg-primary
+                            @elseif($event->event_type === 'email_sent_customer' || $event->event_type === 'email_confirmation_sent') bg-info
+                            @elseif($event->event_type === 'email_sent_admin') bg-secondary
+                            @elseif($event->event_type === 'whatsapp_sent_admin' || $event->event_type === 'whatsapp_confirmation_sent') bg-success
+                            @elseif($event->event_type === 'status_changed') bg-warning
+                            @else bg-secondary
+                            @endif
+                        "></div>
                         <div class="timeline-content">
-                            <h6 class="timeline-title">Booking Dibuat</h6>
-                            <p class="timeline-text">{{ $booking->created_at->format('d/m/Y H:i') }}</p>
+                            <h6 class="timeline-title">
+                                @switch($event->event_type)
+                                    @case('customer_submit')
+                                        <i class="fas fa-user"></i> Customer Mengirim Booking
+                                        @break
+                                    @case('email_sent_customer')
+                                        <i class="fas fa-envelope"></i> Email Dikirim ke Customer
+                                        @break
+                                    @case('email_sent_admin')
+                                        <i class="fas fa-envelope"></i> Email Dikirim ke Admin
+                                        @break
+                                    @case('whatsapp_sent_admin')
+                                        <i class="fab fa-whatsapp"></i> WhatsApp Dikirim ke Admin
+                                        @break
+                                    @case('status_changed')
+                                        <i class="fas fa-exchange-alt"></i> Status Diubah
+                                        @break
+                                    @case('email_confirmation_sent')
+                                        <i class="fas fa-envelope"></i> Email Konfirmasi Dikirim
+                                        @break
+                                    @case('whatsapp_confirmation_sent')
+                                        <i class="fab fa-whatsapp"></i> WhatsApp Konfirmasi Dikirim
+                                        @break
+                                    @default
+                                        {{ $event->event_type }}
+                                @endswitch
+                            </h6>
+                            @if($event->description)
+                                <p class="timeline-text mb-1">{{ $event->description }}</p>
+                            @endif
+                            <p class="timeline-text text-muted small">
+                                {{ $event->created_at->format('d/m/Y H:i:s') }}
+                                @if($event->user)
+                                    | oleh {{ $event->user->name }}
+                                @endif
+                            </p>
                         </div>
                     </div>
-                    @if($booking->status !== 'pending')
-                    <div class="timeline-item">
-                        <div class="timeline-marker bg-success"></div>
-                        <div class="timeline-content">
-                            <h6 class="timeline-title">Status: {{ ucfirst($booking->status) }}</h6>
-                            <p class="timeline-text">{{ $booking->updated_at->format('d/m/Y H:i') }}</p>
-                        </div>
-                    </div>
-                    @endif
+                    @endforeach
                 </div>
+                @else
+                <p class="text-muted text-center">Belum ada history</p>
+                @endif
             </div>
         </div>
     </div>
@@ -305,4 +384,31 @@
         margin: 0;
     }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+    (function() {
+        const dailyInput = document.getElementById('dailyPriceInput');
+        const totalDisplay = document.getElementById('totalPriceDisplay');
+        const totalDays = {{ $booking->total_days }};
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID').format(number);
+        }
+
+        function updateTotal() {
+            const val = parseFloat(dailyInput.value);
+            if (!isNaN(val)) {
+                const total = val * totalDays;
+                totalDisplay.textContent = 'Rp ' + formatRupiah(total);
+            }
+        }
+
+        if (dailyInput) {
+            dailyInput.addEventListener('input', updateTotal);
+            updateTotal();
+        }
+    })();
+</script>
 @endpush

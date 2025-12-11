@@ -97,6 +97,24 @@ https://bootstrap.sebatam.com/booking?vehicle_id=13&with_driver=1
 saya ingin ketika booking dikirim, informasi booking juga dikirim ke beberapa nomor admin.
 
 
+step #13:
+saya ingin mendefinisikan nomor email admin. email bisa lebih darisatu. semua notifikasi booking dan kontak form akan dikirimkan ke email ini.
+setelah didefinisikan, perbarui email tujuan dari kontak form ke email ini.
+saya juga ingin kontak form juga dikirimkan ke nomor whatsapp admin.
+
+
+http://127.0.0.1:8000/admin/bookings/1 tambahkan fitur untuk mengubah harga perhari untuk booking ini
+
+
+saya ingin mencatat setiap history event setiap booking. mulai dari booking dikirim oleh customer, email notification dikirim ke customer dan admin, notification whatsapp dikirim ke admin, admin konfirmasi booking, admin kirim email konfirmasi ke customer, admin kirim whatsapp notification ke customer.
+notifikasi booking yang dikirim oleh customer dibuat secara otomatis ketika customer kirim booking. email dari admin ke customer dilakukan secara manual dengan klik button yang disediakan pada halaman suatu booking.
+
+setiap notifikasi booking ke admin yang dikirim dengan whatsapp, tambahkan link ke halaman booking supaya admin bisa buka detail booking tersebut.
+[todo] link belum berhasil terkirim. masih plain text
+
+
+
+
 
 Step #xx:
 hapus tabel dan model rental_categories dan vehicle_rental_categories karena tidak diperlukan lagi. 

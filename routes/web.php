@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\AdminArticleCategoryController;
 use App\Http\Controllers\Admin\AdminAvailabilityController;
 use App\Http\Controllers\Admin\AdminTestimonialController;
 use App\Http\Controllers\Admin\AdminFaqController;
+use App\Http\Controllers\Admin\AdminEmailTestController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -136,6 +137,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('bookings', AdminBookingController::class)->only(['index', 'show', 'update']);
     Route::post('bookings/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('bookings.confirm');
     Route::post('bookings/{booking}/cancel', [AdminBookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::post('bookings/{booking}/send-confirmation-email', [AdminBookingController::class, 'sendConfirmationEmail'])->name('bookings.send-confirmation-email');
+    Route::post('bookings/{booking}/send-confirmation-whatsapp', [AdminBookingController::class, 'sendConfirmationWhatsApp'])->name('bookings.send-confirmation-whatsapp');
     
     // Article Management
     Route::resource('articles', AdminArticleController::class);
@@ -174,6 +177,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('vehicles/{vehicle}/calendar/block', [\App\Http\Controllers\Admin\AdminVehicleCalendarController::class, 'create'])->name('vehicles.calendar.block');
     Route::post('vehicles/{vehicle}/calendar/block', [\App\Http\Controllers\Admin\AdminVehicleCalendarController::class, 'store'])->name('vehicles.calendar.block.store');
     Route::delete('vehicles/{vehicle}/calendar/{calendar}', [\App\Http\Controllers\Admin\AdminVehicleCalendarController::class, 'destroy'])->name('vehicles.calendar.block.delete');
+    
+    // Email Test
+    Route::get('email-test', [AdminEmailTestController::class, 'index'])->name('email-test.index');
+    Route::post('email-test/send', [AdminEmailTestController::class, 'sendTest'])->name('email-test.send');
 });
 
 // Debug: Check rental categories satuan
