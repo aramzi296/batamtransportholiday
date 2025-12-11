@@ -120,6 +120,103 @@
     </div>
 </section> -->
 
+<!-- Popular Vehicles -->
+@if(isset($popularVehicles) && count($popularVehicles) > 0)
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold">Daftar Kendaraan</h2>
+            <p class="lead">Pilih kendaraan yang sesuai dengan kebutuhan perjalanan Anda</p>
+        </div>
+        <div class="row g-4">
+            @foreach($popularVehicles as $vehicle)
+            <div class="col-lg-4 col-md-6">
+                <div class="card vehicle-card h-100 shadow-sm">
+                    <img src="{{ $vehicle->main_image }}" class="card-img-top" alt="{{ $vehicle->name }}" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $vehicle->name }}</h5>
+                        
+                        <!-- Baris 1: Kategori dan Tipe Harga -->
+                        <div class="mb-2">
+                            <span class="badge bg-primary">{{ $vehicle->category->name }}</span>
+                            @if(isset($vehicle->price_type) && $vehicle->price_type === 'with_driver')
+                                <span class="badge bg-success ms-1">
+                                    <i class="fas fa-user-tie"></i> {{ $vehicle->price_label ?? 'Dengan Sopir' }}
+                                </span>
+                            @elseif(isset($vehicle->price_type) && $vehicle->price_type === 'without_driver')
+                                <span class="badge bg-info ms-1">
+                                    <i class="fas fa-car"></i> {{ $vehicle->price_label ?? 'Tanpa Sopir' }}
+                                </span>
+                            @endif
+                        </div>
+                        
+                        <!-- Baris 2: Brand dan Model -->
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-tag"></i> {{ $vehicle->brand_name ?? $vehicle->brand }}
+                                @if($vehicle->model)
+                                    - {{ $vehicle->model }}
+                                @endif
+                            </small>
+                        </div>
+                        
+                        <!-- Baris 3: Harga -->
+                        <div class="mb-3">
+                            <h5 class="text-primary mb-0">
+                                Rp. {{ number_format($vehicle->display_price ?? $vehicle->price_per_day ?? $vehicle->price_per_day_no_driver ?? 0) }}
+                                /hari
+                            </h5>
+                        </div>
+                        
+                        <!-- Baris 4: Kursi, Transmisi, Bahan Bakar -->
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <small class="text-muted d-block">
+                                    <i class="fas fa-users"></i>
+                                </small>
+                                <small class="text-muted">{{ $vehicle->seats }} Kursi</small>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">
+                                    <i class="fas fa-cog"></i>
+                                </small>
+                                <small class="text-muted">{{ $vehicle->transmission }}</small>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">
+                                    <i class="fas fa-gas-pump"></i>
+                                </small>
+                                <small class="text-muted">{{ $vehicle->fuel_type }}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Baris 5: Button Booking -->
+                        @php
+                            $bookingUrl = '/booking?vehicle_id=' . $vehicle->id;
+                            if (isset($vehicle->rental_category_id) && $vehicle->rental_category_id) {
+                                $bookingUrl .= '&rental_category_id=' . $vehicle->rental_category_id;
+                                if (isset($vehicle->price_type)) {
+                                    $bookingUrl .= '&with_driver=' . ($vehicle->price_type == 'with_driver' ? '1' : '0');
+                                }
+                            }
+                        @endphp
+                        <a href="{{ url($bookingUrl) }}" class="btn btn-primary w-100">
+                            <i class="fas fa-calendar-check"></i> Booking Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        <div class="text-center mt-5">
+            <a href="{{ route('vehicles.index') }}" class="btn btn-primary btn-lg px-5">
+                <i class="fas fa-th-large"></i> Lihat Semua Kendaraan
+            </a>
+        </div>
+    </div>
+</section>
+@endif
+
 <!-- Features Section -->
 <section id="features" class="py-5">
     <div class="container">
@@ -186,106 +283,7 @@
     </div>
 </section>
 
-<!-- Popular Vehicles -->
-@if(isset($popularVehicles) && count($popularVehicles) > 0)
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-6 fw-bold">Daftar Kendaraan</h2>
-            <p class="lead">Pilih kendaraan yang sesuai dengan kebutuhan perjalanan Anda</p>
-        </div>
-        <div class="row g-4">
-            @foreach($popularVehicles as $vehicle)
-            <div class="col-lg-4 col-md-6">
-                <div class="card vehicle-card h-100 shadow-sm">
-                    <img src="{{ $vehicle->main_image }}" class="card-img-top" alt="{{ $vehicle->name }}" style="height: 250px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $vehicle->name }}</h5>
-                        
-                        <!-- Baris 1: Kategori dan Tipe Harga -->
-                        <div class="mb-2">
-                            <span class="badge bg-primary">{{ $vehicle->category->name }}</span>
-                            @if(isset($vehicle->price_type) && $vehicle->price_type === 'with_driver')
-                                <span class="badge bg-success ms-1">
-                                    <i class="fas fa-user-tie"></i> {{ $vehicle->price_label ?? 'Dengan Sopir' }}
-                                </span>
-                            @elseif(isset($vehicle->price_type) && $vehicle->price_type === 'without_driver')
-                                <span class="badge bg-info ms-1">
-                                    <i class="fas fa-car"></i> {{ $vehicle->price_label ?? 'Tanpa Sopir' }}
-                                </span>
-                            @endif
-                        </div>
-                        
-                        <!-- Baris 2: Brand dan Model -->
-                        <div class="mb-2">
-                            <small class="text-muted">
-                                <i class="fas fa-tag"></i> {{ $vehicle->brand_name ?? $vehicle->brand }}
-                                @if($vehicle->model)
-                                    - {{ $vehicle->model }}
-                                @endif
-                            </small>
-                        </div>
-                        
-                        <!-- Baris 3: Harga -->
-                        <div class="mb-3">
-                            <h5 class="text-primary mb-0">
-                                Rp. {{ number_format($vehicle->display_price) }}
-                                @if(isset($vehicle->rental_category_name) && $vehicle->rental_category_name)
-                                    <span class="rental-category-name">{{ $vehicle->rental_category_name }}</span>
-                                @else
-                                    /hari
-                                @endif
-                            </h5>
-                        </div>
-                        
-                        <!-- Baris 4: Kursi, Transmisi, Bahan Bakar -->
-                        <div class="row text-center mb-3">
-                            <div class="col-4">
-                                <small class="text-muted d-block">
-                                    <i class="fas fa-users"></i>
-                                </small>
-                                <small class="text-muted">{{ $vehicle->seats }} Kursi</small>
-                            </div>
-                            <div class="col-4">
-                                <small class="text-muted d-block">
-                                    <i class="fas fa-cog"></i>
-                                </small>
-                                <small class="text-muted">{{ $vehicle->transmission }}</small>
-                            </div>
-                            <div class="col-4">
-                                <small class="text-muted d-block">
-                                    <i class="fas fa-gas-pump"></i>
-                                </small>
-                                <small class="text-muted">{{ $vehicle->fuel_type }}</small>
-                            </div>
-                        </div>
-                        
-                        <!-- Baris 5: Button Booking -->
-                        @php
-                            $bookingUrl = '/booking?vehicle_id=' . $vehicle->id;
-                            if (isset($vehicle->rental_category_id) && $vehicle->rental_category_id) {
-                                $bookingUrl .= '&rental_category_id=' . $vehicle->rental_category_id;
-                                if (isset($vehicle->price_type)) {
-                                    $bookingUrl .= '&with_driver=' . ($vehicle->price_type == 'with_driver' ? '1' : '0');
-                                }
-                            }
-                        @endphp
-                        <a href="{{ url($bookingUrl) }}" class="btn btn-primary w-100">
-                            <i class="fas fa-calendar-check"></i> Booking Sekarang
-                        </a>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-        <div class="text-center mt-4">
-            <a href="{{ url('/vehicles') }}" class="btn btn-outline-primary btn-lg">
-                <i class="fas fa-th-large"></i> Lihat Semua Kendaraan
-            </a>
-        </div>
-    </div>
-</section>
-@endif
+
 
 <!-- Call to Action -->
 <section class="py-5 bg-primary text-white">

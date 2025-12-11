@@ -113,6 +113,9 @@ setiap notifikasi booking ke admin yang dikirim dengan whatsapp, tambahkan link 
 [todo] link belum berhasil terkirim. masih plain text
 
 
+buatkan satu halaman untuk test pengiriman email dengan setting yang disediakan dari .env.
+
+buatkan media file management. tambahkan menunya pada admin sidebar. upload ke R2 storage pada folder media_ds. pada daftar media, tampilkan thumbnail, keterangan, dan tambahkan button untuk meng-copy link kepada media tersebut. 
 
 
 
