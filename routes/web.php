@@ -272,6 +272,7 @@ Route::get('/test-whatsapp', function () {
 
 // Fonnte Webhook Routes
 Route::post('/api/fonnte/webhook', [FonnteWebhookController::class, 'handle'])->name('api.fonnte.webhook');
+Route::get('/api/fonnte/test', [FonnteWebhookController::class, 'test'])->name('api.fonnte.test');
 
 
 
