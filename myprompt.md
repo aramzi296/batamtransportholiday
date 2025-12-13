@@ -119,8 +119,6 @@ buatkan media file management. tambahkan menunya pada admin sidebar. upload ke R
 
 
 
-Step #xx:
-hapus tabel dan model rental_categories dan vehicle_rental_categories karena tidak diperlukan lagi. 
 
 
 

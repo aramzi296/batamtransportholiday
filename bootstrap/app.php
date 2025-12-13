@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'member' => \App\Http\Middleware\MemberMiddleware::class,
         ]);
+        
+        // Exclude Fonnte webhook from CSRF verification
+        $middleware->validateCsrfTokens(except: [
+            'api/fonnte/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

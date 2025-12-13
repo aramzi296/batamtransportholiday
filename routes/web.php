@@ -24,6 +24,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\WhatsAppController;
+use App\Http\Controllers\FonnteWebhookController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -268,6 +269,9 @@ Route::post('/api/whatsapp/test', [WhatsAppController::class, 'test'])->name('ap
 Route::get('/test-whatsapp', function () {
     return view('test-whatsapp');
 })->name('test.whatsapp');
+
+// Fonnte Webhook Routes
+Route::post('/api/fonnte/webhook', [FonnteWebhookController::class, 'handle'])->name('api.fonnte.webhook');
 
 
 
