@@ -96,6 +96,19 @@ class FonnteWebhookController extends Controller
             // Process message and generate reply
             $reply = $this->processMessage($message);
 
+            // If message doesn't match any criteria, don't send reply
+            if ($reply === null) {
+                Log::info('Fonnte message does not match criteria, no reply sent', [
+                    'sender' => $sender,
+                    'message' => $message,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Message received but no reply needed'
+                ]);
+            }
+
             Log::info('Fonnte reply prepared', [
                 'sender' => $sender,
                 'original_message' => $message,
@@ -159,11 +172,12 @@ class FonnteWebhookController extends Controller
 
     /**
      * Process incoming message and generate reply
+     * Returns null if message doesn't match any criteria (no reply needed)
      *
      * @param string $message
-     * @return array
+     * @return array|null
      */
-    private function processMessage(string $message): array
+    private function processMessage(string $message): ?array
     {
         // Original code uses case-sensitive comparison without trim
         // But we'll use case-insensitive for better UX
@@ -197,15 +211,8 @@ class FonnteWebhookController extends Controller
                 'filename' => 'document',
             ];
         } else {
-            return [
-                'message' => "Sorry, i don't understand. Please use one of the following keyword :
-
-Test
-Audio
-Video
-Image
-File",
-            ];
+            // Message doesn't match any criteria, return null (no reply)
+            return null;
         }
     }
 
