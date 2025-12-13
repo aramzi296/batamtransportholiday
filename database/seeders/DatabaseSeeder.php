@@ -73,12 +73,15 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // // Seed vehicle brands
-        // $this->call(VehicleBrandSeeder::class);
+        $this->call(VehicleBrandSeeder::class);
         // // Seed vehicles
-        // $this->call(VehicleSeeder::class);
+        $this->call(VehicleSeeder::class);
         // // Seed testimonials
-        // $this->call(TestimonialSeeder::class);
+        $this->call(TestimonialSeeder::class);
         // // Seed FAQs
-        // $this->call(FaqSeeder::class);
+        $this->call(FaqSeeder::class);
+        // // Seed articles
+        $this->call(ArticleCategorySeeder::class);
+        $this->call(VehicleCategorySeeder::class);    
     }
 }
