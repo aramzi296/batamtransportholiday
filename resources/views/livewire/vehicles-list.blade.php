@@ -296,13 +296,32 @@
                             
                             <!-- Baris 5: Button Booking -->
                             @php
-                                $bookingUrl = '/booking?vehicle_id=' . $vehicle->id;
+                                $whatsappPhone = config('services.whatsapp.admin_phone', '6282172292230');
+                                // Format phone number (remove + if exists, ensure it starts with country code)
+                                $whatsappPhone = preg_replace('/[^0-9]/', '', $whatsappPhone);
+                                
+                                // Build WhatsApp message with vehicle information
+                                $message = "Halo, saya tertarik untuk booking kendaraan berikut:\n\n";
+                                
+                                $message .= "🏷️ Kategori: " . $vehicle->category->name . "\n";
+                                
                                 if (isset($vehicle->price_type)) {
-                                    $bookingUrl .= '&with_driver=' . ($vehicle->price_type == 'with_driver' ? '1' : '0');
+                                    $message .= "👤 Tipe: " . ($vehicle->price_type == 'with_driver' ? 'Dengan Sopir' : 'Tanpa Sopir') . "\n";
                                 }
+                               
+                                
+                                $message .= "👥 Kursi: " . $vehicle->seats . " penumpang\n";
+                                                               
+                                $message .= "\nMohon informasi lebih lanjut mengenai ketersediaan kendaraan, diskon & promo, dan proses booking Terima kasih!";
+                                
+                                // Encode message for URL
+                                $encodedMessage = urlencode($message);
+                                
+                                // Create WhatsApp URL
+                                $whatsappUrl = "https://wa.me/" . $whatsappPhone . "?text=" . $encodedMessage;
                             @endphp
-                            <a href="{{ url($bookingUrl) }}" class="btn btn-primary w-100">
-                                <i class="fas fa-calendar-check"></i> Booking Sekarang
+                            <a href="{{ $whatsappUrl }}" target="_blank" class="btn btn-primary w-100">
+                                <i class="fab fa-whatsapp"></i> Booking Sekarang
                             </a>
                         </div>
                     </div>
