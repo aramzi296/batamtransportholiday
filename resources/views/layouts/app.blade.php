@@ -120,11 +120,11 @@
                             <i class="fas fa-tags"></i> Harga
                         </a>
                     </li> -->
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="{{ url('/articles') }}">
                             <i class="fas fa-newspaper"></i> Artikel
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('faq.index') }}">
                             <i class="fas fa-question-circle"></i> FAQ

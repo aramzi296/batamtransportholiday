@@ -205,7 +205,7 @@
                             </div>
                         </div>
                         
-                        <!-- Baris 5: Button Booking -->
+                        <!-- Baris 5: Button Detail dan Booking -->
                         @php
                             $whatsappPhone = config('services.whatsapp.admin_phone', '6282172292230');
                             // Format phone number (remove + if exists, ensure it starts with country code)
@@ -231,9 +231,14 @@
                             // Create WhatsApp URL
                             $whatsappUrl = "https://wa.me/" . $whatsappPhone . "?text=" . $encodedMessage;
                         @endphp
-                        <a href="{{ $whatsappUrl }}" target="_blank" class="btn btn-primary w-100">
-                            <i class="fab fa-whatsapp"></i> Booking Sekarang
-                        </a>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('vehicles.show', $vehicle->slug) }}" class="btn btn-outline-primary flex-fill">
+                                <i class="fas fa-info-circle"></i> Detail
+                            </a>
+                            <a href="{{ $whatsappUrl }}" target="_blank" class="btn btn-primary flex-fill">
+                                <i class="fab fa-whatsapp"></i> Booking
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
