@@ -116,10 +116,19 @@ setiap notifikasi booking ke admin yang dikirim dengan whatsapp, tambahkan link 
 buatkan satu halaman untuk test pengiriman email dengan setting yang disediakan dari .env.
 
 buatkan media file management. tambahkan menunya pada admin sidebar. upload ke R2 storage pada folder media_ds. pada daftar media, tampilkan thumbnail, keterangan, dan tambahkan button untuk meng-copy link kepada media tersebut. 
+===
 
+http://127.0.0.1:8000/vehicles/vespa-cr-v-6938cdd80dc2f 
+pada vehicle detail, hapus section booking form yang ada sekarang. alih alih, ganti dengan form seperti halnya contact form yang berisi input:
+nama, email, nomor whatsapp, pesan kepada admin.  jika user mengisi form ini, maka pesan akan diteruskan kepada email admin yang terdaftar serta dieruskan juga ke whats app admin yang terdaftar.
 
+===
 
+tolong ganti tema warna utama keseluruhan website menjadi hijau tua. sesuaikan warna lainnya kepada warna utama ini.
 
+===
+
+pada section vehicle detail, ganti judulnya menjadi Tentang Kendaraan. konten nya adalah field deskripsi kendaraan.
 
 
 

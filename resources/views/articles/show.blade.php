@@ -276,7 +276,7 @@
     }
     
     .article-content blockquote {
-        border-left: 4px solid #667eea;
+        border-left: 4px solid #1e7e34;
         padding-left: 1rem;
         margin: 1.5rem 0;
         font-style: italic;
@@ -310,12 +310,12 @@
     }
     
     .article-content a {
-        color: #667eea;
+        color: #1e7e34;
         text-decoration: underline;
     }
     
     .article-content a:hover {
-        color: #5a67d8;
+        color: #1a6e2d;
     }
     
     .article-content strong {
@@ -355,7 +355,7 @@
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -392,7 +392,7 @@
     }
     
     .bg-gradient-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
     }
     
     .card {

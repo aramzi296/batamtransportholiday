@@ -12,13 +12,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Admin LTE CSS -->
     <style>
+        /* Dark Green Theme Override */
+        :root {
+            --bs-primary: #1e7e34;
+            --bs-primary-rgb: 30, 126, 52;
+            --bs-primary-dark: #155724;
+        }
+        
+        .bg-primary, .btn-primary {
+            background-color: #1e7e34 !important;
+            border-color: #1e7e34 !important;
+        }
+        
+        .bg-primary:hover, .btn-primary:hover {
+            background-color: #1a6e2d !important;
+            border-color: #1a6e2d !important;
+        }
+        
+        .text-primary {
+            color: #1e7e34 !important;
+        }
+        
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
             height: 100vh;
             width: 250px;
-            background-color: #343a40;
+            background-color: #155724;
             z-index: 1000;
             transition: transform 0.3s;
         }
@@ -28,7 +49,7 @@
         }
         .sidebar-brand {
             padding: 1rem;
-            background-color: #495057;
+            background-color: #1e7e34;
             color: white;
         }
         .sidebar-nav {
@@ -39,13 +60,13 @@
         .sidebar-nav li a {
             display: block;
             padding: 0.75rem 1rem;
-            color: #adb5bd;
+            color: #c8e6c9;
             text-decoration: none;
-            border-bottom: 1px solid #495057;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .sidebar-nav li a:hover,
         .sidebar-nav li a.active {
-            background-color: #495057;
+            background-color: #1e7e34;
             color: white;
         }
         .content-wrapper {
@@ -155,7 +176,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <!-- Top Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1e7e34;">
             <div class="container-fluid">
                 <button class="navbar-toggler d-lg-none" type="button" onclick="toggleSidebar()">
                     <span class="navbar-toggler-icon"></span>

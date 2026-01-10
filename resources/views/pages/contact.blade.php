@@ -342,7 +342,7 @@
 @push('styles')
 <style>
     .bg-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
     }
     
     .contact-icon {
@@ -392,8 +392,8 @@
     }
     
     .form-control:focus, .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: #1e7e34;
+        box-shadow: 0 0 0 0.2rem rgba(30, 126, 52, 0.25);
     }
     
     .input-group-text {
@@ -407,15 +407,15 @@
     }
     
     .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
         border: none;
         padding: 12px 24px;
     }
     
     .btn-primary:hover {
-        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        background: linear-gradient(135deg, #1a6e2d 0%, #12401a 100%);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 6px 20px rgba(30, 126, 52, 0.4);
     }
     
     .card {

@@ -2,7 +2,7 @@
     <style>
         /* Filter Section Styling - Sidebar */
         .filter-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             overflow: hidden;
@@ -14,7 +14,7 @@
         
         .filter-section .card-header {
             background: rgba(255, 255, 255, 0.95);
-            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+            border-bottom: 2px solid rgba(30, 126, 52, 0.2);
             padding: 1.25rem 1.5rem;
             position: sticky;
             top: 0;
@@ -22,7 +22,7 @@
         }
         
         .filter-section .card-header h5 {
-            color: #667eea;
+            color: #1e7e34;
             font-weight: 600;
             margin: 0;
             font-size: 1.1rem;
@@ -50,8 +50,8 @@
         
         .filter-section .form-select:focus,
         .filter-section .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: #1e7e34;
+            box-shadow: 0 0 0 0.2rem rgba(30, 126, 52, 0.25);
         }
         
         .filter-section .btn-outline-secondary {
@@ -129,7 +129,7 @@
         
         .vehicle-card .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(30, 126, 52, 0.4);
         }
         
         /* Category Header Styling */
@@ -294,7 +294,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Baris 5: Button Booking -->
+                            <!-- Baris 5: Button Detail dan Booking -->
                             @php
                                 $whatsappPhone = config('services.whatsapp.admin_phone', '6282172292230');
                                 // Format phone number (remove + if exists, ensure it starts with country code)
@@ -320,9 +320,14 @@
                                 // Create WhatsApp URL
                                 $whatsappUrl = "https://wa.me/" . $whatsappPhone . "?text=" . $encodedMessage;
                             @endphp
-                            <a href="{{ $whatsappUrl }}" target="_blank" class="btn btn-primary w-100">
-                                <i class="fab fa-whatsapp"></i> Booking Sekarang
-                            </a>
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('vehicles.show', $vehicle->slug) }}" class="btn btn-outline-primary flex-fill">
+                                    <i class="fas fa-info-circle"></i> Detail
+                                </a>
+                                <a href="{{ $whatsappUrl }}" target="_blank" class="btn btn-primary flex-fill">
+                                    <i class="fab fa-whatsapp"></i> Booking
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

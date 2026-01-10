@@ -32,6 +32,7 @@ Route::get('/vehicles', function () {
     return view('vehicles.index-livewire');
 })->name('vehicles.index');
 Route::get('/vehicles/{slug}', [VehicleController::class, 'show'])->name('vehicles.show');
+Route::post('/vehicles/{slug}/contact', [VehicleController::class, 'contact'])->name('vehicles.contact');
 Route::post('/vehicles/{id}/check-availability', [VehicleController::class, 'checkAvailability'])->name('vehicles.check-availability');
 Route::get('/prices', [\App\Http\Controllers\PriceController::class, 'index'])->name('prices.index');
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');

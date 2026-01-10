@@ -99,7 +99,7 @@
             font-size: 14px;
         }
         .step-item.active .step-number {
-            background: #667eea;
+            background: #1e7e34;
             color: white;
         }
         .step-item.completed .step-number {
@@ -111,7 +111,7 @@
             color: #6c757d;
         }
         .step-item.active .step-label {
-            color: #667eea;
+            color: #1e7e34;
             font-weight: 600;
         }
         .step-connector {
@@ -123,7 +123,7 @@
             transition: all 0.3s ease;
         }
         .step-connector.active {
-            background: #667eea;
+            background: #1e7e34;
         }
     </style>
 

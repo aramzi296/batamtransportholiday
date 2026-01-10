@@ -11,6 +11,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Custom CSS -->
     <style>
+        /* Dark Green Theme Override */
+        :root {
+            --bs-primary: #1e7e34;
+            --bs-primary-rgb: 30, 126, 52;
+            --bs-primary-dark: #155724;
+            --bs-primary-light: #28a745;
+        }
+        
+        .bg-primary, .btn-primary {
+            background-color: #1e7e34 !important;
+            border-color: #1e7e34 !important;
+        }
+        
+        .bg-primary:hover, .btn-primary:hover {
+            background-color: #1a6e2d !important;
+            border-color: #1a6e2d !important;
+        }
+        
+        .text-primary {
+            color: #1e7e34 !important;
+        }
+        
+        .border-primary {
+            border-color: #1e7e34 !important;
+        }
+        
         .hero-section {
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
             background-size: cover;
@@ -31,8 +57,11 @@
         .navbar-brand {
             font-weight: bold;
         }
+        .navbar-dark.bg-dark {
+            background-color: #155724 !important;
+        }
         .footer {
-            background-color: #343a40;
+            background-color: #155724;
             color: white;
             padding: 2rem 0;
         }
@@ -64,7 +93,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: #155724;">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
                 <i class="fas fa-car"></i> D'Sarana

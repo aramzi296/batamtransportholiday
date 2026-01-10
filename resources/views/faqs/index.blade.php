@@ -66,7 +66,7 @@
     }
     .accordion-button:not(.collapsed) {
         background-color: #f8f9fa;
-        color: #0d6efd;
+        color: #1e7e34;
     }
 </style>
 @endsection

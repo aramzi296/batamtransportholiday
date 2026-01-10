@@ -45,7 +45,7 @@
     
     .vehicle-card .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 12px rgba(30, 126, 52, 0.4);
     }
     
     /* Rental Category Name Styling */
@@ -54,6 +54,21 @@
         font-weight: 600;
         font-size: 0.85em;
         margin-left: 0.5rem;
+    }
+    
+    /* Dark Green Theme Override */
+    .bg-primary, .btn-primary {
+        background-color: #1e7e34 !important;
+        border-color: #1e7e34 !important;
+    }
+    
+    .bg-primary:hover, .btn-primary:hover {
+        background-color: #1a6e2d !important;
+        border-color: #1a6e2d !important;
+    }
+    
+    .text-primary {
+        color: #1e7e34 !important;
     }
 </style>
 <!-- Hero Section -->
@@ -302,7 +317,7 @@
 
 
 <!-- Call to Action -->
-<section class="py-5 bg-primary text-white">
+<section class="py-5 text-white" style="background-color: #1e7e34;">
     <div class="container">
         <div class="row justify-content-center text-center">
             <div class="col-lg-8">

@@ -125,9 +125,14 @@
                                 </small>
                             </div>
                         </div>
-                        <a href="{{ url('/booking?vehicle_id=' . $vehicle->id) }}" class="btn btn-primary w-100">
-                            <i class="fas fa-calendar-check"></i> Booking
-                        </a>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('vehicles.show', $vehicle->slug) }}" class="btn btn-outline-primary flex-fill">
+                                <i class="fas fa-info-circle"></i> Detail
+                            </a>
+                            <a href="{{ url('/booking?vehicle_id=' . $vehicle->id) }}" class="btn btn-primary flex-fill">
+                                <i class="fas fa-calendar-check"></i> Booking
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
