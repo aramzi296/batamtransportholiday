@@ -7,7 +7,7 @@
 <section class="py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-6 fw-bold">Armada D'Sarana</h2>
+            <h2 class="display-6 fw-bold">Armada Batam D'Sarana Travel</h2>
             <p class="lead">Pilih kendaraan yang sesuai dengan kebutuhan perjalanan Anda</p>
         </div>
         

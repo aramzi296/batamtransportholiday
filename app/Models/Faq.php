@@ -11,7 +11,9 @@ class Faq extends Model
 
     protected $fillable = [
         'question',
+        'question_en',
         'answer',
+        'answer_en',
         'sort_order',
         'is_active',
     ];
@@ -35,6 +37,30 @@ class Faq extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order')->orderBy('id');
+    }
+
+    /**
+     * Get question based on locale
+     */
+    public function getQuestionForLocale($locale = null)
+    {
+        $locale = $locale ?? app()->getLocale();
+        if ($locale === 'en' && $this->question_en) {
+            return $this->question_en;
+        }
+        return $this->question;
+    }
+
+    /**
+     * Get answer based on locale
+     */
+    public function getAnswerForLocale($locale = null)
+    {
+        $locale = $locale ?? app()->getLocale();
+        if ($locale === 'en' && $this->answer_en) {
+            return $this->answer_en;
+        }
+        return $this->answer;
     }
 }
 

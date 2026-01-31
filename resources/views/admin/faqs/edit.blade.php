@@ -4,6 +4,9 @@
 @section('page-title', 'Edit FAQ')
 
 @section('content')
+<!-- Quill Rich Text Editor CSS -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Form Edit FAQ</h5>
@@ -19,63 +22,69 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.faqs.update', $faq) }}" method="POST">
+        <form action="{{ route('admin.faqs.update', $faq) }}" method="POST" id="faqForm">
             @csrf
             @method('PUT')
             
-            <div class="mb-3">
-                <label class="form-label">Pertanyaan *</label>
-                <input type="text" name="question" class="form-control @error('question') is-invalid @enderror" 
-                       value="{{ old('question', $faq->question) }}" required placeholder="Masukkan pertanyaan">
-                @error('question')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+            <!-- Language Tabs -->
+            <ul class="nav nav-tabs mb-4" id="langTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="id-tab" data-bs-toggle="tab" data-bs-target="#id-pane" type="button" role="tab">
+                        <i class="fas fa-flag"></i> Bahasa Indonesia
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="en-tab" data-bs-toggle="tab" data-bs-target="#en-pane" type="button" role="tab">
+                        <i class="fas fa-flag"></i> English
+                    </button>
+                </li>
+            </ul>
 
-            <div class="mb-3">
-                <label class="form-label">Jawaban *</label>
-                <div class="rich-text-editor">
-                    <div class="editor-toolbar mb-2 border rounded p-2 bg-light">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatText('bold')" title="Bold">
-                            <i class="fas fa-bold"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatText('italic')" title="Italic">
-                            <i class="fas fa-italic"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatText('underline')" title="Underline">
-                            <i class="fas fa-underline"></i>
-                        </button>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatList('insertUnorderedList')" title="Bullet List">
-                                <i class="fas fa-list-ul"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatList('insertOrderedList')" title="Numbered List">
-                                <i class="fas fa-list-ol"></i>
-                            </button>
-                        </div>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatIndent('outdent')" title="Decrease Indent">
-                                <i class="fas fa-outdent"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatIndent('indent')" title="Increase Indent">
-                                <i class="fas fa-indent"></i>
-                            </button>
-                        </div>
+            <div class="tab-content" id="langTabContent">
+                <!-- Indonesian Tab -->
+                <div class="tab-pane fade show active" id="id-pane" role="tabpanel">
+                    <div class="mb-3">
+                        <label class="form-label">Pertanyaan (Bahasa Indonesia) *</label>
+                        <input type="text" name="question" class="form-control @error('question') is-invalid @enderror" 
+                               value="{{ old('question', $faq->question) }}" required placeholder="Masukkan pertanyaan">
+                        @error('question')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                    <div id="answer-editor" 
-                         contenteditable="true" 
-                         class="form-control @error('answer') is-invalid @enderror" 
-                         style="min-height: 200px; padding: 10px; border: 1px solid #ced4da; border-radius: 0.375rem;"
-                         oninput="updateHiddenInput()">{!! old('answer', $faq->answer) !!}</div>
-                    <textarea name="answer" id="answer-hidden" class="d-none" required>{{ old('answer', $faq->answer) }}</textarea>
+
+                    <div class="mb-3">
+                        <label class="form-label">Jawaban (Bahasa Indonesia) *</label>
+                        <div id="answer-editor-id" style="height: 300px;"></div>
+                        <textarea name="answer" id="answer-hidden-id" class="d-none" required>{{ old('answer', $faq->answer) }}</textarea>
+                        @error('answer')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
-                @error('answer')
-                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-                <small class="form-text text-muted">Gunakan toolbar di atas untuk memformat teks</small>
+
+                <!-- English Tab -->
+                <div class="tab-pane fade" id="en-pane" role="tabpanel">
+                    <div class="mb-3">
+                        <label class="form-label">Question (English) <small class="text-muted">(Optional)</small></label>
+                        <input type="text" name="question_en" class="form-control @error('question_en') is-invalid @enderror" 
+                               value="{{ old('question_en', $faq->question_en) }}" placeholder="Enter question">
+                        @error('question_en')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Answer (English) <small class="text-muted">(Optional)</small></label>
+                        <div id="answer-editor-en" style="height: 300px;"></div>
+                        <textarea name="answer_en" id="answer-hidden-en" class="d-none">{{ old('answer_en', $faq->answer_en) }}</textarea>
+                        @error('answer_en')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
             </div>
 
-            <div class="row">
+            <div class="row mt-4">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label">Urutan</label>
@@ -104,7 +113,7 @@
                 <a href="{{ route('admin.faqs.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Kembali
                 </a>
-                <button type="submit" class="btn btn-warning" onclick="updateHiddenInput(); return true;">
+                <button type="submit" class="btn btn-warning" onclick="updateHiddenInputs(); return true;">
                     <i class="fas fa-save"></i> Update FAQ
                 </button>
             </div>
@@ -112,40 +121,67 @@
     </div>
 </div>
 
+<!-- Quill Rich Text Editor JS -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
 @push('scripts')
 <script>
-    function formatText(command) {
-        document.execCommand(command, false, null);
-        updateHiddenInput();
+// Initialize Quill Editor for Indonesian
+const quillId = new Quill('#answer-editor-id', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            ['link'],
+            [{ 'color': [] }, { 'background': [] }],
+            ['clean']
+        ]
     }
+});
 
-    function formatList(command) {
-        document.execCommand(command, false, null);
-        updateHiddenInput();
+// Initialize Quill Editor for English
+const quillEn = new Quill('#answer-editor-en', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            ['link'],
+            [{ 'color': [] }, { 'background': [] }],
+            ['clean']
+        ]
     }
+});
 
-    function formatIndent(command) {
-        document.execCommand(command, false, null);
-        updateHiddenInput();
-    }
+// Set initial content
+quillId.root.innerHTML = {!! json_encode(old('answer', $faq->answer)) !!};
+@if($faq->answer_en)
+    quillEn.root.innerHTML = {!! json_encode(old('answer_en', $faq->answer_en)) !!};
+@endif
 
-    function updateHiddenInput() {
-        const editor = document.getElementById('answer-editor');
-        const hiddenInput = document.getElementById('answer-hidden');
-        hiddenInput.value = editor.innerHTML;
-    }
+// Update hidden inputs on text change
+quillId.on('text-change', function() {
+    document.getElementById('answer-hidden-id').value = quillId.root.innerHTML;
+});
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        updateHiddenInput();
-    });
+quillEn.on('text-change', function() {
+    document.getElementById('answer-hidden-en').value = quillEn.root.innerHTML;
+});
+
+function updateHiddenInputs() {
+    document.getElementById('answer-hidden-id').value = quillId.root.innerHTML;
+    document.getElementById('answer-hidden-en').value = quillEn.root.innerHTML;
+}
+
+// Update hidden inputs before form submit
+document.getElementById('faqForm').addEventListener('submit', function(e) {
+    updateHiddenInputs();
+});
 </script>
 @endpush
 @endsection
-
-
-
-
-
-
-

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') - D'Sarana</title>
+    <title>@yield('title') - Batam D'Sarana Travel</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -96,7 +96,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: #155724;">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <i class="fas fa-car"></i> D'Sarana
+                <i class="fas fa-car"></i> Batam D'Sarana Travel
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -107,49 +107,49 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/') }}">
-                            <i class="fas fa-home"></i> Home
+                            <i class="fas fa-home"></i> {{ __('messages.nav.home') }}
                         </a>
                     </li>
-                    <li class="nav-item">
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ Auth::user()->isAdmin() ? url('/admin') : (Auth::user()->isMember() ? route('member.dashboard') : url('/profile')) }}">
+                                <i class="fas fa-tachometer-alt"></i> {{ __('messages.nav.dashboard') }}
+                            </a>
+                        </li>
+                    @endauth
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="{{ url('/vehicles') }}">
-                            <i class="fas fa-car"></i> Armada
+                            <i class="fas fa-car"></i> {{ __('messages.nav.vehicles') }}
+                        </a>
+                    </li> --}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('about') }}">
+                            <i class="fas fa-info-circle"></i> {{ __('messages.nav.about') }}
                         </a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/prices') }}">
-                            <i class="fas fa-tags"></i> Harga
-                        </a>
-                    </li> -->
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/articles') }}">
-                            <i class="fas fa-newspaper"></i> Artikel
-                        </a>
-                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('faq.index') }}">
-                            <i class="fas fa-question-circle"></i> FAQ
+                            <i class="fas fa-question-circle"></i> {{ __('messages.nav.faq') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/contact') }}">
-                            <i class="fas fa-phone"></i> Kontak
+                            <i class="fas fa-phone"></i> {{ __('messages.nav.contact') }}
                         </a>
                     </li>
                 </ul>
                 
                 <ul class="navbar-nav">
-                    @guest
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">
-                                <i class="fas fa-user-plus"></i> Daftar
-                            </a>
-                        </li>
-                    @else
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe"></i> {{ __('messages.language.' . app()->getLocale()) }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item {{ app()->getLocale() === 'id' ? 'active' : '' }}" href="{{ route('locale.switch', 'id') }}">{{ __('messages.language.id') }}</a></li>
+                            <li><a class="dropdown-item {{ app()->getLocale() === 'en' ? 'active' : '' }}" href="{{ route('locale.switch', 'en') }}">{{ __('messages.language.en') }}</a></li>
+                        </ul>
+                    </li>
+                    @auth
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user"></i> {{ Auth::user()->name }}
@@ -158,11 +158,11 @@
                                 @if(Auth::user()->isAdmin() || Auth::user()->isMember())
                                     @if(Auth::user()->isAdmin())
                                         <li><a class="dropdown-item" href="{{ url('/admin') }}">
-                                            <i class="fas fa-tachometer-alt"></i> Dasbor
+                                            <i class="fas fa-tachometer-alt"></i> {{ __('messages.nav.dashboard') }}
                                         </a></li>
                                     @elseif(Auth::user()->isMember())
                                         <li><a class="dropdown-item" href="{{ route('member.dashboard') }}">
-                                            <i class="fas fa-tachometer-alt"></i> Dasbor
+                                            <i class="fas fa-tachometer-alt"></i> {{ __('messages.nav.dashboard') }}
                                         </a></li>
                                     @endif
                                     <li><hr class="dropdown-divider"></li>
@@ -170,23 +170,23 @@
                                         <form action="{{ route('logout') }}" method="POST">
                                             @csrf
                                             <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt"></i> Logout
+                                                <i class="fas fa-sign-out-alt"></i> {{ __('messages.nav.logout') }}
                                             </button>
                                         </form>
                                     </li>
                                 @else
                                     <li><a class="dropdown-item" href="{{ url('/profile') }}">
-                                        <i class="fas fa-user-circle"></i> Profil
+                                        <i class="fas fa-user-circle"></i> {{ __('messages.nav.profile') }}
                                     </a></li>
                                     <li><a class="dropdown-item" href="{{ url('/bookings') }}">
-                                        <i class="fas fa-calendar"></i> Booking Saya
+                                        <i class="fas fa-calendar"></i> {{ __('messages.nav.my_bookings') }}
                                     </a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form action="{{ route('logout') }}" method="POST">
                                             @csrf
                                             <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt"></i> Logout
+                                                <i class="fas fa-sign-out-alt"></i> {{ __('messages.nav.logout') }}
                                             </button>
                                         </form>
                                     </li>
@@ -209,22 +209,21 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h5><i class="fas fa-car"></i> D'Sarana</h5>
-                    <p>Layanan rental mobil dan bus terpercaya dengan kualitas terbaik dan harga terjangkau.</p>
+                    <h5><i class="fas fa-car"></i> Batam D'Sarana Travel</h5>
+                    <p>{{ __('messages.footer.tagline') }}</p>
                 </div>
                 <div class="col-md-4">
-                    <h5>Menu</h5>
+                    <h5>{{ __('messages.footer.menu') }}</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url('/') }}" class="text-white text-decoration-none"><i class="fas fa-home"></i> Home</a></li>
-                        <li><a href="{{ url('/vehicles') }}" class="text-white text-decoration-none"><i class="fas fa-car"></i> Armada</a></li>
-                        <li><a href="{{ url('/prices') }}" class="text-white text-decoration-none"><i class="fas fa-tags"></i> Daftar Harga</a></li>
-                        <li><a href="{{ url('/contact') }}" class="text-white text-decoration-none"><i class="fas fa-phone"></i> Kontak</a></li>
-                        <!-- <li><a href="{{ route('member.login') }}" class="text-white text-decoration-none"><i class="fas fa-users"></i> Member</a></li> -->
+                        <li><a href="{{ url('/') }}" class="text-white text-decoration-none"><i class="fas fa-home"></i> {{ __('messages.nav.home') }}</a></li>
+                        <li><a href="{{ route('about') }}" class="text-white text-decoration-none"><i class="fas fa-info-circle"></i> {{ __('messages.nav.about') }}</a></li>
+                        <li><a href="{{ route('faq.index') }}" class="text-white text-decoration-none"><i class="fas fa-question-circle"></i> {{ __('messages.nav.faq') }}</a></li>
+                        <li><a href="{{ url('/contact') }}" class="text-white text-decoration-none"><i class="fas fa-phone"></i> {{ __('messages.nav.contact') }}</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Kontak</h5>
-                    <p><i class="fas fa-phone"></i> +62 821 7086 0825</p>
+                    <h5>{{ __('messages.footer.contact') }}</h5>
+                    <p><a href="https://wa.me/628136892535" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none"><i class="fab fa-whatsapp"></i> +62 813 689 2535</a></p>
                     <p><i class="fas fa-envelope"></i> info@dsarana.com</p>
                     <p><i class="fas fa-map-marker-alt"></i> Mall Top 100 Tembesi Blok H3 No. 1, Batam, Indonesia</p>
                     <div class="d-flex gap-3 mt-3">
@@ -236,9 +235,9 @@
             </div>
             <hr class="my-4">
             <div class="text-center">
-                <p>&copy; {{ date('Y') }} D'Sarana. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} Batam D'Sarana Travel. {{ __('messages.footer.copyright') }}</p>
                 <p>
-                    <a href="{{ route('terms') }}" class="text-white text-decoration-underline">Syarat dan Ketentuan</a>
+                    <a href="{{ route('terms') }}" class="text-white text-decoration-underline">{{ __('messages.footer.terms') }}</a>
                 </p>
             </div>
         </div>

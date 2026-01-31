@@ -32,14 +32,18 @@ class AdminFaqController extends Controller
     {
         $request->validate([
             'question' => 'required|string|max:255',
+            'question_en' => 'nullable|string|max:255',
             'answer' => 'required|string',
+            'answer_en' => 'nullable|string',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
         
         Faq::create([
             'question' => $request->question,
+            'question_en' => $request->question_en,
             'answer' => $request->answer,
+            'answer_en' => $request->answer_en,
             'sort_order' => $request->sort_order ?? 0,
             'is_active' => $request->boolean('is_active', true),
         ]);
@@ -70,14 +74,18 @@ class AdminFaqController extends Controller
     {
         $request->validate([
             'question' => 'required|string|max:255',
+            'question_en' => 'nullable|string|max:255',
             'answer' => 'required|string',
+            'answer_en' => 'nullable|string',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
         
         $faq->update([
             'question' => $request->question,
+            'question_en' => $request->question_en,
             'answer' => $request->answer,
+            'answer_en' => $request->answer_en,
             'sort_order' => $request->sort_order ?? 0,
             'is_active' => $request->boolean('is_active', false),
         ]);

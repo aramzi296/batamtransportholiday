@@ -25,6 +25,10 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\WhatsAppController;
 use App\Http\Controllers\FonnteWebhookController;
+use App\Http\Controllers\LocaleController;
+
+// Locale switcher (must be early so redirect back works)
+Route::get('/locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch')->where('locale', 'id|en');
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');

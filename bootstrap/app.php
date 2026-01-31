@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'member' => \App\Http\Middleware\MemberMiddleware::class,
         ]);
+
+        // Set locale from session (user language preference) - runs after StartSession
+        $middleware->appendToGroup('web', [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
         
         // Exclude Fonnte webhook from CSRF verification
         $middleware->validateCsrfTokens(except: [

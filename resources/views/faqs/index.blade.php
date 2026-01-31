@@ -1,16 +1,26 @@
 @extends('layouts.app')
 
-@section('title', 'FAQ')
+@section('title', __('messages.faq.title'))
 
 @section('content')
-<div class="container my-5">
+<!-- Hero Section -->
+<div class="bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-3">{{ __('messages.faq.title') }}</h1>
+                <p class="lead mb-4">{{ __('messages.faq.subtitle') }}</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <i class="fas fa-question-circle fa-5x opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
     <div class="row">
         <div class="col-lg-10 mx-auto">
-            <div class="text-center mb-5">
-                <h1 class="display-4"><i class="fas fa-question-circle text-primary"></i> FAQ</h1>
-                <p class="lead text-muted">Frequently Asked Questions</p>
-            </div>
-
             @if($faqs->count() > 0)
                 <div class="accordion" id="faqAccordion">
                     @foreach($faqs as $index => $faq)
@@ -23,7 +33,7 @@
                                     aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" 
                                     aria-controls="collapse{{ $faq->id }}">
                                 <i class="fas fa-question-circle text-primary me-2"></i>
-                                {{ $faq->question }}
+                                {{ $faq->getQuestionForLocale() }}
                             </button>
                         </h2>
                         <div id="collapse{{ $faq->id }}" 
@@ -32,7 +42,7 @@
                              data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
                                 <div class="faq-answer">
-                                    {!! $faq->answer !!}
+                                    {!! $faq->getAnswerForLocale() !!}
                                 </div>
                             </div>
                         </div>
@@ -42,7 +52,7 @@
             @else
                 <div class="text-center py-5">
                     <i class="fas fa-question-circle fa-5x text-muted mb-3"></i>
-                    <p class="text-muted">Belum ada FAQ yang tersedia.</p>
+                    <p class="text-muted">{{ __('messages.faq.empty') }}</p>
                 </div>
             @endif
         </div>
@@ -50,6 +60,9 @@
 </div>
 
 <style>
+    .bg-primary {
+        background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+    }
     .faq-answer {
         line-height: 1.8;
     }

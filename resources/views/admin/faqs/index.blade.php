@@ -47,6 +47,9 @@
                         <td><code>#{{ $faq->id }}</code></td>
                         <td>
                             <strong>{{ $faq->question }}</strong>
+                            @if($faq->question_en)
+                                <br><small class="text-muted"><i class="fas fa-globe"></i> English available</small>
+                            @endif
                         </td>
                         <td>
                             <span class="badge bg-secondary">{{ $faq->sort_order }}</span>
