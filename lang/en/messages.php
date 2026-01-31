@@ -48,7 +48,7 @@ return [
         'cta_point1' => 'Daily & Monthly Car Rental',
         'cta_point2' => 'Batam City Tour Package',
         'cta_point3' => 'Airport Transfer Service',
-        'cta_lead' => 'Book Now and Enjoy a Comfortable Trip in Batam!',
+        'cta_lead' => 'How does it work? Simple! Click the booking/chat button wherever you find it. Send us a message with what you need. We will follow up promptly.',
         'book_now' => 'Book Now',
         'contact_us' => 'Contact Us',
     ],

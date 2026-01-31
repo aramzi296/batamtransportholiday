@@ -48,7 +48,7 @@ return [
         'cta_point1' => 'Sewa Mobil Harian & Bulanan',
         'cta_point2' => 'Paket Tur Kota Batam (City Tour)',
         'cta_point3' => 'Layanan Antar Jemput Bandara',
-        'cta_lead' => 'Pesan Sekarang dan Nikmati Perjalanan Nyaman di Batam!',
+        'cta_lead' => 'Bagaimana cara kerjanya? Sederhana! Klik tombol booking/chat dimana Anda temukan. Kirimkan pesan kepada kami apa yang Anda inginkan. Kami akan menindak lanjuti segera.',
         'book_now' => 'Pesan Sekarang',
         'contact_us' => 'Hubungi Kami',
     ],

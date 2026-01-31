@@ -133,10 +133,22 @@ pada section vehicle detail, ganti judulnya menjadi Tentang Kendaraan. konten ny
 
 
 
+http://127.0.0.1:8000/
+hapus section daftar kendaraan. ganti dengan galeri foto kendaraan dari database. dengan lighbox.
+di bawah galeri, tambahkan button Booking Now yang akan membuka whatsapp.
 
+saya ingin website dua bahasa, inggeris dan indonesia. pengunjung bisa pilih bahawa kesukaan mereka. tolong buatkan
 
+pada halaman depan, cta, berisi kalimat berikut:
+Jelajahi Batam Lebih Mudah dengan Batam D'Sarana Travel
 
+Sewa Mobil Harian & Bulanan
 
+Paket Tur Kota Batam (City Tour)
+
+Layanan Antar Jemput Bandara
+
+Pesan Sekarang dan Nikmati Perjalanan Nyaman di Batam!
 
 
 

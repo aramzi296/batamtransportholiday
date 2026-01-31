@@ -83,8 +83,13 @@
                     <li class="mb-2"><i class="fas fa-check-circle me-2 opacity-75"></i>{{ __('messages.home.cta_point3') }}</li>
                 </ul>
                 <p class="lead text-white mb-4">{{ __('messages.home.cta_lead') }}</p>
-                <a href="{{ url('/vehicles') }}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-calendar-plus"></i> {{ __('messages.home.book_now') }}
+                @php
+                    $heroWhatsAppPhone = preg_replace('/[^0-9]/', '', config('services.whatsapp.admin_phone', '6282170860825'));
+                    $heroBookingMessage = urlencode("Halo, saya ingin booking kendaraan. Mohon informasi ketersediaan dan proses booking. Terima kasih!");
+                    $heroBookingWhatsAppUrl = "https://wa.me/" . $heroWhatsAppPhone . "?text=" . $heroBookingMessage;
+                @endphp
+                <a href="{{ $heroBookingWhatsAppUrl }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+                    <i class="fab fa-whatsapp"></i> {{ __('messages.home.book_now') }}
                 </a>
                 <a href="{{ url('/contact') }}" class="btn btn-outline-light btn-lg ms-3">
                     <i class="fas fa-phone"></i> {{ __('messages.home.contact_us') }}
