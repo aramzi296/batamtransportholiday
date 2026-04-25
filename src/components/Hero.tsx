@@ -39,7 +39,7 @@ const Hero = () => {
                   <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </a>
                 <a 
-                  href="https://wa.me/6282170860825" 
+                  href="https://wa.me/628136892535" 
                   className="flex items-center justify-center gap-2 bg-white text-slate-900 border border-slate-200 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-slate-50 transition-all shadow-sm active:scale-95"
                 >
                   Konsultasi Gratis

@@ -15,7 +15,7 @@ export default function Home() {
       description: "Sewa mobil harian, bulanan, atau bus pariwisata dengan armada terbaru dan driver profesional yang siap mengantar Anda.",
       icon: Car,
       image: "/images/transport.png",
-      href: "https://wa.me/6282170860825?text=Halo%20D%27Sarana%20Travel%2C%20saya%20ingin%20tanya%20sewa%20mobil%2Fbus%20di%20Batam.",
+      href: "https://wa.me/628136892535?text=Halo%20D%27Sarana%20Travel%2C%20saya%20ingin%20tanya%20sewa%20mobil%2Fbus%20di%20Batam.",
       delay: 0.1
     },
     {
@@ -24,7 +24,7 @@ export default function Home() {
       description: "Jelajahi keindahan Kota Batam dan sekitarnya dengan paket city tour yang fleksibel dan informatif.",
       icon: Map,
       image: "/images/tour.png",
-      href: "https://wa.me/6282170860825?text=Halo%20D%27Sarana%20Travel%2C%20saya%20tertarik%20dengan%20Paket%20Wisata%20Batam.",
+      href: "https://wa.me/628136892535?text=Halo%20D%27Sarana%20Travel%2C%20saya%20tertarik%20dengan%20Paket%20Wisata%20Batam.",
       delay: 0.2
     },
     {
@@ -33,7 +33,7 @@ export default function Home() {
       description: "Pemesanan hotel bintang 3 hingga 5 dengan harga spesial dan proses yang cepat tanpa ribet.",
       icon: Hotel,
       image: "/images/hotel.png",
-      href: "https://wa.me/6282170860825?text=Halo%20D%27Sarana%20Travel%2C%20saya%20ingin%20pesan%20akomodasi%20hotel%20di%20Batam.",
+      href: "https://wa.me/628136892535?text=Halo%20D%27Sarana%20Travel%2C%20saya%20ingin%20pesan%20akomodasi%20hotel%20di%20Batam.",
       delay: 0.3
     },
     {
@@ -42,7 +42,7 @@ export default function Home() {
       description: "Nikmati sensasi seafood khas Batam dan kuliner lokal legendaris lainnya dalam satu paket perjalanan rasa.",
       icon: UtensilsCrossed,
       image: "/images/kuliner.png",
-      href: "https://wa.me/6282170860825?text=Halo%20D%27Sarana%20Travel%2C%20saya%20tertarik%20dengan%20Tur%20Kuliner%20Batam.",
+      href: "https://wa.me/628136892535?text=Halo%20D%27Sarana%20Travel%2C%20saya%20tertarik%20dengan%20Tur%20Kuliner%20Batam.",
       delay: 0.4
     }
 
@@ -160,7 +160,7 @@ export default function Home() {
               </p>
               <div className="flex flex-wrap justify-center gap-6 relative z-10">
                 <a 
-                  href="https://wa.me/6282170860825" 
+                  href="https://wa.me/628136892535" 
                   className="bg-white text-emerald-700 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-emerald-50 transition-all shadow-xl active:scale-95"
                 >
                   Hubungi Via WhatsApp
