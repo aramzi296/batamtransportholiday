@@ -33,8 +33,9 @@ npm run build
 
 # 5. Jalankan menggunakan PM2
 npm install -g pm2
-pm2 start npm --name "dsarana-next" -- start
+PORT=3001 pm2 start npm --name "dsarana-next" -- start
 pm2 save
+
 ```
 
 ## Deployment di aaPanel
@@ -46,8 +47,9 @@ Jika Anda menggunakan **aaPanel**, Anda bisa menggunakan fitur **Node.js Project
 4. Atur konfigurasi berikut:
    - **Project Path**: Pilih folder `/www/wwwroot/dsarana.com`.
    - **Project Name**: `dsarana-next`.
-   - **Run Command**: `npm start`.
-   - **Port**: `3000`.
+   - **Run Command**: `PORT=3001 npm start`.
+   - **Port**: `3001`.
+
 5. Klik **OK** dan pastikan status proyek adalah **Running**.
 6. Klik **Mapping** pada list proyek untuk menghubungkan domain Anda ke aplikasi.
 
