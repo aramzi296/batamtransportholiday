@@ -62,7 +62,7 @@ export default function Home() {
     {
       icon: Users,
       title: "Partner Terpercaya",
-      description: "Telah melayani ribuan pelanggan sejak tahun 2018."
+      description: "Telah melayani berbagai pelanggan sejak tahun 2025."
     }
   ];
 
@@ -129,9 +129,10 @@ export default function Home() {
                 </div>
                 {/* Stats badge */}
                 <div className="absolute -bottom-10 -left-10 glass p-8 rounded-3xl shadow-xl hidden md:block">
-                  <p className="text-4xl font-display font-bold text-emerald-600 mb-1">5,000+</p>
+                  <p className="text-4xl font-display font-bold text-emerald-600 mb-1">100+</p>
                   <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Pelanggan Puas</p>
                 </div>
+
               </div>
             </div>
           </div>

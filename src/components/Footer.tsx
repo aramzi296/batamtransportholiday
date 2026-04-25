@@ -12,7 +12,7 @@ const Footer = () => {
           <div>
             <h2 className="text-2xl font-display font-bold text-white mb-6">D'SARANA</h2>
             <p className="text-slate-400 mb-8 leading-relaxed">
-              Layanan rental mobil dan bus terpercaya di Batam dengan kualitas terbaik dan harga terjangkau. Partner perjalanan Anda sejak 2018.
+              Layanan rental mobil dan bus terpercaya di Batam dengan kualitas terbaik dan harga terjangkau. Partner perjalanan Anda sejak 2025.
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all">
