@@ -15,7 +15,8 @@ interface ServiceCardProps {
 }
 
 
-const ServiceCard = ({ id, title, description, icon: Icon, image, delay = 0 }: ServiceCardProps) => {
+const ServiceCard = ({ id, title, description, icon: Icon, image, href, delay = 0 }: ServiceCardProps) => {
+
   return (
     <motion.div
       id={id}
