@@ -10,8 +10,10 @@ interface ServiceCardProps {
   description: string;
   icon: LucideIcon;
   image: string;
+  href?: string;
   delay?: number;
 }
+
 
 const ServiceCard = ({ id, title, description, icon: Icon, image, delay = 0 }: ServiceCardProps) => {
   return (
@@ -41,11 +43,15 @@ const ServiceCard = ({ id, title, description, icon: Icon, image, delay = 0 }: S
         <p className="text-slate-600 leading-relaxed mb-6">
           {description}
         </p>
-        <button className="flex items-center gap-2 font-bold text-emerald-600 group-hover:gap-4 transition-all">
+        <a 
+          href={href || "#"} 
+          className="inline-flex items-center gap-2 font-bold text-emerald-600 group-hover:gap-4 transition-all"
+        >
           Selengkapnya
           <div className="w-6 h-[2px] bg-emerald-600 rounded-full" />
-        </button>
+        </a>
       </div>
+
     </motion.div>
   );
 };
