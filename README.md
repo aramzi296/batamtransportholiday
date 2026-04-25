@@ -52,8 +52,9 @@ Jika Anda menggunakan **aaPanel**, Anda bisa menggunakan fitur **Node.js Project
    - **Project Path**: Pilih folder `/www/wwwroot/dsarana.com`.
    - **Project Name**: `dsarana-next`.
    - **Run opt**: Pilih **`start [next start]`** (PENTING: Jangan pilih `dev`).
-   - **Run Command**: `PORT=3001 npm start`.
+   - **Run Command**: `npm start`.
    - **Port**: `3001`.
+
    - **Boot**: Centang (agar otomatis jalan saat VPS restart).
 
 
