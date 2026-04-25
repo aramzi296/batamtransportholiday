@@ -67,6 +67,17 @@ Jika Anda menggunakan **aaPanel**, Anda bisa menggunakan fitur **Node.js Project
    - Klik nama domain Anda > **SSL**.
    - Pilih **Let's Encrypt** dan klik **Apply**.
 
+## Cara Update Kode di VPS
+Jika ada perubahan kode di GitHub, gunakan perintah ini di terminal VPS:
+
+```bash
+git fetch origin nextjs
+git reset --hard origin/nextjs
+npm run build
+# Lalu Restart di aaPanel Node.js Project Manager
+```
+
+
 
 
 ## Struktur Folder
