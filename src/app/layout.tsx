@@ -17,9 +17,16 @@ export const metadata: Metadata = {
   description: "Layanan transportasi terpercaya di Batam. Menyediakan rental mobil, bus, paket wisata, penginapan hotel, dan tur kuliner terbaik di Kota Batam.",
   keywords: "dsarana.com, rental mobil batam, sewa bus batam, paket wisata batam, tour kuliner batam, hotel batam, d sarana travel",
   icons: {
-    icon: "/icon.png",
+    icon: [
+      { url: "/icon.png" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon.png" },
+    ],
   },
 };
+
 
 
 
