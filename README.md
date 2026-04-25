@@ -43,12 +43,19 @@ Jika Anda menggunakan **aaPanel**, Anda bisa menggunakan fitur **Node.js Project
 
 1. **Install Node.js Version Manager** dari App Store di aaPanel.
 2. **Clone** repositori Anda ke dalam folder situs (misal: `/www/wwwroot/dsarana.com`).
-3. Buka **Node.js Project Manager** > **Add Project**.
-4. Atur konfigurasi berikut:
+3. **Jalankan Build**: Sebelum menambahkan proyek, buka terminal di folder tersebut dan jalankan:
+   ```bash
+   npm run build
+   ```
+4. Buka **Node.js Project Manager** > **Add Project**.
+5. Atur konfigurasi berikut:
    - **Project Path**: Pilih folder `/www/wwwroot/dsarana.com`.
    - **Project Name**: `dsarana-next`.
+   - **Run opt**: Pilih **`start [next start]`** (PENTING: Jangan pilih `dev`).
    - **Run Command**: `PORT=3001 npm start`.
    - **Port**: `3001`.
+   - **Boot**: Centang (agar otomatis jalan saat VPS restart).
+
 
 5. Klik **OK** dan pastikan status proyek adalah **Running**.
 6. Klik **Mapping** pada list proyek:
