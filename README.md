@@ -51,7 +51,14 @@ Jika Anda menggunakan **aaPanel**, Anda bisa menggunakan fitur **Node.js Project
    - **Port**: `3001`.
 
 5. Klik **OK** dan pastikan status proyek adalah **Running**.
-6. Klik **Mapping** pada list proyek untuk menghubungkan domain Anda ke aplikasi.
+6. Klik **Mapping** pada list proyek:
+   - Masukkan domain Anda (misal: `dsarana.com`).
+   - aaPanel akan otomatis membuat Nginx Reverse Proxy dari port 80 ke port 3001.
+7. **Setup SSL (HTTPS)**:
+   - Pergi ke menu **Website** di aaPanel.
+   - Klik nama domain Anda > **SSL**.
+   - Pilih **Let's Encrypt** dan klik **Apply**.
+
 
 
 ## Struktur Folder
