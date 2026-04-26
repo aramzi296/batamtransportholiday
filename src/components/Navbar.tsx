@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Phone } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Phone, Globe } from 'lucide-react';
 
 const Navbar = () => {
+  const { language, setLanguage, dict } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -18,12 +20,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Beranda', href: '/' },
-    { name: 'Transportasi', href: '/#transportation' },
-    { name: 'Paket Wisata', href: '/#tour' },
-    { name: 'Hotel', href: '/#hotel' },
-    { name: 'Kuliner', href: '/#kuliner' },
-    { name: 'Tentang Kami', href: '/about' },
+    { name: dict.navbar.home, href: '/' },
+    { name: dict.navbar.transportation, href: '/#transportation' },
+    { name: dict.navbar.tour, href: '/#tour' },
+    { name: dict.navbar.hotel, href: '/#hotel' },
+    { name: dict.navbar.kuliner, href: '/#kuliner' },
+    { name: dict.navbar.about, href: '/about' },
   ];
 
   return (
@@ -44,7 +46,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {navLinks.map((link) => (
               <Link 
                 key={link.name} 
@@ -54,23 +56,43 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <a 
-              href="https://wa.me/628136892535" 
-              target="_blank" 
-              className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-700 transition-all hover:shadow-lg active:scale-95"
-            >
-              <Phone size={16} />
-              Booking Sekarang
-            </a>
+            
+            <div className="flex items-center gap-4 border-l border-slate-200 pl-6">
+              <button 
+                onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
+                className="flex items-center gap-1.5 text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors"
+              >
+                <Globe size={16} />
+                {language.toUpperCase()}
+              </button>
+              
+              <a 
+                href="https://wa.me/628136892535" 
+                target="_blank" 
+                className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-700 transition-all hover:shadow-lg active:scale-95"
+              >
+                <Phone size={16} />
+                {dict.common.booking}
+              </a>
+            </div>
           </div>
 
           {/* Mobile Toggle */}
-          <button 
-            className="md:hidden text-slate-900"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+          <div className="flex items-center gap-4 md:hidden">
+            <button 
+              onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
+              className="flex items-center gap-1 text-xs font-bold text-slate-600"
+            >
+              <Globe size={16} />
+              {language.toUpperCase()}
+            </button>
+            <button 
+              className="text-slate-900"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -99,7 +121,7 @@ const Navbar = () => {
                 className="flex items-center justify-center gap-2 bg-emerald-600 text-white p-4 rounded-xl font-bold"
               >
                 <Phone size={20} />
-                Hubungi Kami
+                {dict.common.contactUs}
               </a>
             </div>
           </motion.div>

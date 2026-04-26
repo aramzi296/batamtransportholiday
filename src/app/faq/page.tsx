@@ -5,9 +5,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, AnimatePresence } from 'framer-motion';
 import { HelpCircle, ChevronDown, MessageSquare } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 const FAQPage = () => {
-  const faqs = [
+  const { dict, language } = useLanguage();
+
+  const faqsID = [
     {
       question: 'Bagaimana cara melakukan pemesanan rental mobil?',
       answer: 'Anda dapat melakukan pemesanan melalui WhatsApp kami di nomor +62 813-6892-535. Cukup informasikan jenis armada yang diinginkan, tanggal sewa, dan apakah Anda membutuhkan driver atau lepas kunci.'
@@ -30,6 +33,30 @@ const FAQPage = () => {
     }
   ];
 
+  const faqsEN = [
+    {
+      question: 'How do I book a car rental?',
+      answer: 'You can book through our WhatsApp at +62 813-6892-535. Simply inform us of the desired fleet type, rental date, and whether you need a driver or self-drive.'
+    },
+    {
+      question: 'Does the price include fuel (BBM)?',
+      answer: 'It depends on the package you choose. We provide options for car rental only, car + driver, and a complete package (Car + Driver + Fuel). Price details will be confirmed upon booking.'
+    },
+    {
+      question: 'How long is the daily rental duration?',
+      answer: 'For daily rental with a driver, the maximum duration is 12 hours or until 23:59 on the same day. For self-drive rental, duration is calculated 24 hours per day.'
+    },
+    {
+      question: 'Is airport or harbor pickup available?',
+      answer: 'Yes, we provide free airport/seaport transfer services for car rental bookings of at least 3 days. For rentals of less than 3 days, an affordable additional fee will apply.'
+    },
+    {
+      question: 'What if the car has technical issues during the rental?',
+      answer: 'Our entire fleet is serviced regularly. However, if technical issues occur, immediately contact our 24/7 assistance team. We will send a mechanic team or provide a replacement car as soon as possible.'
+    }
+  ];
+
+  const faqs = language === 'id' ? faqsID : faqsEN;
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
 
   return (
@@ -44,9 +71,9 @@ const FAQPage = () => {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl mb-6">
                   <HelpCircle size={32} />
                 </div>
-                <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 mb-6">Pertanyaan Umum</h1>
+                <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 mb-6">{dict.faq.title}</h1>
                 <p className="text-lg text-slate-600">
-                  Temukan jawaban cepat untuk pertanyaan yang sering diajukan pelanggan kami.
+                  {dict.faq.description}
                 </p>
               </div>
 
@@ -90,14 +117,14 @@ const FAQPage = () => {
                   <MessageSquare size={32} />
                 </div>
                 <div className="text-center md:text-left flex-grow">
-                  <h3 className="text-2xl font-bold text-white mb-2">Punya pertanyaan lain?</h3>
-                  <p className="text-emerald-50">Tim kami siap membantu Anda 24 jam setiap hari.</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">{dict.faq.moreQuestions}</h3>
+                  <p className="text-emerald-50">{dict.faq.moreQuestionsDesc}</p>
                 </div>
                 <a 
                   href="https://wa.me/628136892535" 
                   className="bg-white text-emerald-700 px-8 py-4 rounded-2xl font-bold hover:bg-emerald-50 transition-all shadow-lg active:scale-95"
                 >
-                  Tanya Sekarang
+                  {dict.faq.askNow}
                 </a>
               </div>
             </div>

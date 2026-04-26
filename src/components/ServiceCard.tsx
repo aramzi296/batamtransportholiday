@@ -16,7 +16,10 @@ interface ServiceCardProps {
 }
 
 
+import { useLanguage } from '@/context/LanguageContext';
+
 const ServiceCard = ({ id, title, description, icon: Icon, image, href, delay = 0 }: ServiceCardProps) => {
+  const { dict } = useLanguage();
 
   return (
     <motion.div
@@ -25,7 +28,7 @@ const ServiceCard = ({ id, title, description, icon: Icon, image, href, delay = 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
-      className="group relative bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500"
+      className="group relative bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 scroll-mt-32"
     >
       <div className="aspect-[16/10] overflow-hidden">
         <img 
@@ -49,7 +52,7 @@ const ServiceCard = ({ id, title, description, icon: Icon, image, href, delay = 
           href={href || "#"} 
           className="inline-flex items-center gap-2 font-bold text-emerald-600 group-hover:gap-4 transition-all"
         >
-          Selengkapnya
+          {dict.common.learnMore}
           <div className="w-6 h-[2px] bg-emerald-600 rounded-full" />
         </Link>
       </div>

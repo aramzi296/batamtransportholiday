@@ -6,36 +6,42 @@ import ServiceCard from "@/components/ServiceCard";
 import Footer from "@/components/Footer";
 import { services } from "@/data/services";
 import { Shield, Clock, Award, Users } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Home() {
-  const displayServices = services.map((s, idx) => ({
-    ...s,
-    description: s.shortDescription,
-    href: `/services/${s.slug}`,
-    delay: (idx + 1) * 0.1
-  }));
+  const { language, dict } = useLanguage();
 
+  const displayServices = services.map((s, idx) => {
+    const content = language === 'id' ? s.idContent : s.enContent;
+    return {
+      ...s,
+      title: content.title,
+      description: content.shortDescription,
+      href: `/services/${s.slug}`,
+      delay: (idx + 1) * 0.1
+    };
+  });
 
   const features = [
     {
       icon: Award,
-      title: "Kualitas Terbaik",
-      description: "Armada kendaraan terawat dan layanan standar bintang 5."
+      title: dict.hero.checks[0],
+      description: dict.hero.checks[0] === "Armada Terawat" ? "Armada kendaraan terawat dan layanan standar bintang 5." : "Well-maintained vehicle fleet and 5-star standard service."
     },
     {
       icon: Shield,
-      title: "Keamanan Terjamin",
-      description: "Asuransi lengkap dan driver berpengalaman di bidangnya."
+      title: dict.hero.checks[1],
+      description: dict.hero.checks[1] === "Harga Kompetitif" ? "Asuransi lengkap dan driver berpengalaman di bidangnya." : "Full insurance and experienced drivers in their field."
     },
     {
       icon: Clock,
-      title: "Layanan 24/7",
-      description: "Customer service kami siap membantu Anda kapan saja."
+      title: dict.hero.checks[2],
+      description: dict.hero.checks[2] === "Layanan 24/7" ? "Customer service kami siap membantu Anda kapan saja." : "Our customer service is ready to help you anytime."
     },
     {
       icon: Users,
-      title: "Partner Terpercaya",
-      description: "Telah melayani berbagai pelanggan sejak tahun 2025."
+      title: dict.home.whyUsAccent.includes("Partner") ? "Partner Terpercaya" : "Trusted Partner",
+      description: dict.hero.checks[2] === "Layanan 24/7" ? "Telah melayani berbagai pelanggan sejak tahun 2025." : "Has served various customers since 2025."
     }
   ];
 
@@ -50,10 +56,10 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 mb-6">
-                Layanan <span className="text-emerald-600">Terintegrasi</span>
+                {dict.home.servicesTitle} <span className="text-emerald-600">{dict.home.servicesAccent}</span>
               </h2>
               <p className="text-lg text-slate-600">
-                Kami menyediakan solusi perjalanan satu pintu untuk memudahkan kunjungan Anda di Kota Batam.
+                {dict.home.servicesDesc}
               </p>
             </div>
             
@@ -73,8 +79,8 @@ export default function Home() {
             <div className="flex flex-col lg:flex-row items-center gap-16">
               <div className="flex-1">
                 <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 mb-8">
-                  Mengapa Memilih <br />
-                  <span className="text-emerald-600">D'Sarana Travel?</span>
+                  {dict.home.whyUsTitle} <br />
+                  <span className="text-emerald-600">{dict.home.whyUsAccent}</span>
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   {features.map((feature, idx) => (
@@ -103,7 +109,7 @@ export default function Home() {
                 {/* Stats badge */}
                 <div className="absolute -bottom-10 -left-10 glass p-8 rounded-3xl shadow-xl hidden md:block">
                   <p className="text-4xl font-display font-bold text-emerald-600 mb-1">100+</p>
-                  <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Pelanggan Puas</p>
+                  <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">{dict.home.customersSatisfied}</p>
                 </div>
 
               </div>
@@ -121,23 +127,23 @@ export default function Home() {
               </div>
               
               <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-8 relative z-10">
-                Siap Memulai Perjalanan Anda?
+                {dict.common.readyToStart}
               </h2>
               <p className="text-xl text-emerald-50 mb-12 max-w-2xl mx-auto relative z-10">
-                Hubungi tim kami sekarang untuk penawaran harga terbaik dan konsultasi rencana perjalanan Anda di Batam.
+                {dict.common.getInTouch}
               </p>
               <div className="flex flex-wrap justify-center gap-6 relative z-10">
                 <a 
                   href="https://wa.me/628136892535" 
                   className="bg-white text-emerald-700 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-emerald-50 transition-all shadow-xl active:scale-95"
                 >
-                  Hubungi Via WhatsApp
+                  {dict.common.whatsappUs}
                 </a>
                 <a 
                   href="mailto:info@dsarana.com" 
                   className="bg-emerald-700 text-white border border-emerald-500 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-emerald-800 transition-all shadow-xl active:scale-95"
                 >
-                  Kirim Email
+                  {dict.common.emailUs}
                 </a>
               </div>
             </div>

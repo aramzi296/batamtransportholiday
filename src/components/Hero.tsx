@@ -4,7 +4,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
+import { useLanguage } from '@/context/LanguageContext';
+
 const Hero = () => {
+  const { dict } = useLanguage();
+
   return (
     <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden hero-gradient">
       {/* Decorative Elements */}
@@ -20,14 +24,14 @@ const Hero = () => {
               transition={{ duration: 0.5 }}
             >
               <span className="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-wider text-emerald-700 uppercase bg-emerald-100 rounded-full">
-                Premium Travel Experience
+                {dict.hero.badge}
               </span>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-extrabold text-slate-900 leading-[1.1] mb-6">
-                Jelajahi Batam <br />
-                <span className="gradient-text">Tanpa Batas</span>
+                {dict.hero.title} <br />
+                <span className="gradient-text">{dict.hero.titleAccent}</span>
               </h1>
               <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto lg:mx-0">
-                Solusi transportasi dan perjalanan terlengkap di Batam. Dari rental mobil mewah hingga paket wisata kuliner yang menggugah selera.
+                {dict.hero.description}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
@@ -35,30 +39,24 @@ const Hero = () => {
                   href="/#services" 
                   className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all hover:shadow-xl active:scale-95 group"
                 >
-                  Lihat Layanan
+                  {dict.hero.cta}
                   <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </a>
                 <a 
                   href="https://wa.me/628136892535" 
                   className="flex items-center justify-center gap-2 bg-white text-slate-900 border border-slate-200 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-slate-50 transition-all shadow-sm active:scale-95"
                 >
-                  Konsultasi Gratis
+                  {dict.hero.ctaConsult}
                 </a>
               </div>
 
               <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm font-medium text-slate-500">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={18} className="text-emerald-500" />
-                  <span>Armada Terawat</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={18} className="text-emerald-500" />
-                  <span>Harga Kompetitif</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={18} className="text-emerald-500" />
-                  <span>Layanan 24/7</span>
-                </div>
+                {dict.hero.checks.map((check, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <CheckCircle2 size={18} className="text-emerald-500" />
+                    <span>{check}</span>
+                  </div>
+                ))}
               </div>
             </motion.div>
           </div>
@@ -80,11 +78,11 @@ const Hero = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-bold text-emerald-600 uppercase mb-1">Featured Service</p>
-                    <p className="text-xl font-display font-bold text-slate-900">Premium Car Rental</p>
+                    <p className="text-xl font-display font-bold text-slate-900">{dict.navbar.transportation}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-slate-500">Mulai dari</p>
-                    <p className="text-lg font-bold text-emerald-600">Rp 350rb<span className="text-xs text-slate-400">/hari</span></p>
+                    <p className="text-xs text-slate-500">{dict.about.stats[0].value === "5+" ? "Mulai dari" : "Starts from"}</p>
+                    <p className="text-lg font-bold text-emerald-600">Rp 350rb<span className="text-xs text-slate-400">/{dict.about.stats[0].value === "5+" ? "hari" : "day"}</span></p>
                   </div>
                 </div>
               </div>

@@ -5,9 +5,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from 'framer-motion';
 import { FileText, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 const TermsPage = () => {
-  const sections = [
+  const { dict, language } = useLanguage();
+
+  const sectionsID = [
     {
       title: '1. Ketentuan Umum',
       content: 'Dengan menggunakan layanan D\'Sarana Travel, Anda dianggap telah membaca, memahami, dan menyetujui seluruh Syarat & Ketentuan ini. Layanan kami mencakup penyewaan kendaraan, paket wisata, dan pengaturan akomodasi di wilayah Batam.'
@@ -30,6 +33,31 @@ const TermsPage = () => {
     }
   ];
 
+  const sectionsEN = [
+    {
+      title: '1. General Terms',
+      content: 'By using D\'Sarana Travel services, you are deemed to have read, understood, and agreed to these entire Terms & Conditions. Our services include vehicle rental, tour packages, and accommodation arrangements in the Batam area.'
+    },
+    {
+      title: '2. Vehicle Renter Requirements',
+      content: 'Renters must have a valid driver\'s license (SIM A for passenger cars). The renter is fully responsible for the vehicle during the rental period and must comply with applicable traffic regulations in Indonesia.'
+    },
+    {
+      title: '3. Booking and Payment',
+      content: 'A booking is considered valid after confirmation from our team and payment of a down payment (DP) as agreed. Full payment is made at the latest upon handover of the vehicle or commencement of service.'
+    },
+    {
+      title: '4. Cancellation Policy',
+      content: 'Cancellations made less than 24 hours before the service schedule may be subject to a cancellation fee of 50% of the down payment. Cancellations on the day of the service will result in the forfeiture of the down payment.'
+    },
+    {
+      title: '5. Responsibility and Insurance',
+      content: 'Our entire fleet is equipped with standard insurance. However, damage due to gross negligence of the renter (such as driving under the influence of alcohol or without a driver\'s license) is the full responsibility of the renter.'
+    }
+  ];
+
+  const sections = language === 'id' ? sectionsID : sectionsEN;
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -44,11 +72,11 @@ const TermsPage = () => {
             >
               <div className="flex items-center gap-4 mb-8 text-emerald-600">
                 <FileText size={32} />
-                <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900">Syarat & Ketentuan</h1>
+                <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900">{dict.footer.terms}</h1>
               </div>
               
               <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-slate-100">
-                <p className="text-slate-500 mb-10 italic">Terakhir diperbarui: 26 April 2026</p>
+                <p className="text-slate-500 mb-10 italic">{language === 'id' ? 'Terakhir diperbarui' : 'Last updated'}: 26 April 2026</p>
                 
                 <div className="space-y-12">
                   {sections.map((section, idx) => (
@@ -65,9 +93,11 @@ const TermsPage = () => {
                   <div className="flex gap-4">
                     <ShieldAlert className="text-emerald-600 shrink-0" size={24} />
                     <div>
-                      <h4 className="font-bold text-slate-900 mb-2">Penting untuk Diketahui</h4>
+                      <h4 className="font-bold text-slate-900 mb-2">{language === 'id' ? 'Penting untuk Diketahui' : 'Important to Know'}</h4>
                       <p className="text-slate-600">
-                        Syarat dan ketentuan ini dapat berubah sewaktu-waktu tanpa pemberitahuan sebelumnya. Kami menyarankan Anda untuk memeriksa halaman ini secara berkala.
+                        {language === 'id' 
+                          ? 'Syarat dan ketentuan ini dapat berubah sewaktu-waktu tanpa pemberitahuan sebelumnya. Kami menyarankan Anda untuk memeriksa halaman ini secara berkala.' 
+                          : 'These terms and conditions are subject to change at any time without prior notice. We suggest you check this page periodically.'}
                       </p>
                     </div>
                   </div>

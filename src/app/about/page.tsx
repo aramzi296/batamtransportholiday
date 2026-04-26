@@ -5,30 +5,28 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from 'framer-motion';
 import { Target, Eye, Users, Award, Shield, Clock } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 const AboutPage = () => {
-  const stats = [
-    { label: 'Tahun Pengalaman', value: '5+' },
-    { label: 'Pelanggan Puas', value: '1000+' },
-    { label: 'Armada Kendaraan', value: '50+' },
-    { label: 'Destinasi Wisata', value: '25+' },
-  ];
+  const { dict, language } = useLanguage();
+  
+  const stats = dict.about.stats;
 
   const values = [
     {
       icon: Shield,
-      title: 'Kepercayaan',
-      description: 'Membangun hubungan jangka panjang dengan pelanggan melalui kejujuran dan transparansi.'
+      title: language === 'id' ? 'Kepercayaan' : 'Trust',
+      description: language === 'id' ? 'Membangun hubungan jangka panjang dengan pelanggan melalui kejujuran dan transparansi.' : 'Building long-term relationships with customers through honesty and transparency.'
     },
     {
       icon: Award,
-      title: 'Kualitas',
-      description: 'Memberikan standar layanan tertinggi dalam setiap aspek perjalanan Anda.'
+      title: language === 'id' ? 'Kualitas' : 'Quality',
+      description: language === 'id' ? 'Memberikan standar layanan tertinggi dalam setiap aspek perjalanan Anda.' : 'Providing the highest service standards in every aspect of your journey.'
     },
     {
       icon: Users,
-      title: 'Kepuasan Pelanggan',
-      description: 'Fokus utama kami adalah memastikan setiap perjalanan Anda berkesan dan nyaman.'
+      title: language === 'id' ? 'Kepuasan Pelanggan' : 'Customer Satisfaction',
+      description: language === 'id' ? 'Fokus utama kami adalah memastikan setiap perjalanan Anda berkesan dan nyaman.' : 'Our main focus is ensuring every journey you take is memorable and comfortable.'
     }
   ];
 
@@ -47,13 +45,13 @@ const AboutPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <span className="text-emerald-400 font-bold tracking-widest uppercase text-sm mb-4 block">Tentang Kami</span>
+                <span className="text-emerald-400 font-bold tracking-widest uppercase text-sm mb-4 block">{dict.about.subtitle}</span>
                 <h1 className="text-4xl md:text-6xl font-display font-extrabold text-white mb-6 leading-tight">
-                  Dedikasi Kami untuk <br />
-                  <span className="text-emerald-500">Perjalanan Anda</span>
+                  {dict.about.title} <br />
+                  <span className="text-emerald-500">{dict.about.titleAccent}</span>
                 </h1>
                 <p className="text-xl text-slate-400 leading-relaxed">
-                  D'Sarana Travel hadir sebagai solusi transportasi dan wisata terdepan di Batam, menggabungkan kenyamanan, keamanan, dan keramah-tamahan lokal.
+                  {dict.about.description}
                 </p>
               </motion.div>
             </div>
@@ -90,19 +88,13 @@ const AboutPage = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 mb-8">
-                  Kisah Perjalanan <br />
-                  <span className="text-emerald-600">D'Sarana Travel</span>
+                  {dict.about.storyTitle} <br />
+                  <span className="text-emerald-600">{dict.about.storyAccent}</span>
                 </h2>
                 <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
-                  <p>
-                    Didirikan dengan semangat untuk memajukan pariwisata di Batam, D'Sarana Travel memulai perjalanannya sebagai penyedia rental mobil kecil yang berfokus pada kualitas layanan.
-                  </p>
-                  <p>
-                    Seiring berjalannya waktu, kami berkembang menjadi agen perjalanan lengkap yang melayani ribuan pelanggan, mulai dari wisatawan domestik hingga mancanegara, serta instansi pemerintah dan korporasi.
-                  </p>
-                  <p>
-                    Kami percaya bahwa setiap perjalanan adalah cerita yang unik. Itulah mengapa kami berkomitmen untuk memberikan lebih dari sekadar transportasi, tetapi sebuah pengalaman yang tak terlupakan.
-                  </p>
+                  <p>{dict.about.storyPara1}</p>
+                  <p>{dict.about.storyPara2}</p>
+                  <p>{language === 'id' ? 'Kami percaya bahwa setiap perjalanan adalah cerita yang unik. Itulah mengapa kami berkomitmen untuk memberikan lebih dari sekadar transportasi, tetapi sebuah pengalaman yang tak terlupakan.' : 'We believe that every journey is a unique story. That is why we are committed to providing more than just transportation, but an unforgettable experience.'}</p>
                 </div>
               </div>
             </div>
@@ -117,29 +109,23 @@ const AboutPage = () => {
                 <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-8">
                   <Eye size={32} />
                 </div>
-                <h3 className="text-3xl font-display font-bold text-slate-900 mb-6">Visi Kami</h3>
+                <h3 className="text-3xl font-display font-bold text-slate-900 mb-6">{dict.about.visionTitle}</h3>
                 <p className="text-lg text-slate-600 leading-relaxed">
-                  Menjadi penyedia layanan transportasi dan pariwisata nomor satu di Batam yang dikenal karena inovasi, keandalan, dan dedikasi terhadap kepuasan pelanggan.
+                  {dict.about.visionDesc}
                 </p>
               </div>
               <div className="bg-white p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
                 <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-8">
                   <Target size={32} />
                 </div>
-                <h3 className="text-3xl font-display font-bold text-slate-900 mb-6">Misi Kami</h3>
+                <h3 className="text-3xl font-display font-bold text-slate-900 mb-6">{dict.about.missionTitle}</h3>
                 <ul className="space-y-4 text-lg text-slate-600">
-                  <li className="flex gap-3">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    Menyediakan armada kendaraan terbaru yang selalu dalam kondisi prima.
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    Mengembangkan paket wisata kreatif yang menonjolkan kekayaan budaya dan alam Batam.
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    Melatih tim driver dan staf yang profesional, sopan, dan berwawasan luas.
-                  </li>
+                  {dict.about.missionList.map((item, idx) => (
+                    <li key={idx} className="flex gap-3">
+                      <span className="text-emerald-600 font-bold">•</span>
+                      {item}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -150,7 +136,7 @@ const AboutPage = () => {
         <section className="py-24 bg-white">
           <div className="container mx-auto px-4 md:px-6 text-center">
             <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 mb-16">
-              Nilai-Nilai <span className="text-emerald-600">Inti Kami</span>
+              {dict.about.valuesTitle} <span className="text-emerald-600">{dict.about.valuesAccent}</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {values.map((value, index) => (
@@ -173,16 +159,16 @@ const AboutPage = () => {
           <div className="container mx-auto px-4 md:px-6">
             <div className="bg-emerald-600 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
               <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-8">
-                Ingin Mengenal Kami Lebih Dekat?
+                {language === 'id' ? 'Ingin Mengenal Kami Lebih Dekat?' : 'Want to Get to Know Us Better?'}
               </h2>
               <p className="text-xl text-emerald-50 mb-12 max-w-2xl mx-auto">
-                Tim kami siap menjawab pertanyaan Anda dan membantu merencanakan perjalanan terbaik Anda di Batam.
+                {language === 'id' ? 'Tim kami siap menjawab pertanyaan Anda dan membantu merencanakan perjalanan terbaik Anda di Batam.' : 'Our team is ready to answer your questions and help plan your best trip in Batam.'}
               </p>
               <a 
                 href="https://wa.me/628136892535" 
                 className="inline-block bg-white text-emerald-700 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-emerald-50 transition-all shadow-xl"
               >
-                Hubungi Kami Sekarang
+                {language === 'id' ? 'Hubungi Kami Sekarang' : 'Contact Us Now'}
               </a>
             </div>
           </div>
