@@ -76,6 +76,19 @@ export const id = {
     moreQuestions: "Punya pertanyaan lain?",
     moreQuestionsDesc: "Tim kami siap membantu Anda 24 jam setiap hari.",
     askNow: "Tanya Sekarang"
+  },
+  legality: {
+    title: "Legalitas Perusahaan",
+    companyName: "Nama Perusahaan",
+    nib: "NIB (Nomor Induk Berusaha)",
+    npwp: "NPWP",
+    sk: "SK Kemenkumham",
+    address: "Alamat Kantor",
+    valueName: "PT Batam Dsarana Travel",
+    valueNib: "0802260051855",
+    valueNpwp: "1000 0000 0820 0812",
+    valueSk: "AHU-006887.AH.01.30.Tahun 2026",
+    valueAddress: "Mall Top 100 Tembesi Blok H3 No. 1, Batam"
   }
 };
 

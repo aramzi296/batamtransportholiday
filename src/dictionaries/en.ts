@@ -78,5 +78,18 @@ export const en: Dictionary = {
     moreQuestions: "Have other questions?",
     moreQuestionsDesc: "Our team is ready to help you 24 hours every day.",
     askNow: "Ask Now"
+  },
+  legality: {
+    title: "Company Legality",
+    companyName: "Company Name",
+    nib: "NIB (Business Identification Number)",
+    npwp: "NPWP (Tax ID)",
+    sk: "Legal Decree",
+    address: "Office Address",
+    valueName: "PT Batam Dsarana Travel",
+    valueNib: "0802260051855",
+    valueNpwp: "1000 0000 0820 0812",
+    valueSk: "AHU-006887.AH.01.30.Tahun 2026",
+    valueAddress: "Mall Top 100 Tembesi Blok H3 No. 1, Batam"
   }
 };
