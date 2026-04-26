@@ -4,49 +4,17 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ServiceCard from "@/components/ServiceCard";
 import Footer from "@/components/Footer";
-import { Car, Map, Hotel, UtensilsCrossed, Shield, Clock, Award, Users } from "lucide-react";
-
+import { services } from "@/data/services";
+import { Shield, Clock, Award, Users } from "lucide-react";
 
 export default function Home() {
-  const services = [
-    {
-      id: "transportation",
-      title: "Transportasi & Rental",
-      description: "Sewa mobil harian, bulanan, atau bus pariwisata dengan armada terbaru dan driver profesional yang siap mengantar Anda.",
-      icon: Car,
-      image: "/images/transport.png",
-      href: "https://wa.me/628136892535?text=Halo%20D%27Sarana%20Travel%2C%20saya%20ingin%20tanya%20sewa%20mobil%2Fbus%20di%20Batam.",
-      delay: 0.1
-    },
-    {
-      id: "tour",
-      title: "Paket Wisata Batam",
-      description: "Jelajahi keindahan Kota Batam dan sekitarnya dengan paket city tour yang fleksibel dan informatif.",
-      icon: Map,
-      image: "/images/tour.png",
-      href: "https://wa.me/628136892535?text=Halo%20D%27Sarana%20Travel%2C%20saya%20tertarik%20dengan%20Paket%20Wisata%20Batam.",
-      delay: 0.2
-    },
-    {
-      id: "hotel",
-      title: "Akomodasi Hotel",
-      description: "Pemesanan hotel bintang 3 hingga 5 dengan harga spesial dan proses yang cepat tanpa ribet.",
-      icon: Hotel,
-      image: "/images/hotel.png",
-      href: "https://wa.me/628136892535?text=Halo%20D%27Sarana%20Travel%2C%20saya%20ingin%20pesan%20akomodasi%20hotel%20di%20Batam.",
-      delay: 0.3
-    },
-    {
-      id: "kuliner",
-      title: "Tur Kuliner Batam",
-      description: "Nikmati sensasi seafood khas Batam dan kuliner lokal legendaris lainnya dalam satu paket perjalanan rasa.",
-      icon: UtensilsCrossed,
-      image: "/images/kuliner.png",
-      href: "https://wa.me/628136892535?text=Halo%20D%27Sarana%20Travel%2C%20saya%20tertarik%20dengan%20Tur%20Kuliner%20Batam.",
-      delay: 0.4
-    }
+  const displayServices = services.map((s, idx) => ({
+    ...s,
+    description: s.shortDescription,
+    href: `/services/${s.slug}`,
+    delay: (idx + 1) * 0.1
+  }));
 
-  ];
 
   const features = [
     {
@@ -90,7 +58,7 @@ export default function Home() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {services.map((service) => (
+              {displayServices.map((service) => (
                 <ServiceCard key={service.id} {...service} />
               ))}
             </div>
@@ -98,7 +66,7 @@ export default function Home() {
         </section>
 
         {/* Why Us Section */}
-        <section className="py-24 bg-slate-50 relative overflow-hidden">
+        <section id="about" className="py-24 bg-slate-50 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-1/3 h-full bg-emerald-50/50 -skew-x-12 translate-x-1/2 -z-10" />
           
           <div className="container mx-auto px-4 md:px-6">

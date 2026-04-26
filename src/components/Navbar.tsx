@@ -18,12 +18,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Beranda', href: '#' },
-    { name: 'Transportasi', href: '#transportation' },
-    { name: 'Paket Wisata', href: '#tour' },
-    { name: 'Hotel', href: '#hotel' },
-    { name: 'Kuliner', href: '#kuliner' },
-    { name: 'Tentang Kami', href: '#about' },
+    { name: 'Beranda', href: '/' },
+    { name: 'Transportasi', href: '/#transportation' },
+    { name: 'Paket Wisata', href: '/#tour' },
+    { name: 'Hotel', href: '/#hotel' },
+    { name: 'Kuliner', href: '/#kuliner' },
+    { name: 'Tentang Kami', href: '/about' },
   ];
 
   return (

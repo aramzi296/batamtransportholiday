@@ -32,7 +32,7 @@ const Hero = () => {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
                 <a 
-                  href="#services" 
+                  href="/#services" 
                   className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all hover:shadow-xl active:scale-95 group"
                 >
                   Lihat Layanan

@@ -31,20 +31,20 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Layanan Kami</h3>
             <ul className="space-y-4">
-              <li><a href="#transportation" className="hover:text-emerald-500 transition-colors">Transportasi & Rental</a></li>
-              <li><a href="#tour" className="hover:text-emerald-500 transition-colors">Paket Wisata (City Tour)</a></li>
-              <li><a href="#hotel" className="hover:text-emerald-500 transition-colors">Akomodasi Hotel</a></li>
-              <li><a href="#kuliner" className="hover:text-emerald-500 transition-colors">Tur Kuliner Batam</a></li>
+              <li><a href="/#transportation" className="hover:text-emerald-500 transition-colors">Transportasi & Rental</a></li>
+              <li><a href="/#tour" className="hover:text-emerald-500 transition-colors">Paket Wisata (City Tour)</a></li>
+              <li><a href="/#hotel" className="hover:text-emerald-500 transition-colors">Akomodasi Hotel</a></li>
+              <li><a href="/#kuliner" className="hover:text-emerald-500 transition-colors">Tur Kuliner Batam</a></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Perusahaan</h3>
             <ul className="space-y-4">
-              <li><a href="#about" className="hover:text-emerald-500 transition-colors">Tentang Kami</a></li>
-              <li><a href="#" className="hover:text-emerald-500 transition-colors">Syarat & Ketentuan</a></li>
-              <li><a href="#" className="hover:text-emerald-500 transition-colors">Kebijakan Privasi</a></li>
-              <li><a href="#" className="hover:text-emerald-500 transition-colors">FAQ</a></li>
+              <li><a href="/about" className="hover:text-emerald-500 transition-colors">Tentang Kami</a></li>
+              <li><a href="/terms" className="hover:text-emerald-500 transition-colors">Syarat & Ketentuan</a></li>
+              <li><a href="/privacy" className="hover:text-emerald-500 transition-colors">Kebijakan Privasi</a></li>
+              <li><a href="/faq" className="hover:text-emerald-500 transition-colors">FAQ</a></li>
             </ul>
           </div>
 

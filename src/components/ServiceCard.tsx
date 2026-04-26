@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
+import Link from 'next/link';
 
 interface ServiceCardProps {
   id: string;
@@ -44,13 +45,13 @@ const ServiceCard = ({ id, title, description, icon: Icon, image, href, delay = 
         <p className="text-slate-600 leading-relaxed mb-6">
           {description}
         </p>
-        <a 
+        <Link 
           href={href || "#"} 
           className="inline-flex items-center gap-2 font-bold text-emerald-600 group-hover:gap-4 transition-all"
         >
           Selengkapnya
           <div className="w-6 h-[2px] bg-emerald-600 rounded-full" />
-        </a>
+        </Link>
       </div>
 
     </motion.div>
