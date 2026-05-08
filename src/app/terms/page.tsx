@@ -13,7 +13,7 @@ const TermsPage = () => {
   const sectionsID = [
     {
       title: '1. Ketentuan Umum',
-      content: 'Dengan menggunakan layanan D\'Sarana Travel, Anda dianggap telah membaca, memahami, dan menyetujui seluruh Syarat & Ketentuan ini. Layanan kami mencakup penyewaan kendaraan, paket wisata, dan pengaturan akomodasi di wilayah Batam.'
+      content: 'Dengan menggunakan layanan Batam Transport Holiday, Anda dianggap telah membaca, memahami, dan menyetujui seluruh Syarat & Ketentuan ini. Layanan kami mencakup penyewaan kendaraan, paket wisata, dan pengaturan akomodasi di wilayah Batam.'
     },
     {
       title: '2. Persyaratan Penyewa Kendaraan',
@@ -36,7 +36,7 @@ const TermsPage = () => {
   const sectionsEN = [
     {
       title: '1. General Terms',
-      content: 'By using D\'Sarana Travel services, you are deemed to have read, understood, and agreed to these entire Terms & Conditions. Our services include vehicle rental, tour packages, and accommodation arrangements in the Batam area.'
+      content: 'By using Batam Transport Holiday services, you are deemed to have read, understood, and agreed to these entire Terms & Conditions. Our services include vehicle rental, tour packages, and accommodation arrangements in the Batam area.'
     },
     {
       title: '2. Vehicle Renter Requirements',

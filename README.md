@@ -1,6 +1,6 @@
-# D'Sarana Travel - Next.js Platform
+# Batam Transport Holiday - Next.js Platform
 
-Layanan transportasi dan wisata terpercaya di Batam, kini menggunakan platform Next.js.
+Layanan transportasi dan wisata terpercaya di Batam (Batam Transport Holiday), kini menggunakan platform Next.js.
 
 ## Fitur
 - **Next.js 15+** dengan App Router
@@ -20,10 +20,10 @@ Untuk menjalankan aplikasi di server produksi (VPS), gunakan langkah berikut:
 
 ```bash
 # 1. Clone repositori pada branch nextjs
-git clone -b nextjs https://github.com/aramzi296/dsarana.git
+git clone -b nextjs https://github.com/aramzi296/batamtransportholiday.git
 
 # 2. Masuk ke folder
-cd dsarana
+cd batamtransportholiday
 
 # 3. Install dependencies
 npm install
@@ -33,7 +33,7 @@ npm run build
 
 # 5. Jalankan menggunakan PM2
 npm install -g pm2
-PORT=3001 pm2 start npm --name "dsarana-next" -- start
+PORT=3001 pm2 start npm --name "batamtransportholiday-next" -- start
 pm2 save
 
 ```
@@ -42,15 +42,15 @@ pm2 save
 Jika Anda menggunakan **aaPanel**, Anda bisa menggunakan fitur **Node.js Project Manager**:
 
 1. **Install Node.js Version Manager** dari App Store di aaPanel.
-2. **Clone** repositori Anda ke dalam folder situs (misal: `/www/wwwroot/dsarana.com`).
+2. **Clone** repositori Anda ke dalam folder situs (misal: `/www/wwwroot/batamtransportholiday.com`).
 3. **Jalankan Build**: Sebelum menambahkan proyek, buka terminal di folder tersebut dan jalankan:
    ```bash
    npm run build
    ```
 4. Buka **Node.js Project Manager** > **Add Project**.
 5. Atur konfigurasi berikut:
-   - **Project Path**: Pilih folder `/www/wwwroot/dsarana.com`.
-   - **Project Name**: `dsarana-next`.
+   - **Project Path**: Pilih folder `/www/wwwroot/batamtransportholiday.com`.
+   - **Project Name**: `batamtransportholiday-next`.
    - **Run opt**: Pilih **`start [next start]`** (PENTING: Jangan pilih `dev`).
    - **Run Command**: `npm start`.
    - **Port**: `3001`.
@@ -60,7 +60,7 @@ Jika Anda menggunakan **aaPanel**, Anda bisa menggunakan fitur **Node.js Project
 
 5. Klik **OK** dan pastikan status proyek adalah **Running**.
 6. Klik **Mapping** pada list proyek:
-   - Masukkan domain Anda (misal: `dsarana.com`).
+   - Masukkan domain Anda (misal: `batamtransportholiday.com`).
    - aaPanel akan otomatis membuat Nginx Reverse Proxy dari port 80 ke port 3001.
 7. **Setup SSL (HTTPS)**:
    - Pergi ke menu **Website** di aaPanel.

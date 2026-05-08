@@ -103,7 +103,7 @@ const PrivacyPage = () => {
                     : 'If you have any questions about how we handle your data, please do not hesitate to contact us.'}
                 </p>
                 <a 
-                  href="mailto:privacy@dsarana.com" 
+                  href="mailto:privacy@batamtransportholiday.com" 
                   className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold transition-all"
                 >
                   {dict.common.emailUs}

@@ -14,7 +14,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
-            <h2 className="text-2xl font-display font-bold text-white mb-6">D'SARANA</h2>
+            <h2 className="text-2xl font-display font-bold text-white mb-6">BATAM TRANSPORT HOLIDAY</h2>
             <p className="text-slate-400 mb-8 leading-relaxed">
               {dict.footer.tagline}
             </p>
@@ -64,14 +64,14 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="text-emerald-500 shrink-0" size={20} />
-                <span>info@dsarana.com</span>
+                <span>info@batamtransportholiday.com</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
-          <p>© {new Date().getFullYear()} Batam D'Sarana Travel. {dict.common.allRightsReserved}</p>
+          <p>© {new Date().getFullYear()} Batam Transport Holiday. {dict.common.allRightsReserved}</p>
         </div>
       </div>
     </footer>

@@ -38,10 +38,10 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className={`text-2xl font-display font-bold ${scrolled ? 'text-emerald-700' : 'text-emerald-600'}`}>
-              D'SARANA
+              BATAM TRANSPORT
             </span>
             <span className="hidden sm:block text-xs font-medium uppercase tracking-widest text-slate-500">
-              Travel & Leisure
+              HOLIDAY
             </span>
           </Link>
 

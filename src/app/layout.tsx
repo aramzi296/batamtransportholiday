@@ -13,9 +13,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Batam D'Sarana Travel | Rental Mobil, Bus & Paket Wisata Batam",
+  title: "Batam Transport Holiday | Rental Mobil, Bus & Paket Wisata Batam",
   description: "Layanan transportasi terpercaya di Batam. Menyediakan rental mobil, bus, paket wisata, penginapan hotel, dan tur kuliner terbaik di Kota Batam.",
-  keywords: "dsarana.com, rental mobil batam, sewa bus batam, paket wisata batam, tour kuliner batam, hotel batam, d sarana travel",
+  keywords: "batamtransportholiday.com, rental mobil batam, sewa bus batam, paket wisata batam, tour kuliner batam, hotel batam, batam transport holiday",
 };
 
 

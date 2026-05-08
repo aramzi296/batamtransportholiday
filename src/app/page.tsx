@@ -140,7 +140,7 @@ export default function Home() {
                   {dict.common.whatsappUs}
                 </a>
                 <a 
-                  href="mailto:info@dsarana.com" 
+                  href="mailto:info@batamtransportholiday.com" 
                   className="bg-emerald-700 text-white border border-emerald-500 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-emerald-800 transition-all shadow-xl active:scale-95"
                 >
                   {dict.common.emailUs}

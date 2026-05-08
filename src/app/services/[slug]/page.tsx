@@ -124,7 +124,7 @@ const ServiceDetailPage = () => {
                     
                     <div className="space-y-4">
                       <a 
-                        href={`https://wa.me/628136892535?text=Halo%20D'Sarana%20Travel,%20saya%20ingin%20tanya%20mengenai%20${encodeURIComponent(service.title)}`}
+                        href={`https://wa.me/628136892535?text=Halo%20Batam%20Transport%20Holiday,%20saya%20ingin%20tanya%20mengenai%20${encodeURIComponent(service.title)}`}
                         target="_blank"
                         className="flex items-center justify-center gap-3 w-full bg-emerald-600 text-white p-5 rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all shadow-xl active:scale-95"
                       >
