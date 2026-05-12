@@ -78,6 +78,18 @@ npm run build
 ```
 
 
+# 1. Ambil kode terbaru dan paksa update (menghapus perubahan lokal)
+sudo git fetch origin nextjs
+sudo git reset --hard origin/nextjs
+
+# 2. Install library baru (wajib jika ada penambahan seperti nodemailer kemarin)
+sudo npm install
+
+# 3. Rakit ulang aplikasi untuk produksi
+sudo npm run build
+
+# 4. Restart di dashboard aaPanel (Node.js Project Manager)
+
 
 
 ## Struktur Folder

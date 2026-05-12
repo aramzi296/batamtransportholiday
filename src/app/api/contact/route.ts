@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import settings from '@/data/settings.json';
 
 export async function POST(req: Request) {
   try {
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
 
     const mailOptions = {
       from: `"Batam Transport Holiday Website" <website@batamtransportholiday.com>`,
-      to: 'ahmad.ramzi@gmail.com',
+      to: settings.adminEmail,
       subject: `New Contact Form Submission from ${name}`,
       text: `
         Name: ${name}
