@@ -36,7 +36,7 @@ export const id = {
     customersSatisfied: "Pelanggan Puas",
   },
   footer: {
-    tagline: "Layanan rental mobil dan bus terpercaya di Batam dengan kualitas terbaik dan harga terjangkau. Partner perjalanan Anda sejak 2025.",
+    tagline: "Layanan rental mobil dan bus terpercaya di Batam dengan kualitas terbaik dan harga terjangkau. Partner perjalanan Anda sejak 2012.",
     ourServices: "Layanan Kami",
     company: "Perusahaan",
     contact: "Kontak Kami",

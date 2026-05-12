@@ -38,7 +38,7 @@ export const en: Dictionary = {
     customersSatisfied: "Satisfied Customers",
   },
   footer: {
-    tagline: "Trusted car and bus rental service in Batam with best quality and affordable prices. Your travel partner since 2025.",
+    tagline: "Trusted car and bus rental service in Batam with best quality and affordable prices. Your travel partner since 2012.",
     ourServices: "Our Services",
     company: "Company",
     contact: "Contact Us",
