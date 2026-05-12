@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     const mailOptions = {
       from: `"Batam Transport Holiday Website" <website@batamtransportholiday.com>`,
-      to: 'admin@batamtransportholiday.com',
+      to: 'ahmad.ramzi@gmail.com',
       subject: `New Contact Form Submission from ${name}`,
       text: `
         Name: ${name}
