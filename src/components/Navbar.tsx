@@ -63,10 +63,32 @@ const Navbar = () => {
             <div className="flex items-center gap-4 border-l border-slate-200 pl-6">
               <button 
                 onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
-                className="flex items-center gap-1.5 text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
+                title={language === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}
               >
-                <Globe size={16} />
-                {language.toUpperCase()}
+                {language === 'id' ? (
+                  <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" className="w-5 h-3.5 shadow-sm rounded-sm overflow-hidden">
+                      <rect width="3" height="1" fill="#FF0000"/>
+                      <rect width="3" height="1" y="1" fill="#FFFFFF"/>
+                    </svg>
+                    <span className="text-xs font-bold text-slate-600">ID</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-5 h-3.5 shadow-sm rounded-sm overflow-hidden">
+                      <clipPath id="s">
+                        <path d="M0,0 v30 h60 v-30 z"/>
+                      </clipPath>
+                      <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+                      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4" clip-path="url(#s)"/>
+                      <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+                      <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+                    </svg>
+                    <span className="text-xs font-bold text-slate-600">EN</span>
+                  </div>
+                )}
               </button>
               
               <a 
@@ -84,10 +106,25 @@ const Navbar = () => {
           <div className="flex items-center gap-4 md:hidden">
             <button 
               onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
-              className="flex items-center gap-1 text-xs font-bold text-slate-600"
+              className="flex items-center gap-2"
             >
-              <Globe size={16} />
-              {language.toUpperCase()}
+              {language === 'id' ? (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" className="w-6 h-4 shadow-sm rounded-sm overflow-hidden">
+                  <rect width="3" height="1" fill="#FF0000"/>
+                  <rect width="3" height="1" y="1" fill="#FFFFFF"/>
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-6 h-4 shadow-sm rounded-sm overflow-hidden">
+                  <clipPath id="s_mobile">
+                    <path d="M0,0 v30 h60 v-30 z"/>
+                  </clipPath>
+                  <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+                  <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                  <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="4" clip-path="url(#s_mobile)"/>
+                  <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+                  <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+                </svg>
+              )}
             </button>
             <button 
               className="text-slate-900"
