@@ -7,6 +7,7 @@ import Hero from "@/components/Hero";
 import AboutUs from "@/components/AboutUs";
 import OwnerCommitment from "@/components/OwnerCommitment";
 import FleetGallery from "@/components/FleetGallery";
+import HappyGuestGallery from "@/components/HappyGuestGallery";
 import FAQ from "@/components/FAQ";
 
 import Footer from "@/components/Footer";
@@ -63,6 +64,9 @@ export default function Home() {
 
         {/* Fleet Gallery Section */}
         <FleetGallery />
+
+        {/* Happy Guest Gallery */}
+        <HappyGuestGallery />
 
         {/* FAQ Section */}
         <FAQ />
