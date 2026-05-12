@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSettings } from '@/context/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone, Globe } from 'lucide-react';
 
 const Navbar = () => {
   const { language, setLanguage, dict } = useLanguage();
+  const { settings } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -20,12 +22,11 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: dict.navbar.home, href: '/' },
-    { name: dict.navbar.transportation, href: '/#transportation' },
-    { name: dict.navbar.tour, href: '/#tour' },
-    { name: dict.navbar.hotel, href: '/#hotel' },
-    { name: dict.navbar.kuliner, href: '/#kuliner' },
-    { name: dict.navbar.about, href: '/about' },
+    { name: dict.navbar.home, href: '/#home' },
+    { name: dict.navbar.about, href: '/#about' },
+    { name: language === 'id' ? 'Galeri' : 'Gallery', href: '/#gallery' },
+    { name: 'FAQ', href: '/#faq' },
+    { name: language === 'id' ? 'Kontak' : 'Contact', href: '/#contact' },
   ];
 
   return (
@@ -36,12 +37,14 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className={`text-2xl font-display font-bold ${scrolled ? 'text-emerald-700' : 'text-emerald-600'}`}>
-              BATAM TRANSPORT
-            </span>
-            <span className="hidden sm:block text-xs font-medium uppercase tracking-widest text-slate-500">
-              HOLIDAY
+          <Link href="/" className="flex items-center gap-3">
+            {/* <img 
+              src="/images/logo.png" 
+              alt="Batam Transport Holiday Logo" 
+              className="w-10 h-10 object-contain rounded-lg"
+            /> */}
+            <span className={`text-2xl font-display font-bold ${scrolled ? 'text-blue-700' : 'text-blue-600'}`}>
+              BatamTransportHoliday<span className="text-slate-400">.com</span>
             </span>
           </Link>
 
@@ -51,7 +54,7 @@ const Navbar = () => {
               <Link 
                 key={link.name} 
                 href={link.href}
-                className="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors"
+                className="text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
               >
                 {link.name}
               </Link>
@@ -60,16 +63,16 @@ const Navbar = () => {
             <div className="flex items-center gap-4 border-l border-slate-200 pl-6">
               <button 
                 onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
-                className="flex items-center gap-1.5 text-sm font-bold text-slate-600 hover:text-emerald-600 transition-colors"
+                className="flex items-center gap-1.5 text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors"
               >
                 <Globe size={16} />
                 {language.toUpperCase()}
               </button>
               
               <a 
-                href="https://wa.me/628136892535" 
+                href={`https://wa.me/${settings.whatsappNumber}`} 
                 target="_blank" 
-                className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-700 transition-all hover:shadow-lg active:scale-95"
+                className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-blue-700 transition-all hover:shadow-lg active:scale-95"
               >
                 <Phone size={16} />
                 {dict.common.booking}
@@ -117,8 +120,8 @@ const Navbar = () => {
                 </Link>
               ))}
               <a 
-                href="https://wa.me/628136892535" 
-                className="flex items-center justify-center gap-2 bg-emerald-600 text-white p-4 rounded-xl font-bold"
+                href={`https://wa.me/${settings.whatsappNumber}`} 
+                className="flex items-center justify-center gap-2 bg-blue-600 text-white p-4 rounded-xl font-bold"
               >
                 <Phone size={20} />
                 {dict.common.contactUs}

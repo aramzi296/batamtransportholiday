@@ -37,12 +37,12 @@ const ServiceCard = ({ id, title, description, icon: Icon, image, href, delay = 
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-2xl shadow-sm">
-          <Icon className="text-emerald-600" size={24} />
+          <Icon className="text-blue-600" size={24} />
         </div>
       </div>
       
       <div className="p-8">
-        <h3 className="text-2xl font-display font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors">
+        <h3 className="text-2xl font-display font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors">
           {title}
         </h3>
         <p className="text-slate-600 leading-relaxed mb-6">
@@ -50,10 +50,10 @@ const ServiceCard = ({ id, title, description, icon: Icon, image, href, delay = 
         </p>
         <Link 
           href={href || "#"} 
-          className="inline-flex items-center gap-2 font-bold text-emerald-600 group-hover:gap-4 transition-all"
+          className="inline-flex items-center gap-2 font-bold text-blue-600 group-hover:gap-4 transition-all"
         >
           {dict.common.learnMore}
-          <div className="w-6 h-[2px] bg-emerald-600 rounded-full" />
+          <div className="w-6 h-[2px] bg-blue-600 rounded-full" />
         </Link>
       </div>
 

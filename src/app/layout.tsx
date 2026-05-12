@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 
 
 import { LanguageProvider } from "@/context/LanguageContext";
+import { SettingsProvider } from "@/context/SettingsContext";
 
 export default function RootLayout({
   children,
@@ -32,9 +33,11 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${outfit.variable} ${inter.variable} scroll-smooth`}>
       <body className="font-inter antialiased bg-white text-slate-900">
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+        <SettingsProvider>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </SettingsProvider>
       </body>
     </html>
   );

@@ -37,7 +37,7 @@ const AboutPage = () => {
       <main className="flex-grow pt-20">
         {/* Header Section */}
         <section className="relative py-24 bg-slate-900 overflow-hidden">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-emerald-600/10 -skew-x-12 translate-x-1/4" />
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/10 -skew-x-12 translate-x-1/4" />
           <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="max-w-3xl">
               <motion.div
@@ -45,10 +45,10 @@ const AboutPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <span className="text-emerald-400 font-bold tracking-widest uppercase text-sm mb-4 block">{dict.about.subtitle}</span>
+                <span className="text-blue-400 font-bold tracking-widest uppercase text-sm mb-4 block">{dict.about.subtitle}</span>
                 <h1 className="text-4xl md:text-6xl font-display font-extrabold text-white mb-6 leading-tight">
                   {dict.about.title} <br />
-                  <span className="text-emerald-500">{dict.about.titleAccent}</span>
+                  <span className="text-blue-500">{dict.about.titleAccent}</span>
                 </h1>
                 <p className="text-xl text-slate-400 leading-relaxed">
                   {dict.about.description}
@@ -59,13 +59,13 @@ const AboutPage = () => {
         </section>
 
         {/* Stats Section */}
-        <section className="py-12 bg-emerald-600">
+        <section className="py-12 bg-blue-600">
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center text-white">
                   <p className="text-4xl md:text-5xl font-display font-extrabold mb-2">{stat.value}</p>
-                  <p className="text-emerald-100 text-sm font-medium uppercase tracking-wider">{stat.label}</p>
+                  <p className="text-blue-100 text-sm font-medium uppercase tracking-wider">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -83,13 +83,13 @@ const AboutPage = () => {
                     alt="Our Story" 
                     className="rounded-[3rem] shadow-2xl relative z-10"
                   />
-                  <div className="absolute -bottom-6 -right-6 w-full h-full border-4 border-emerald-100 rounded-[3rem] -z-10" />
+                  <div className="absolute -bottom-6 -right-6 w-full h-full border-4 border-blue-100 rounded-[3rem] -z-10" />
                 </div>
               </div>
               <div className="flex-1">
                 <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 mb-8">
                   {dict.about.storyTitle} <br />
-                  <span className="text-emerald-600">{dict.about.storyAccent}</span>
+                  <span className="text-blue-600">{dict.about.storyAccent}</span>
                 </h2>
                 <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                   <p>{dict.about.storyPara1}</p>
@@ -106,7 +106,7 @@ const AboutPage = () => {
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="bg-white p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
-                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-8">
+                <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-8">
                   <Eye size={32} />
                 </div>
                 <h3 className="text-3xl font-display font-bold text-slate-900 mb-6">{dict.about.visionTitle}</h3>
@@ -115,14 +115,14 @@ const AboutPage = () => {
                 </p>
               </div>
               <div className="bg-white p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
-                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-8">
+                <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-8">
                   <Target size={32} />
                 </div>
                 <h3 className="text-3xl font-display font-bold text-slate-900 mb-6">{dict.about.missionTitle}</h3>
                 <ul className="space-y-4 text-lg text-slate-600">
                   {dict.about.missionList.map((item, idx) => (
                     <li key={idx} className="flex gap-3">
-                      <span className="text-emerald-600 font-bold">•</span>
+                      <span className="text-blue-600 font-bold">•</span>
                       {item}
                     </li>
                   ))}
@@ -135,7 +135,7 @@ const AboutPage = () => {
         {/* Legality Section */}
         <section className="py-24 bg-slate-900 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full opacity-10">
-            <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500 rounded-full blur-[120px]" />
+            <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500 rounded-full blur-[120px]" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500 rounded-full blur-[120px]" />
           </div>
           
@@ -145,7 +145,7 @@ const AboutPage = () => {
                 <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
                   {dict.legality.title}
                 </h2>
-                <div className="w-24 h-1.5 bg-emerald-500 mx-auto rounded-full" />
+                <div className="w-24 h-1.5 bg-blue-500 mx-auto rounded-full" />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -156,11 +156,11 @@ const AboutPage = () => {
                   { label: dict.legality.sk, value: dict.legality.valueSk, icon: Scale },
                 ].map((item, idx) => (
                   <div key={idx} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl flex items-start gap-5">
-                    <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center shrink-0">
+                    <div className="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center shrink-0">
                       <item.icon size={24} />
                     </div>
                     <div>
-                      <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest mb-1">{item.label}</p>
+                      <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">{item.label}</p>
                       <p className="text-white text-lg font-medium">{item.value}</p>
                     </div>
                   </div>
@@ -184,16 +184,16 @@ const AboutPage = () => {
         <section className="py-24 bg-white">
           <div className="container mx-auto px-4 md:px-6 text-center">
             <h2 className="text-3xl md:text-5xl font-display font-bold text-slate-900 mb-16">
-              {dict.about.valuesTitle} <span className="text-emerald-600">{dict.about.valuesAccent}</span>
+              {dict.about.valuesTitle} <span className="text-blue-600">{dict.about.valuesAccent}</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {values.map((value, index) => (
-                <div key={index} className="p-8 group hover:bg-emerald-600 transition-all duration-500 rounded-[2rem]">
-                  <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                <div key={index} className="p-8 group hover:bg-blue-600 transition-all duration-500 rounded-[2rem]">
+                  <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:bg-blue-500 group-hover:text-white transition-colors">
                     <value.icon size={32} />
                   </div>
                   <h4 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-white transition-colors">{value.title}</h4>
-                  <p className="text-slate-600 group-hover:text-emerald-50 transition-colors leading-relaxed">
+                  <p className="text-slate-600 group-hover:text-blue-50 transition-colors leading-relaxed">
                     {value.description}
                   </p>
                 </div>
@@ -205,16 +205,16 @@ const AboutPage = () => {
         {/* CTA Section */}
         <section className="py-24 bg-slate-900">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="bg-emerald-600 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+            <div className="bg-blue-600 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
               <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-8">
                 {language === 'id' ? 'Ingin Mengenal Kami Lebih Dekat?' : 'Want to Get to Know Us Better?'}
               </h2>
-              <p className="text-xl text-emerald-50 mb-12 max-w-2xl mx-auto">
+              <p className="text-xl text-blue-50 mb-12 max-w-2xl mx-auto">
                 {language === 'id' ? 'Tim kami siap menjawab pertanyaan Anda dan membantu merencanakan perjalanan terbaik Anda di Batam.' : 'Our team is ready to answer your questions and help plan your best trip in Batam.'}
               </p>
               <a 
                 href="https://wa.me/628136892535" 
-                className="inline-block bg-white text-emerald-700 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-emerald-50 transition-all shadow-xl"
+                className="inline-block bg-white text-blue-700 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-blue-50 transition-all shadow-xl"
               >
                 {language === 'id' ? 'Hubungi Kami Sekarang' : 'Contact Us Now'}
               </a>

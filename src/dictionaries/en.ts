@@ -22,9 +22,9 @@ export const en: Dictionary = {
   },
   hero: {
     badge: "Premium Travel Experience",
-    title: "Explore Batam",
-    titleAccent: "Without Limits",
-    description: "The most complete transportation and travel solution in Batam. From luxury car rentals to appetizing culinary tours.",
+    title: "Premium Transport",
+    titleAccent: "Service in Batam",
+    description: "Experience ultimate comfort with our latest fleet of buses and cars. We provide professional transportation solutions for tour groups, business visits, and family events.",
     cta: "See Services",
     ctaConsult: "Free Consultation",
     checks: ["Well-Maintained Fleet", "Competitive Price", "24/7 Service"]
@@ -59,8 +59,8 @@ export const en: Dictionary = {
     ],
     storyTitle: "The Journey of",
     storyAccent: "Batam Transport Holiday",
-    storyPara1: "Founded with the spirit of advancing tourism in Batam, Batam Transport Holiday began its journey as a small car rental provider focused on service quality.",
-    storyPara2: "Over time, we have grown into a complete travel agency serving thousands of customers, from domestic to foreign tourists.",
+    storyPara1: "Batam Transport Holiday was founded with a dedication to providing the most complete transportation solutions in Batam. We offer various types of fleets ranging from family cars, luxury vehicles, to large capacity tour buses to meet all your travel needs.",
+    storyPara2: "With a vehicle collection that is constantly updated and regularly maintained, we guarantee maximum safety and comfort for every customer, whether for business purposes, tour groups, or other special events.",
     visionTitle: "Our Vision",
     visionDesc: "To be the number one transportation and tourism service provider in Batam known for innovation, reliability, and dedication to customer satisfaction.",
     missionTitle: "Our Mission",
@@ -71,6 +71,9 @@ export const en: Dictionary = {
     ],
     valuesTitle: "Our Core",
     valuesAccent: "Values",
+    ownerTitle: "Owner's Commitment",
+    ownerName: "Mr. James",
+    ownerCommitment: "Your comfort and safety are our top priorities. As the owner of Batam Transport Holiday, I am committed to ensuring that every guest receives the best service with a prime fleet and a professional team. We don't just take you to your destination, but we want to be part of an unforgettable travel experience in Batam City.",
   },
   faq: {
     title: "Frequently Asked Questions",

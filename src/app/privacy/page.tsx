@@ -3,120 +3,82 @@
 import React from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion } from 'framer-motion';
-import { ShieldCheck, Lock, EyeOff, UserCheck } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from "@/context/LanguageContext";
+import { motion } from "framer-motion";
+import { Lock } from "lucide-react";
 
-const PrivacyPage = () => {
-  const { dict, language } = useLanguage();
-
-  const sectionsID = [
-    {
-      icon: UserCheck,
-      title: 'Informasi yang Kami Kumpulkan',
-      content: 'Kami mengumpulkan informasi pribadi seperti nama, nomor telepon, alamat email, dan identitas (SIM/KTP) hanya untuk keperluan pemesanan layanan dan verifikasi keamanan.'
-    },
-    {
-      icon: Lock,
-      title: 'Keamanan Data',
-      content: 'Kami menerapkan standar keamanan data yang ketat untuk melindungi informasi pribadi Anda dari akses yang tidak sah, pengubahan, atau pengungkapan.'
-    },
-    {
-      icon: EyeOff,
-      title: 'Penggunaan Informasi',
-      content: 'Data Anda digunakan semata-mata untuk memproses pemesanan, memberikan layanan pelanggan, dan mengirimkan informasi terkait layanan kami. Kami tidak menjual data Anda kepada pihak ketiga.'
-    },
-    {
-      icon: ShieldCheck,
-      title: 'Hak-Hak Anda',
-      content: 'Anda memiliki hak untuk meminta akses ke data pribadi Anda, melakukan pembaruan, atau meminta penghapusan data yang kami simpan setelah masa layanan berakhir.'
-    }
-  ];
-
-  const sectionsEN = [
-    {
-      icon: UserCheck,
-      title: 'Information We Collect',
-      content: 'We collect personal information such as name, phone number, email address, and identity (Driver\'s License/ID Card) only for service booking purposes and security verification.'
-    },
-    {
-      icon: Lock,
-      title: 'Data Security',
-      content: 'We implement strict data security standards to protect your personal information from unauthorized access, alteration, or disclosure.'
-    },
-    {
-      icon: EyeOff,
-      title: 'Use of Information',
-      content: 'Your data is used solely to process bookings, provide customer service, and send information related to our services. We do not sell your data to third parties.'
-    },
-    {
-      icon: ShieldCheck,
-      title: 'Your Rights',
-      content: 'You have the right to request access to your personal data, perform updates, or request the deletion of data we store after the service period ends.'
-    }
-  ];
-
-  const sections = language === 'id' ? sectionsID : sectionsEN;
+export default function PrivacyPage() {
+  const { language, dict } = useLanguage();
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      
-      <main className="flex-grow pt-20">
-        <section className="py-24 bg-white">
-          <div className="container mx-auto px-4 md:px-6">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="max-w-4xl mx-auto"
-            >
-              <div className="text-center mb-16">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-emerald-100 text-emerald-600 rounded-3xl mb-6">
-                  <ShieldCheck size={40} />
-                </div>
-                <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 mb-6">{dict.footer.privacy}</h1>
-                <p className="text-xl text-slate-600">
-                  {language === 'id' 
-                    ? 'Komitmen kami dalam menjaga dan melindungi privasi data setiap pelanggan.' 
-                    : 'Our commitment to maintaining and protecting the privacy of every customer\'s data.'}
-                </p>
+      <main className="flex-grow pt-32 pb-24 bg-slate-50">
+        <div className="container mx-auto px-4 md:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl mx-auto bg-white p-8 md:p-16 rounded-[3rem] shadow-xl shadow-slate-200/50"
+          >
+            <div className="flex items-center gap-4 mb-8 text-blue-600">
+              <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
+                <Lock size={28} />
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {sections.map((section, idx) => (
-                  <div key={idx} className="bg-slate-50 p-10 rounded-[2rem] border border-slate-100 hover:shadow-lg transition-shadow">
-                    <section.icon className="text-emerald-600 mb-6" size={32} />
-                    <h2 className="text-2xl font-bold text-slate-900 mb-4">{section.title}</h2>
-                    <p className="text-slate-600 leading-relaxed">
-                      {section.content}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <h1 className="text-3xl md:text-5xl font-display font-bold text-slate-900">
+                {dict.footer.privacy}
+              </h1>
+            </div>
 
-              <div className="mt-16 p-12 bg-slate-900 rounded-[3rem] text-center text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-600/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-                <h3 className="text-2xl font-bold mb-4">{language === 'id' ? 'Hubungi Tim Keamanan Kami' : 'Contact Our Security Team'}</h3>
-                <p className="text-slate-400 mb-8 max-w-xl mx-auto">
+            <div className="prose prose-slate prose-lg max-w-none text-slate-600 space-y-8">
+              <section>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">1. {language === 'id' ? 'Informasi yang Kami Kumpulkan' : 'Information We Collect'}</h2>
+                <p>
                   {language === 'id' 
-                    ? 'Jika Anda memiliki pertanyaan mengenai cara kami menangani data Anda, jangan ragu untuk menghubungi kami.' 
-                    : 'If you have any questions about how we handle your data, please do not hesitate to contact us.'}
+                    ? 'Kami mengumpulkan informasi minimal yang diperlukan untuk proses pemesanan, seperti nama, nomor telepon, dan detail perjalanan Anda. Informasi ini dikumpulkan secara sukarela saat Anda menghubungi kami.'
+                    : 'We collect minimal information necessary for the booking process, such as your name, phone number, and travel details. This information is collected voluntarily when you contact us.'}
                 </p>
-                <a 
-                  href="mailto:privacy@batamtransportholiday.com" 
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold transition-all"
-                >
-                  {dict.common.emailUs}
-                </a>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">2. {language === 'id' ? 'Penggunaan Informasi' : 'Use of Information'}</h2>
+                <p>
+                  {language === 'id'
+                    ? 'Informasi Anda hanya digunakan untuk tujuan administratif pemesanan, koordinasi perjalanan, dan peningkatan layanan kami. Kami tidak akan menjual atau menyewakan informasi pribadi Anda kepada pihak ketiga.'
+                    : 'Your information is only used for booking administrative purposes, travel coordination, and improving our services. We will not sell or rent your personal information to third parties.'}
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">3. {language === 'id' ? 'Keamanan Data' : 'Data Security'}</h2>
+                <p>
+                  {language === 'id'
+                    ? 'Kami mengambil langkah-langkah keamanan yang wajar untuk melindungi informasi Anda dari akses yang tidak sah atau penyalahgunaan. Akses ke data pelanggan dibatasi hanya kepada staf yang memerlukannya.'
+                    : 'We take reasonable security measures to protect your information from unauthorized access or misuse. Access to customer data is limited to staff who need it.'}
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">4. {language === 'id' ? 'Kontak Kami' : 'Contact Us'}</h2>
+                <p>
+                  {language === 'id'
+                    ? 'Jika Anda memiliki kekhawatiran tentang privasi data Anda, Anda dapat meminta kami untuk menghapus informasi Anda dari sistem kami kapan saja melalui saluran kontak resmi kami.'
+                    : 'If you have concerns about your data privacy, you can ask us to delete your information from our system at any time through our official contact channels.'}
+                </p>
+              </section>
+
+              <div className="mt-16 p-8 bg-blue-50 rounded-3xl border border-blue-100">
+                <p className="text-sm italic text-slate-500">
+                  {language === 'id' 
+                    ? 'Terakhir diperbarui: 11 Mei 2026. Kebijakan privasi ini dapat berubah sewaktu-waktu untuk menyesuaikan dengan regulasi yang berlaku.' 
+                    : 'Last updated: May 11, 2026. This privacy policy may change at any time to comply with applicable regulations.'}
+                </p>
               </div>
-            </motion.div>
-          </div>
-        </section>
+            </div>
+          </motion.div>
+        </div>
       </main>
-
       <Footer />
     </div>
   );
-};
-
-export default PrivacyPage;
+}
