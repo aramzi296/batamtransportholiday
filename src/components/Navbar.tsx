@@ -43,7 +43,7 @@ const Navbar = () => {
               alt="Batam Transport Holiday Logo" 
               className="w-10 h-10 object-contain rounded-lg"
             /> */}
-            <span className={`text-2xl font-display font-bold ${scrolled ? 'text-blue-700' : 'text-blue-600'}`}>
+            <span className={`text-xl md:text-2xl font-display font-bold whitespace-nowrap ${scrolled ? 'text-blue-700' : 'text-blue-600'}`}>
               BatamTransportHoliday<span className="text-slate-400">.com</span>
             </span>
           </Link>
