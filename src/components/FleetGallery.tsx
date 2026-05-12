@@ -65,7 +65,7 @@ const FleetGallery = () => {
               : 'And many more vehicles in our fleet...'}
           </p>
           <a 
-            href={`https://wa.me/${settings.whatsappNumber}`} 
+            href="/#contact" 
             className="inline-flex items-center gap-2 bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all shadow-xl active:scale-95"
           >
             {language === 'id' ? 'Tanya Ketersediaan Armada' : 'Check Fleet Availability'}

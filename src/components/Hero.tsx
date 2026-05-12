@@ -44,7 +44,7 @@ const Hero = () => {
 
               <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start mb-12">
                 <a
-                  href="#services"
+                  href="#faq"
                   className="flex items-center justify-center gap-3 bg-blue-600 text-white px-10 py-5 rounded-[2rem] font-bold text-xl hover:bg-blue-700 transition-all hover:shadow-2xl hover:shadow-blue-200 active:scale-95 group"
                 >
                   {dict.hero.cta}

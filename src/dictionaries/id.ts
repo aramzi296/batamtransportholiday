@@ -70,7 +70,7 @@ export const id = {
     valuesTitle: "Nilai-Nilai",
     valuesAccent: "Inti Kami",
     ownerTitle: "Komitmen Pemilik",
-    ownerName: "Bpk. James",
+    ownerName: "Bpk. Boyon",
     ownerCommitment: "Kenyamanan dan keamanan Anda adalah prioritas utama kami. Sebagai pemilik Batam Transport Holiday, saya berkomitmen untuk memastikan setiap tamu mendapatkan layanan terbaik dengan armada yang prima dan tim yang profesional. Kami tidak hanya mengantar Anda sampai tujuan, tapi kami ingin menjadi bagian dari pengalaman perjalanan yang tak terlupakan di Kota Batam.",
   },
   faq: {
@@ -91,7 +91,7 @@ export const id = {
     valueNib: "0802260051855",
     valueNpwp: "1000 0000 0820 0812",
     valueSk: "AHU-006887.AH.01.30.Tahun 2026",
-    valueAddress: "Mall Top 100 Tembesi Blok H3 No. 1, Batam"
+    valueAddress: "Perum Parisa Indah Blok B2 No. 14, Sei Langkai, Sagulung, Batam"
   }
 };
 

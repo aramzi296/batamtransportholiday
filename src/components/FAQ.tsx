@@ -10,6 +10,10 @@ const FAQ = () => {
 
   const faqsID = [
     {
+      question: 'Apa saja armada yang anda sediakan?',
+      answer: 'Kami menyediakan berbagai pilihan armada yang terawat dan siap menempuh perjalanan jauh maupun dekat. Mulai dari mobil keluarga yang nyaman seperti Avanza dan Innova Reborn/Zenix, hingga kendaraan berkapasitas besar untuk grup seperti Toyota Hiace (Commuter & Premio) serta Elf Long. Seluruh unit kami selalu dalam kondisi prima dan didampingi oleh driver berpengalaman untuk menjamin keamanan serta kenyamanan Anda selama di perjalanan'
+    },
+    {
       question: 'Bagaimana cara melakukan pemesanan rental mobil?',
       answer: 'Pemesanan dapat dilakukan dengan mudah melalui WhatsApp kami. Kami siap mendiskusikan paket yang affordable dan sesuai dengan kebutuhan perjalanan Anda di Batam.'
     },
@@ -36,6 +40,10 @@ const FAQ = () => {
   ];
 
   const faqsEN = [
+    {
+      question: 'What types of fleet do you provide?',
+      answer: 'We provide a variety of well-maintained fleet options ready for both long and short journeys. Ranging from comfortable family cars like Avanza and Innova Reborn/Zenix, to large-capacity vehicles for groups such as Toyota Hiace (Commuter & Premio) and Elf Long. All our units are always in prime condition and accompanied by experienced drivers to ensure your safety and comfort during the trip.'
+    },
     {
       question: 'How do I book a car rental?',
       answer: 'Bookings can be easily made through our WhatsApp. We are ready to discuss affordable packages that suit your travel needs in Batam.'

@@ -61,15 +61,27 @@ const Footer = () => {
             <ul className="space-y-6">
               <li className="flex gap-3">
                 <MapPin className="text-blue-500 shrink-0" size={20} />
-                <span>Mall Top 100 Tembesi Blok H3 No. 1, Batam, Indonesia</span>
+                <span>{dict.legality.valueAddress}, Indonesia</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="text-blue-500 shrink-0" size={20} />
-                <span>{settings.whatsappDisplay}</span>
+                <a 
+                  href={`https://wa.me/${settings.whatsappNumber}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-500 transition-colors"
+                >
+                  {settings.whatsappDisplay}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="text-blue-500 shrink-0" size={20} />
-                <span>info@batamtransportholiday.com</span>
+                <a 
+                  href="mailto:info@batamtransportholiday.com"
+                  className="hover:text-blue-500 transition-colors"
+                >
+                  info@batamtransportholiday.com
+                </a>
               </li>
             </ul>
           </div>

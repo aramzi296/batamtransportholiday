@@ -1,12 +1,14 @@
 'use client';
 
+import { useState } from 'react';
+
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import AboutUs from "@/components/AboutUs";
 import OwnerCommitment from "@/components/OwnerCommitment";
 import FleetGallery from "@/components/FleetGallery";
 import FAQ from "@/components/FAQ";
-import Legality from "@/components/Legality";
+
 import Footer from "@/components/Footer";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -16,6 +18,34 @@ import { motion } from "framer-motion";
 export default function Home() {
   const { language, dict } = useLanguage();
   const { settings } = useSettings();
+
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formData, setFormData] = useState({
+    name: '',
+    whatsapp: '',
+    service: 'Sewa Mobil/Bus',
+    message: ''
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setStatus('success');
+        setFormData({ name: '', whatsapp: '', service: 'Sewa Mobil/Bus', message: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      setStatus('error');
+    }
+  };
 
 
   return (
@@ -37,8 +67,7 @@ export default function Home() {
         {/* FAQ Section */}
         <FAQ />
 
-        {/* Legality Section */}
-        <Legality />
+
 
         {/* Contact & Location Section */}
         <section id="contact" className="py-24 bg-slate-900 text-white scroll-mt-20">
@@ -69,7 +98,14 @@ export default function Home() {
                     </div>
                     <div>
                       <h4 className="font-bold mb-1">WhatsApp</h4>
-                      <p className="text-slate-400">{settings.whatsappDisplay}</p>
+                      <a 
+                        href={`https://wa.me/${settings.whatsappNumber}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-slate-400 hover:text-blue-400 transition-colors"
+                      >
+                        {settings.whatsappDisplay}
+                      </a>
                     </div>
                   </div>
                   
@@ -83,37 +119,73 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
               </div>
               
               <div className="flex-1">
                 <div className="bg-white/5 backdrop-blur-sm p-8 md:p-12 rounded-[2.5rem] border border-white/10">
                   <h3 className="text-2xl font-bold mb-8">{language === 'id' ? 'Kirim Pesan' : 'Send a Message'}</h3>
-                  <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                  <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-slate-400 mb-2">{language === 'id' ? 'Nama Lengkap' : 'Full Name'}</label>
-                        <input type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors" />
+                        <input 
+                          required
+                          type="text" 
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors" 
+                        />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-slate-400 mb-2">{language === 'id' ? 'Nomor WhatsApp' : 'WhatsApp Number'}</label>
-                        <input type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors" />
+                        <input 
+                          required
+                          type="text" 
+                          value={formData.whatsapp}
+                          onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors" 
+                        />
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-slate-400 mb-2">{language === 'id' ? 'Layanan yang Diminati' : 'Interested Service'}</label>
-                      <select className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors appearance-none">
-                        <option className="bg-slate-900">{language === 'id' ? 'Sewa Mobil/Bus' : 'Car/Bus Rental'}</option>
-                        <option className="bg-slate-900">{language === 'id' ? 'Paket Wisata' : 'Tour Package'}</option>
-                        <option className="bg-slate-900">{language === 'id' ? 'Lainnya' : 'Others'}</option>
+                      <select 
+                        value={formData.service}
+                        onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors appearance-none"
+                      >
+                        <option value="Sewa Mobil/Bus" className="bg-slate-900">{language === 'id' ? 'Sewa Mobil/Bus' : 'Car/Bus Rental'}</option>
+                        <option value="Paket Wisata" className="bg-slate-900">{language === 'id' ? 'Paket Wisata' : 'Tour Package'}</option>
+                        <option value="Lainnya" className="bg-slate-900">{language === 'id' ? 'Lainnya' : 'Others'}</option>
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-slate-400 mb-2">{language === 'id' ? 'Pesan' : 'Message'}</label>
-                      <textarea rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"></textarea>
+                      <textarea 
+                        required
+                        rows={4} 
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                      ></textarea>
                     </div>
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98]">
-                      {language === 'id' ? 'Kirim Sekarang' : 'Send Now'}
+                    <button 
+                      disabled={status === 'loading'}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {status === 'loading' 
+                        ? (language === 'id' ? 'Mengirim...' : 'Sending...') 
+                        : (status === 'success' 
+                          ? (language === 'id' ? 'Terkirim!' : 'Sent!') 
+                          : (language === 'id' ? 'Kirim Sekarang' : 'Send Now'))
+                      }
                     </button>
+                    {status === 'error' && (
+                      <p className="text-red-500 text-sm text-center">
+                        {language === 'id' ? 'Gagal mengirim pesan. Silakan coba lagi.' : 'Failed to send message. Please try again.'}
+                      </p>
+                    )}
                   </form>
                 </div>
               </div>

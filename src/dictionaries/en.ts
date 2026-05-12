@@ -72,7 +72,7 @@ export const en: Dictionary = {
     valuesTitle: "Our Core",
     valuesAccent: "Values",
     ownerTitle: "Owner's Commitment",
-    ownerName: "Mr. James",
+    ownerName: "Mr. Boyon",
     ownerCommitment: "Your comfort and safety are our top priorities. As the owner of Batam Transport Holiday, I am committed to ensuring that every guest receives the best service with a prime fleet and a professional team. We don't just take you to your destination, but we want to be part of an unforgettable travel experience in Batam City.",
   },
   faq: {
@@ -93,6 +93,6 @@ export const en: Dictionary = {
     valueNib: "0802260051855",
     valueNpwp: "1000 0000 0820 0812",
     valueSk: "AHU-006887.AH.01.30.Tahun 2026",
-    valueAddress: "Mall Top 100 Tembesi Blok H3 No. 1, Batam"
+    valueAddress: "Perum Parisa Indah Blok B2 No. 14, Sei Langkai, Sagulung, Batam"
   }
 };
