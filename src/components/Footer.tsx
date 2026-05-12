@@ -29,7 +29,7 @@ const Footer = () => {
             </p>
             <div className="flex items-center gap-4">
               <a href={settings.tiktokUrl} target="_blank" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
-                <svg size={20} viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                   <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.6-4.13-1.47V18c0 1.94-.66 3.82-1.88 5.32A8.91 8.91 0 0 1 9 23.5c-1.79 0-3.5-.53-4.96-1.51A8.96 8.96 0 0 1 1 15c0-1.8 1.14-3.5 2.6-4.5 1.49-1.01 3.38-1.5 5.2-1.39.08.01.15.02.2.03v4.05c-.03-.01-.07-.02-.1-.03-1.22-.12-2.52.17-3.41 1.05-.9.88-1.18 2.23-.74 3.4.45 1.17 1.57 2.04 2.81 2.21 1.25.17 2.6-.14 3.48-1.07.86-.91 1.16-2.22 1.16-3.47V.02z"/>
                 </svg>
               </a>
