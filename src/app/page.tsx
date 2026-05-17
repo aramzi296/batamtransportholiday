@@ -8,6 +8,7 @@ import AboutUs from "@/components/AboutUs";
 import OwnerCommitment from "@/components/OwnerCommitment";
 import FleetGallery from "@/components/FleetGallery";
 import HappyGuestGallery from "@/components/HappyGuestGallery";
+import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 
 import Footer from "@/components/Footer";
@@ -67,6 +68,9 @@ export default function Home() {
 
         {/* Happy Guest Gallery */}
         <HappyGuestGallery />
+
+        {/* Testimonials Section */}
+        <Testimonials />
 
         {/* FAQ Section */}
         <FAQ />

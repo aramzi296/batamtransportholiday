@@ -131,7 +131,7 @@ const Hero = () => {
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-slate-500 font-bold uppercase">{language === 'id' ? 'Mulai' : 'From'}</p>
-                    <p className="text-2xl font-bold text-blue-600">Rp 350k<span className="text-sm text-slate-400 font-normal">/{language === 'id' ? 'hari' : 'day'}</span></p>
+                    <p className="text-2xl font-bold text-blue-600">Rp 350k</p>
                   </div>
                 </div>
               </div>
@@ -159,7 +159,7 @@ const Hero = () => {
             >
               <X size={40} />
             </motion.button>
-            
+
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
