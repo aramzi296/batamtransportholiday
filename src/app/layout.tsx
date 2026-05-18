@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${outfit.variable} ${inter.variable} scroll-smooth`}>
+    <html lang="en" className={`${outfit.variable} ${inter.variable} scroll-smooth`}>
       <body className="font-inter antialiased bg-white text-slate-900">
         <noscript>
           <iframe
