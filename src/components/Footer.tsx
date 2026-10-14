@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Mail, Phone, MapPin, Globe, Share2, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+import { Mail, Phone, MapPin, Globe } from 'lucide-react';
 
 
 import { useLanguage } from '@/context/LanguageContext';
@@ -42,17 +43,18 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">{dict.footer.ourServices}</h3>
             <ul className="space-y-4">
-              <li><a href="/#gallery" className="hover:text-blue-500 transition-colors">{language === 'id' ? 'Galeri Armada' : 'Fleet Gallery'}</a></li>            </ul>
+              <li><Link href="/#gallery" className="hover:text-blue-500 transition-colors">{language === 'id' ? 'Galeri Armada' : 'Fleet Gallery'}</Link></li>
+            </ul>
           </div>
 
           <div>
             <h3 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">{dict.footer.company}</h3>
             <ul className="space-y-4">
-              <li><a href="/#about" className="hover:text-blue-500 transition-colors">{dict.navbar.about}</a></li>
-              <li><a href="/#faq" className="hover:text-blue-500 transition-colors">{dict.footer.faq}</a></li>
-              <li><a href="/terms" className="hover:text-blue-500 transition-colors">{dict.footer.terms}</a></li>
-              <li><a href="/privacy" className="hover:text-blue-500 transition-colors">{dict.footer.privacy}</a></li>
-              <li><a href="/#contact" className="hover:text-blue-500 transition-colors">{dict.footer.contact}</a></li>
+              <li><Link href="/#about" className="hover:text-blue-500 transition-colors">{dict.navbar.about}</Link></li>
+              <li><Link href="/#faq" className="hover:text-blue-500 transition-colors">{dict.footer.faq}</Link></li>
+              <li><Link href="/terms" className="hover:text-blue-500 transition-colors">{dict.footer.terms}</Link></li>
+              <li><Link href="/privacy" className="hover:text-blue-500 transition-colors">{dict.footer.privacy}</Link></li>
+              <li><Link href="/#contact" className="hover:text-blue-500 transition-colors">{dict.footer.contact}</Link></li>
             </ul>
           </div>
 

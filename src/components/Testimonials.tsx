@@ -176,7 +176,7 @@ const Testimonials = () => {
                     ))}
                   </div>
                   <blockquote className="text-xl md:text-2xl font-medium text-slate-800 mb-8 italic">
-                    "{testimonials[currentIndex].text}"
+                    &ldquo;{testimonials[currentIndex].text}&rdquo;
                   </blockquote>
                   <div>
                     <div className="font-bold text-slate-900 text-lg">{testimonials[currentIndex].name}</div>

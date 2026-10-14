@@ -2,13 +2,12 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
-import { useSettings } from '@/context/SettingsContext';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
 const FleetGallery = () => {
   const { language } = useLanguage();
-  const { settings } = useSettings();
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   
   const fleetImages = [
@@ -86,12 +85,12 @@ const FleetGallery = () => {
               ? 'Dan masih banyak armada lainnya...' 
               : 'And many more vehicles in our fleet...'}
           </p>
-          <a 
+          <Link
             href="/#contact" 
             className="inline-flex items-center gap-2 bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all shadow-xl active:scale-95"
           >
             {language === 'id' ? 'Tanya Ketersediaan Armada' : 'Check Fleet Availability'}
-          </a>
+          </Link>
         </div>
       </div>
 

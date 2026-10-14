@@ -1,10 +1,27 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useSyncExternalStore } from 'react';
 import { id, Dictionary } from '../dictionaries/id';
 import { en } from '../dictionaries/en';
 
 type Language = 'id' | 'en';
+const LANGUAGE_CHANGE_EVENT = 'batam-language-change';
+
+const getLanguageSnapshot = (): Language => {
+  const savedLanguage = window.localStorage.getItem('language');
+  return savedLanguage === 'id' ? 'id' : 'en';
+};
+
+const getServerLanguageSnapshot = (): Language => 'en';
+
+const subscribeToLanguageChanges = (onChange: () => void) => {
+  window.addEventListener('storage', onChange);
+  window.addEventListener(LANGUAGE_CHANGE_EVENT, onChange);
+  return () => {
+    window.removeEventListener('storage', onChange);
+    window.removeEventListener(LANGUAGE_CHANGE_EVENT, onChange);
+  };
+};
 
 interface LanguageContextType {
   language: Language;
@@ -15,18 +32,15 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('en');
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem('language') as Language;
-    if (savedLang && (savedLang === 'id' || savedLang === 'en')) {
-      setLanguage(savedLang);
-    }
-  }, []);
+  const language = useSyncExternalStore(
+    subscribeToLanguageChanges,
+    getLanguageSnapshot,
+    getServerLanguageSnapshot,
+  );
 
   const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
     localStorage.setItem('language', lang);
+    window.dispatchEvent(new Event(LANGUAGE_CHANGE_EVENT));
   };
 
   const dict = language === 'id' ? id : en;

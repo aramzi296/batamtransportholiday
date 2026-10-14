@@ -51,7 +51,7 @@ const OwnerCommitment = () => {
               </h2>
 
               <p className="text-xl text-slate-600 leading-relaxed italic mb-10">
-                "{dict.about.ownerCommitment}"
+                &ldquo;{dict.about.ownerCommitment}&rdquo;
               </p>
 
               <div>
